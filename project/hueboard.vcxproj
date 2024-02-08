@@ -31,10 +31,12 @@
     <ClInclude Include="..\source-gen\boss_assets.hpp" />
     <ClInclude Include="..\source-gen\boss_buildtag.hpp" />
     <ClInclude Include="..\source-gen\boss_config.h" />
+    <ClInclude Include="..\source\hueboardclient.hpp" />
     <ClInclude Include="..\source\hueboard.hpp" />
     <ClInclude Include="..\source\resource.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\hueboardclient.cpp" />
     <ClCompile Include="..\source\hueboard.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\resource.cpp" />

@@ -42,6 +42,9 @@
     <ClInclude Include="..\source-gen\boss_config.h">
       <Filter>source-gen</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\hueboardclient.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\hueboard.cpp">
@@ -51,6 +54,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\resource.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\hueboardclient.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

@@ -23,11 +23,45 @@ ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
             gProgramHeight = WH[1];
         #endif
     }
+    else if(type == CT_Tick)
+    {
+        const uint64 CurMsec = Platform::Utility::CurrentTimeMsec();
+
+        // Update처리
+        if(m->mUpdateMsec != 0)
+        {
+            if(m->mUpdateMsec < CurMsec)
+                m->mUpdateMsec = 0;
+            m->invalidate(2);
+        }
+
+        // 위젯 틱실행
+        if(m->mWidgetMain && m->mWidgetMain->TickOnce())
+            m->invalidate();
+
+        // 통신 틱실행
+        if(m->mClient.TickOnce())
+            m->invalidate();
+    }
 }
 
 ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share* out)
 {
-    if(type == NT_ZayWidget)
+    if(type == NT_Normal)
+    {
+        if(!String::Compare(topic, "Update"))
+        {
+            const uint64 Msec = (in)? Platform::Utility::CurrentTimeMsec() + sint32o(in).ConstValue() : 1;
+            if(m->mUpdateMsec < Msec)
+                m->mUpdateMsec = Msec;
+        }
+    }
+    else if(type == NT_SocketReceive)
+    {
+        if(m->mClient.TryRecvOnce())
+            m->invalidate();
+    }
+    else if(type == NT_ZayWidget)
     {
         if(!String::Compare(topic, "SetCursor"))
         {
@@ -85,7 +119,9 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 {
     ZAY_XYWH(panel, 0, 0, gProgramWidth, gProgramHeight)
     {
-        ZAY_RGB(panel, 255, 255, 255)
+        if(m->mWidgetMain)
+            m->mWidgetMain->Render(panel);
+        else ZAY_RGBA(panel, 255, 0, 0, 64)
             panel.fill();
 
         // 윈도우시스템
@@ -97,6 +133,9 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 
 hueboardData::hueboardData()
 {
+    mWidgetMain = new ZayWidget();
+    InitWidget(*mWidgetMain, "login");
+    mWidgetMain->Reload("widget/login.json");
 }
 
 hueboardData::~hueboardData()
@@ -198,9 +237,6 @@ void hueboardData::RenderWindowOutline(ZayPanel& panel)
     ZAY_INNER(panel, 1)
     ZAY_RGBA(panel, 0, 0, 0, 32)
         panel.rect(1);
-
-    if(ZayWidgetDOM::GetValue("program.flexible").ToInteger() == 0)
-        return;
 
     // 리사이징바
     ZAY_RGBA(panel, 0, 0, 0, 64 + 128 * Math::Abs(((frame() * 2) % 100) - 50) / 50)
@@ -386,4 +422,79 @@ void hueboardData::SetNormalWindow()
         Platform::SetWindowRect(mSavedNormalRect.l, mSavedNormalRect.t,
             mSavedNormalRect.r - mSavedNormalRect.l, mSavedNormalRect.b - mSavedNormalRect.t);
     }
+}
+
+void hueboardData::InitWidget(ZayWidget& widget, chars name)
+{
+    widget.Init(name, nullptr,
+        [](chars name)->const Image* {return &((const Image&) R(name));})
+        // 특정시간동안 지속적인 화면업데이트(60fps)
+        .AddGlue("update", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 1)
+            {
+                const uint64 UpdateMsec = Platform::Utility::CurrentTimeMsec() + params.Param(0).ToFloat() * 1000;
+                if(mUpdateMsec < UpdateMsec)
+                    mUpdateMsec = UpdateMsec;
+            }
+        })
+        // 통신연결
+        .AddGlue("connect", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 2)
+            {
+                const String Host = params.Param(0).ToText();
+                const sint32 Port = params.Param(1).ToInteger();
+                mClient.Connect(Host, Port);
+            }
+        })
+        // 로그인
+        .AddGlue("login", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 2)
+            {
+                const String Author = ZayWidgetDOM::GetComment(params.Param(0).ToText());
+                const String PasswordSeed = ZayWidgetDOM::GetComment(params.Param(1).ToText()) + "_HueBoard_" + Author;
+                const String PasswordMD5 = AddOn::Ssl::ToMD5((bytes)(chars) PasswordSeed, PasswordSeed.Length());
+                mClient.Login(Author, PasswordMD5);
+                clearCapture();
+            }
+        })
+        // 로그인
+        .AddGlue("logout", ZAY_DECLARE_GLUE(params, this)
+        {
+            mClient.Logout();
+        })
+        // user_content
+        .AddComponent(ZayExtend::ComponentType::ContentWithParameter, "user_content", ZAY_DECLARE_COMPONENT(panel, params, this)
+        {
+            if(params.ParamCount() < 1)
+                return panel._push_pass();
+            const String Type = params.Param(0).ToText();
+            bool HasRender = false;
+
+            branch;
+            jump(!Type.Compare("test") && params.ParamCount() == 3)
+            {
+                ////////////////////
+            }
+
+            // 그외 처리
+            if(!HasRender)
+            ZAY_INNER_SCISSOR(panel, 0)
+            {
+                ZAY_RGBA(panel, 255, 0, 0, 128)
+                    panel.fill();
+                for(sint32 i = 0; i < 5; ++i)
+                {
+                    ZAY_INNER(panel, 1 + i)
+                    ZAY_RGBA(panel, 255, 0, 0, 128 - 16 * i)
+                        panel.rect(1);
+                }
+                ZAY_FONT(panel, 1.2 * Math::MinF(Math::MinF(panel.w(), panel.h()) / 40, 1))
+                ZAY_RGB(panel, 255, 0, 0)
+                    panel.text(Type, UIFA_CenterMiddle, UIFE_Right);
+            }
+            return panel._push_pass();
+        });
 }

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <service/boss_zay.hpp>
 #include <service/boss_zaywidget.hpp>
+#include "hueboardclient.hpp"
 
 class hueboardData : public ZayObject
 {
@@ -19,6 +20,7 @@ public:
     bool IsFullScreen();
     void SetFullScreen();
     void SetNormalWindow();
+    void InitWidget(ZayWidget& widget, chars name);
 
 public: // 윈도우
     static const sint32 mMinWindowWidth = 400;
@@ -31,6 +33,12 @@ public: // 윈도우
     bool mIsFullScreen {false};
     bool mIsWindowMoving {false};
     rect128 mSavedNormalRect {0, 0, 0, 0};
-    String mDirectlyWidget;
-    Strings mDebugLogs;
+
+public: // 위젯
+    uint64 mUpdateMsec {0};
+    uint64 mLastModifyTime {0};
+    ZayWidget* mWidgetMain {nullptr};
+
+public: // 통신
+    HueBoardClient mClient;
 };
