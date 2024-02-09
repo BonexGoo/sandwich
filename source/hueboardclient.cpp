@@ -21,6 +21,16 @@ void HueBoardClient::Logout()
     SendLogout();
 }
 
+void HueBoardClient::Listing(chars route)
+{
+    SendEnumAsset(route, -5);
+}
+
+void HueBoardClient::NewPost()
+{
+    SendLockAsset("NewPost", "post.[next]");
+}
+
 bool HueBoardClient::TickOnce()
 {
     bool NeedUpdate = false;
@@ -74,6 +84,10 @@ bool HueBoardClient::TryRecvOnce()
 
                     branch;
                     jump(Type == "Logined") OnLogined(RecvJson);
+                    jump(Type == "AssetLocked") OnAssetLocked(RecvJson);
+                    jump(Type == "AssetUpdated") OnAssetUpdated(RecvJson);
+                    jump(Type == "AssetChanged") OnAssetChanged(RecvJson);
+                    jump(Type == "AssetEnumed") OnAssetEnumed(RecvJson);
                     jump(Type == "Errored") OnErrored(RecvJson);
                 }
                 NeedUpdate = true;
@@ -143,6 +157,54 @@ void HueBoardClient::SendLogout()
     ZayWidgetDOM::SetValue("hueboard.showlogin", "1");
 }
 
+void HueBoardClient::SendLockAsset(chars lockid, chars route)
+{
+    Context Json;
+    Json.At("type").Set("LockAsset");
+    Json.At("token").Set(mToken);
+    Json.At("lockid").Set(lockid);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void HueBoardClient::SendUnlockAsset(chars lockid, const Context& data)
+{
+    Context Json;
+    Json.At("type").Set("UnlockAsset");
+    Json.At("token").Set(mToken);
+    Json.At("lockid").Set(lockid);
+    Json.At("data") = data;
+    Send(Json);
+}
+
+void HueBoardClient::SendFocusAsset(chars route)
+{
+    Context Json;
+    Json.At("type").Set("FocusAsset");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void HueBoardClient::SendUnfocusAsset(chars route)
+{
+    Context Json;
+    Json.At("type").Set("UnfocusAsset");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void HueBoardClient::SendEnumAsset(chars route, sint32 maxcount)
+{
+    Context Json;
+    Json.At("type").Set("EnumAsset");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Json.At("maxcount").Set(String::FromInteger(maxcount));
+    Send(Json);
+}
+
 void HueBoardClient::OnLogined(const Context& json)
 {
     mAuthor = json("author").GetText();
@@ -151,6 +213,60 @@ void HueBoardClient::OnLogined(const Context& json)
     ZayWidgetDOM::SetValue("hueboard.author", "'" + mAuthor + "'");
     ZayWidgetDOM::SetValue("hueboard.token", "'" + mToken + "'");
     ZayWidgetDOM::RemoveVariables("hueboard.login.");
+    Listing("post.[last]");
+}
+
+void HueBoardClient::OnAssetLocked(const Context& json)
+{
+    const String LockID = json("lockid").GetText();
+    if(LockID == "NewPost")
+    {
+        Context Data;
+        Data.At("text").Set("New Post");
+        SendUnlockAsset(LockID, Data);
+    }
+}
+
+void HueBoardClient::OnAssetUpdated(const Context& json)
+{
+    const String Author = json("author").GetText();
+    const String Route = json("route").GetText();
+    const String Status = json("status").GetText();
+    const String Version = json("version").GetText();
+
+    const String Header = String::Format("hueboard.asset.%s", (chars) Route);
+    ZayWidgetDOM::SetValue(Header + ".author", "'" + Author + "'");
+    ZayWidgetDOM::SetValue(Header + ".route", "'" + Route + "'");
+    ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
+    ZayWidgetDOM::SetValue(Header + ".version", "'" + Version + "'");
+    ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
+}
+
+void HueBoardClient::OnAssetChanged(const Context& json)
+{
+    const String Route = json("route").GetText();
+    const String Status = json("status").GetText();
+
+    const String Header = String::Format("hueboard.asset.%s", (chars) Route);
+    ZayWidgetDOM::SetValue(Header + ".route", "'" + Route + "'");
+    ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
+}
+
+void HueBoardClient::OnAssetEnumed(const Context& json)
+{
+    const sint32 TotalCount = json("totalcount").GetInt();
+    const sint32 ListCount = json("routes").LengthOfIndexable();
+
+    ZayWidgetDOM::RemoveVariables("hueboard.list.");
+    ZayWidgetDOM::SetValue("hueboard.list.total", String::FromInteger(TotalCount));
+    ZayWidgetDOM::SetValue("hueboard.list.count", String::FromInteger(ListCount));
+    for(sint32 i = 0; i < ListCount; ++i)
+    {
+        const String CurRoute = json("routes")[i].GetText();
+        ZayWidgetDOM::SetValue(String::Format("hueboard.list.%d", i), "'" + CurRoute + "'");
+        // 각 어셋을 포커싱처리
+        SendFocusAsset(CurRoute);
+    }
 }
 
 void HueBoardClient::OnErrored(const Context& json)

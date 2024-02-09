@@ -7,6 +7,10 @@ public:
     void Connect(chars host, sint32 port);
     void Login(chars author, chars password);
     void Logout();
+    void NewPost();
+    void Listing(chars route);
+
+public:
     bool TickOnce();
     bool TryRecvOnce();
 
@@ -18,7 +22,18 @@ private:
     void SendFastLogin(chars programid);
     void SendLogin(chars programid, chars author, chars password);
     void SendLogout();
+    void SendLockAsset(chars lockid, chars route);
+    void SendUnlockAsset(chars lockid, const Context& data);
+    void SendFocusAsset(chars route);
+    void SendUnfocusAsset(chars route);
+    void SendEnumAsset(chars route, sint32 maxcount);
+
+private:
     void OnLogined(const Context& json);
+    void OnAssetLocked(const Context& json);
+    void OnAssetUpdated(const Context& json);
+    void OnAssetChanged(const Context& json);
+    void OnAssetEnumed(const Context& json);
     void OnErrored(const Context& json);
 
 public: // 통신

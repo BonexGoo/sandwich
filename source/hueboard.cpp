@@ -460,10 +460,15 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
                 clearCapture();
             }
         })
-        // 로그인
+        // 로그아웃
         .AddGlue("logout", ZAY_DECLARE_GLUE(params, this)
         {
             mClient.Logout();
+        })
+        // 새 포스트추가
+        .AddGlue("newpost", ZAY_DECLARE_GLUE(params, this)
+        {
+            mClient.NewPost();
         })
         // user_content
         .AddComponent(ZayExtend::ComponentType::ContentWithParameter, "user_content", ZAY_DECLARE_COMPONENT(panel, params, this)
