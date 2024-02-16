@@ -464,11 +464,29 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
         .AddGlue("logout", ZAY_DECLARE_GLUE(params, this)
         {
             mClient.Logout();
+            clearCapture();
         })
         // 새 포스트추가
         .AddGlue("newpost", ZAY_DECLARE_GLUE(params, this)
         {
             mClient.NewPost();
+            clearCapture();
+        })
+        // 포스트선택
+        .AddGlue("selpost", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 1)
+            {
+                const String Post = params.Param(0).ToText();
+                mClient.SelectPost(Post);
+                clearCapture();
+            }
+        })
+        // 새 문장추가
+        .AddGlue("newsentence", ZAY_DECLARE_GLUE(params, this)
+        {
+            mClient.NewSentence();
+            clearCapture();
         })
         // user_content
         .AddComponent(ZayExtend::ComponentType::ContentWithParameter, "user_content", ZAY_DECLARE_COMPONENT(panel, params, this)

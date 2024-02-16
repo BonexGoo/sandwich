@@ -21,14 +21,22 @@ void HueBoardClient::Logout()
     SendLogout();
 }
 
-void HueBoardClient::Listing(chars route)
-{
-    SendEnumAsset(route, -5);
-}
-
 void HueBoardClient::NewPost()
 {
-    SendLockAsset("NewPost", "post.[next]");
+    SendLockAsset("NewPost", "post<next>");
+}
+
+void HueBoardClient::SelectPost(chars post)
+{
+    ZayWidgetDOM::SetValue("hueboard.range.post.select", String::Format("'%s'", post));
+    SendFocusRange(String::Format("%s.sentence", post));
+}
+
+void HueBoardClient::NewSentence()
+{
+    const String SelPost = ZayWidgetDOM::GetValue("hueboard.range.post.select").ToText();
+    if(SelPost != 'x')
+        SendLockAsset("NewSentence", SelPost + ".sentence<next>");
 }
 
 bool HueBoardClient::TickOnce()
@@ -87,7 +95,7 @@ bool HueBoardClient::TryRecvOnce()
                     jump(Type == "AssetLocked") OnAssetLocked(RecvJson);
                     jump(Type == "AssetUpdated") OnAssetUpdated(RecvJson);
                     jump(Type == "AssetChanged") OnAssetChanged(RecvJson);
-                    jump(Type == "AssetEnumed") OnAssetEnumed(RecvJson);
+                    jump(Type == "RangeUpdated") OnRangeUpdated(RecvJson);
                     jump(Type == "Errored") OnErrored(RecvJson);
                 }
                 NeedUpdate = true;
@@ -195,13 +203,21 @@ void HueBoardClient::SendUnfocusAsset(chars route)
     Send(Json);
 }
 
-void HueBoardClient::SendEnumAsset(chars route, sint32 maxcount)
+void HueBoardClient::SendFocusRange(chars route)
 {
     Context Json;
-    Json.At("type").Set("EnumAsset");
+    Json.At("type").Set("FocusRange");
     Json.At("token").Set(mToken);
     Json.At("route").Set(route);
-    Json.At("maxcount").Set(String::FromInteger(maxcount));
+    Send(Json);
+}
+
+void HueBoardClient::SendUnfocusRange(chars route)
+{
+    Context Json;
+    Json.At("type").Set("UnfocusRange");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
     Send(Json);
 }
 
@@ -213,7 +229,7 @@ void HueBoardClient::OnLogined(const Context& json)
     ZayWidgetDOM::SetValue("hueboard.author", "'" + mAuthor + "'");
     ZayWidgetDOM::SetValue("hueboard.token", "'" + mToken + "'");
     ZayWidgetDOM::RemoveVariables("hueboard.login.");
-    Listing("post.[last]");
+    SendFocusRange("post");
 }
 
 void HueBoardClient::OnAssetLocked(const Context& json)
@@ -222,7 +238,27 @@ void HueBoardClient::OnAssetLocked(const Context& json)
     if(LockID == "NewPost")
     {
         Context Data;
-        Data.At("text").Set("New Post");
+        switch(Platform::Utility::Random() % 5)
+        {
+        case 0: Data.At("text").Set("노원 모각코합니다"); break;
+        case 1: Data.At("text").Set("Java 질문입니다"); break;
+        case 2: Data.At("text").Set("입사하자마자 이직을 했어요"); break;
+        case 3: Data.At("text").Set("열심히해라 말하기 전에"); break;
+        case 4: Data.At("text").Set("신입 첫 직장 선택"); break;
+        }
+        SendUnlockAsset(LockID, Data);
+    }
+    else if(LockID == "NewSentence")
+    {
+        Context Data;
+        switch(Platform::Utility::Random() % 5)
+        {
+        case 0: Data.At("text").Set("안녕하세요."); break;
+        case 1: Data.At("text").Set("운이 따르는 사람을 이길 수 없다는 뜻이죠."); break;
+        case 2: Data.At("text").Set("그의 가면은 4강에서 벗겨졌죠."); break;
+        case 3: Data.At("text").Set("새해 복 많이 받으세요~"); break;
+        case 4: Data.At("text").Set("감사합니다."); break;
+        }
         SendUnlockAsset(LockID, Data);
     }
 }
@@ -230,13 +266,12 @@ void HueBoardClient::OnAssetLocked(const Context& json)
 void HueBoardClient::OnAssetUpdated(const Context& json)
 {
     const String Author = json("author").GetText();
-    const String Route = json("route").GetText();
+    const String Path = String(json("path").GetText()).Replace('/', '.');
     const String Status = json("status").GetText();
     const String Version = json("version").GetText();
 
-    const String Header = String::Format("hueboard.asset.%s", (chars) Route);
+    const String Header = "hueboard.asset." + Path;
     ZayWidgetDOM::SetValue(Header + ".author", "'" + Author + "'");
-    ZayWidgetDOM::SetValue(Header + ".route", "'" + Route + "'");
     ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
     ZayWidgetDOM::SetValue(Header + ".version", "'" + Version + "'");
     ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
@@ -244,26 +279,28 @@ void HueBoardClient::OnAssetUpdated(const Context& json)
 
 void HueBoardClient::OnAssetChanged(const Context& json)
 {
-    const String Route = json("route").GetText();
+    const String Path = String(json("path").GetText()).Replace('/', '.');
     const String Status = json("status").GetText();
 
-    const String Header = String::Format("hueboard.asset.%s", (chars) Route);
-    ZayWidgetDOM::SetValue(Header + ".route", "'" + Route + "'");
+    const String Header = "hueboard.asset." + Path;
     ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
 }
 
-void HueBoardClient::OnAssetEnumed(const Context& json)
+void HueBoardClient::OnRangeUpdated(const Context& json)
 {
-    const sint32 TotalCount = json("totalcount").GetInt();
-    const sint32 ListCount = json("routes").LengthOfIndexable();
+    const String Path = String(json("path").GetText()).Replace('/', '.');
+    const sint32 First = json("first").GetInt();
+    const sint32 Last = json("last").GetInt();
 
-    ZayWidgetDOM::RemoveVariables("hueboard.list.");
-    ZayWidgetDOM::SetValue("hueboard.list.total", String::FromInteger(TotalCount));
-    ZayWidgetDOM::SetValue("hueboard.list.count", String::FromInteger(ListCount));
-    for(sint32 i = 0; i < ListCount; ++i)
+    const String Header = "hueboard.range." + Path;
+    const sint32 Count = Math::Max(0, Last + 1 - First);
+    ZayWidgetDOM::RemoveVariables(Header + ".");
+    ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(Count));
+    ZayWidgetDOM::SetValue(Header + ".select", "'x'");
+    for(sint32 i = 0; i < Count; ++i)
     {
-        const String CurRoute = json("routes")[i].GetText();
-        ZayWidgetDOM::SetValue(String::Format("hueboard.list.%d", i), "'" + CurRoute + "'");
+        const String CurRoute = String::Format("%s.%d", (chars) Path, First + i);
+        ZayWidgetDOM::SetValue(String::Format("%s.%d", (chars) Header, i), "'" + CurRoute + "'");
         // 각 어셋을 포커싱처리
         SendFocusAsset(CurRoute);
     }

@@ -8,7 +8,8 @@ public:
     void Login(chars author, chars password);
     void Logout();
     void NewPost();
-    void Listing(chars route);
+    void SelectPost(chars post);
+    void NewSentence();
 
 public:
     bool TickOnce();
@@ -26,14 +27,15 @@ private:
     void SendUnlockAsset(chars lockid, const Context& data);
     void SendFocusAsset(chars route);
     void SendUnfocusAsset(chars route);
-    void SendEnumAsset(chars route, sint32 maxcount);
+    void SendFocusRange(chars route);
+    void SendUnfocusRange(chars route);
 
 private:
     void OnLogined(const Context& json);
     void OnAssetLocked(const Context& json);
     void OnAssetUpdated(const Context& json);
     void OnAssetChanged(const Context& json);
-    void OnAssetEnumed(const Context& json);
+    void OnRangeUpdated(const Context& json);
     void OnErrored(const Context& json);
 
 public: // 통신
