@@ -488,6 +488,18 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             mClient.NewSentence();
             clearCapture();
         })
+        // 문장 위치초기화
+        .AddGlue("set_sentence_pos", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 3)
+            {
+                const String UnitID = params.Param(0).ToText();
+                const sint32 PosX = params.Param(1).ToInteger();
+                const sint32 PosY = params.Param(2).ToInteger();
+                ZayWidgetDOM::SetValue(UnitID + ".x", String::FromInteger(PosX));
+                ZayWidgetDOM::SetValue(UnitID + ".y", String::FromInteger(PosY));
+            }
+        })
         // user_content
         .AddComponent(ZayExtend::ComponentType::ContentWithParameter, "user_content", ZAY_DECLARE_COMPONENT(panel, params, this)
         {
@@ -497,9 +509,13 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             bool HasRender = false;
 
             branch;
-            jump(!Type.Compare("test") && params.ParamCount() == 3)
+            jump(!Type.Compare("sentence") && params.ParamCount() == 5)
             {
-                ////////////////////
+                const String UnitID = params.Param(1).ToText();
+                const String Text = params.Param(2).ToText();
+                const sint32 LineGap = params.Param(3).ToInteger();
+                const sint32 LastGap = params.Param(4).ToInteger();
+                HasRender = RenderUC_Sentence(panel, UnitID, Text, LineGap, LastGap);
             }
 
             // 그외 처리
@@ -520,4 +536,46 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             }
             return panel._push_pass();
         });
+}
+
+bool hueboardData::RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, sint32 linegap, sint32 lastgap)
+{
+    const String UnitX = String::Format("%s.x", unitid);
+    const String UnitY = String::Format("%s.y", unitid);
+    sint32 PosX = ZayWidgetDOM::GetValue(UnitX).ToInteger();
+    sint32 PosY = ZayWidgetDOM::GetValue(UnitY).ToInteger();
+    const sint32 TextHeight = Platform::Graphics::GetStringHeight();
+    while(true)
+    {
+        const sint32 ClippingWidth = Math::Max(0, panel.w() - PosX);
+        sint32 TextLength = Platform::Graphics::GetLengthOfString(true, ClippingWidth, text);
+        if(TextLength == 0 && PosX == 0) // 들여쓴 첫줄이 아니어야 최소글자수 보장
+            TextLength = String::GetLengthOfFirstLetter(text);
+
+        // 텍스트 출력
+        panel.text(PosX, PosY, text, TextLength, UIFA_LeftTop);
+        chars OldText = text;
+        text += TextLength;
+        if(*text != '\0')
+        {
+            PosX = 0;
+            PosY += TextHeight + linegap;
+        }
+        else
+        {
+            PosX += Platform::Graphics::GetStringWidth(OldText);
+            // 문장이 끝난후 확보되어야 하는 공간
+            if(PosX + lastgap <= panel.w())
+                PosX += lastgap;
+            else
+            {
+                PosX = lastgap;
+                PosY += TextHeight + linegap;
+            }
+            break;
+        }
+    }
+    ZayWidgetDOM::SetValue(UnitX, String::FromInteger(PosX));
+    ZayWidgetDOM::SetValue(UnitY, String::FromInteger(PosY));
+    return true;
 }

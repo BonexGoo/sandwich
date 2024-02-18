@@ -22,6 +22,9 @@ public:
     void SetNormalWindow();
     void InitWidget(ZayWidget& widget, chars name);
 
+public:
+    bool RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, sint32 linegap, sint32 lastgap);
+
 public: // 윈도우
     static const sint32 mMinWindowWidth = 400;
     static const sint32 mMinWindowHeight = 400;
