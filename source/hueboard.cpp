@@ -490,10 +490,11 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
         // 요소선택(포스트 또는 문장)
         .AddGlue("select", ZAY_DECLARE_GLUE(params, this)
         {
-            if(params.ParamCount() == 1)
+            if(params.ParamCount() == 2)
             {
-                const String Path = params.Param(0).ToText();
-                mClient.Select(Path);
+                const String Type = params.Param(0).ToText();
+                const sint32 Index = params.Param(1).ToInteger();
+                mClient.Select(Type, Index);
                 clearCapture();
             }
         })

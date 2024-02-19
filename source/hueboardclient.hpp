@@ -8,7 +8,7 @@ public:
     void Login(chars author, chars password);
     void Logout();
     void NewPost();
-    void Select(chars path);
+    void Select(chars type, sint32 index);
     void NewSentence();
     void NewRipple();
 

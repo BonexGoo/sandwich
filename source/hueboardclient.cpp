@@ -26,28 +26,28 @@ void HueBoardClient::NewPost()
     SendLockAsset("NewPost", "post<next>");
 }
 
-void HueBoardClient::Select(chars path)
+void HueBoardClient::Select(chars type, sint32 index)
 {
-    const Strings Pathes = String::Split(path, '.');
-    if(0 < Pathes.Count())
+    ZayWidgetDOM::SetValue(String::Format("hueboard.select.%s", type), String::FromInteger(index));
+    if(index != -1)
     {
-        const String PathType = Pathes[-2];
-        const String PathValue = Pathes[-1];
-        ZayWidgetDOM::SetValue("hueboard.select." + PathType, PathValue);
-
-        chars ChildType = nullptr;
-        if(PathType == "post") ChildType = "sentence";
-        else if(PathType == "sentence") ChildType = "ripple";
-
-        if(ChildType)
+        String Path;
+        if(!String::Compare(type, "post"))
+            Path = String::Format("post.%d.sentence", index);
+        else if(!String::Compare(type, "sentence"))
         {
-            const String DomPath = String::Format("hueboard.range.%s.%s.count", path, ChildType);
-            const sint32 SentenceCount = ZayWidgetDOM::GetValue(DomPath).ToInteger();
-            for(sint32 i = 0; i < SentenceCount; ++i)
-            {
-                const String CurRoute = String::Format("%s.%s.%d", path, ChildType, i);
-                SendFocusAsset(CurRoute);
-            }
+            const sint32 PostIndex = ZayWidgetDOM::GetValue("hueboard.select.post").ToInteger();
+            Path = String::Format("post.%d.sentence.%d.ripple", PostIndex, index);
+        }
+        else return;
+
+        // 어셋포커싱
+        const String DomPath = String::Format("hueboard.range.%s.count", (chars) Path);
+        const sint32 SentenceCount = ZayWidgetDOM::GetValue(DomPath).ToInteger();
+        for(sint32 i = 0; i < SentenceCount; ++i)
+        {
+            const String CurRoute = String::Format("%s.%d", (chars) Path, i);
+            SendFocusAsset(CurRoute);
         }
     }
 }
@@ -292,10 +292,13 @@ void HueBoardClient::OnAssetLocked(const Context& json)
     else if(LockID == "NewRipple")
     {
         Context Data;
-        switch(Platform::Utility::Random() % 2)
+        switch(Platform::Utility::Random() % 5)
         {
-        case 0: Data.At("text").Set("리플A"); break;
-        case 1: Data.At("text").Set("리플B"); break;
+        case 0: Data.At("text").Set("안녕하세요."); break;
+        case 1: Data.At("text").Set("운이 따르는 사람을 이길 수 없다는 뜻이죠."); break;
+        case 2: Data.At("text").Set("그의 가면은 4강에서 벗겨졌죠."); break;
+        case 3: Data.At("text").Set("새해 복 많이 받으세요~"); break;
+        case 4: Data.At("text").Set("감사합니다."); break;
         }
         SendUnlockAsset(LockID, Data);
     }
@@ -344,7 +347,6 @@ void HueBoardClient::OnRangeUpdated(const Context& json)
     const sint32 Count = Math::Max(0, Last + 1 - First);
     ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(Count));
 
-    // 포커싱 필요조건
     bool NeedFocusing = false;
     const Strings Pathes = String::Split(Path, '.');
     if(Pathes[-1] == "post") NeedFocusing = true;
@@ -352,6 +354,8 @@ void HueBoardClient::OnRangeUpdated(const Context& json)
         NeedFocusing = true;
     else if(Pathes[-1] == "ripple" && ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText() != "-1")
         NeedFocusing = true;
+
+    // 어셋포커싱
     if(NeedFocusing)
     for(sint32 i = 0; i < Count; ++i)
     {
