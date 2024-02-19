@@ -8,8 +8,9 @@ public:
     void Login(chars author, chars password);
     void Logout();
     void NewPost();
-    void SelectPost(chars post);
+    void Select(chars path);
     void NewSentence();
+    void NewRipple();
 
 public:
     bool TickOnce();

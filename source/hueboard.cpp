@@ -133,6 +133,9 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 
 hueboardData::hueboardData()
 {
+    ZayWidgetDOM::SetValue("hueboard.select.post", "-1");
+    ZayWidgetDOM::SetValue("hueboard.select.sentence", "-1");
+
     mWidgetMain = new ZayWidget();
     InitWidget(*mWidgetMain, "login");
     mWidgetMain->Reload("widget/login.json");
@@ -472,21 +475,27 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             mClient.NewPost();
             clearCapture();
         })
-        // 포스트선택
-        .AddGlue("selpost", ZAY_DECLARE_GLUE(params, this)
-        {
-            if(params.ParamCount() == 1)
-            {
-                const String Post = params.Param(0).ToText();
-                mClient.SelectPost(Post);
-                clearCapture();
-            }
-        })
         // 새 문장추가
         .AddGlue("newsentence", ZAY_DECLARE_GLUE(params, this)
         {
             mClient.NewSentence();
             clearCapture();
+        })
+        // 새 리플추가
+        .AddGlue("newripple", ZAY_DECLARE_GLUE(params, this)
+        {
+            mClient.NewRipple();
+            clearCapture();
+        })
+        // 요소선택(포스트 또는 문장)
+        .AddGlue("select", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 1)
+            {
+                const String Path = params.Param(0).ToText();
+                mClient.Select(Path);
+                clearCapture();
+            }
         })
         // 문장 위치초기화
         .AddGlue("set_sentence_pos", ZAY_DECLARE_GLUE(params, this)

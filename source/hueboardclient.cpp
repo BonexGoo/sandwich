@@ -26,17 +26,45 @@ void HueBoardClient::NewPost()
     SendLockAsset("NewPost", "post<next>");
 }
 
-void HueBoardClient::SelectPost(chars post)
+void HueBoardClient::Select(chars path)
 {
-    ZayWidgetDOM::SetValue("hueboard.range.post.select", String::Format("'%s'", post));
-    SendFocusRange(String::Format("%s.sentence", post));
+    const Strings Pathes = String::Split(path, '.');
+    if(0 < Pathes.Count())
+    {
+        const String PathType = Pathes[-2];
+        const String PathValue = Pathes[-1];
+        ZayWidgetDOM::SetValue("hueboard.select." + PathType, PathValue);
+
+        chars ChildType = nullptr;
+        if(PathType == "post") ChildType = "sentence";
+        else if(PathType == "sentence") ChildType = "ripple";
+
+        if(ChildType)
+        hook(String::Format("hueboard.range.%s.%s.", path, ChildType))
+        {
+            const sint32 SentenceCount = ZayWidgetDOM::GetValue(fish + "count").ToInteger();
+            for(sint32 i = 0; i < SentenceCount; ++i)
+            {
+                const String CurRoute = String::Format("%s.%s.%d", path, ChildType, i);
+                SendFocusAsset(CurRoute);
+            }
+        }
+    }
 }
 
 void HueBoardClient::NewSentence()
 {
-    const String SelPost = ZayWidgetDOM::GetValue("hueboard.range.post.select").ToText();
-    if(SelPost != 'x')
-        SendLockAsset("NewSentence", SelPost + ".sentence<next>");
+    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
+    if(SelPost != "-1")
+        SendLockAsset("NewSentence", "post." + SelPost + ".sentence<next>");
+}
+
+void HueBoardClient::NewRipple()
+{
+    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
+    const String SelSentence = ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText();
+    if(SelPost != "-1" && SelSentence != "-1")
+        SendLockAsset("NewRipple", "post." + SelPost + ".sentence." + SelSentence + ".ripple<next>");
 }
 
 bool HueBoardClient::TickOnce()
@@ -181,7 +209,7 @@ void HueBoardClient::SendUnlockAsset(chars lockid, const Context& data)
     Json.At("type").Set("UnlockAsset");
     Json.At("token").Set(mToken);
     Json.At("lockid").Set(lockid);
-    Json.At("data") = data;
+    Json.At("data").LoadJson(SO_NeedCopy, data.SaveJson());
     Send(Json);
 }
 
@@ -261,6 +289,16 @@ void HueBoardClient::OnAssetLocked(const Context& json)
         }
         SendUnlockAsset(LockID, Data);
     }
+    else if(LockID == "NewRipple")
+    {
+        Context Data;
+        switch(Platform::Utility::Random() % 2)
+        {
+        case 0: Data.At("text").Set("리플A"); break;
+        case 1: Data.At("text").Set("리플B"); break;
+        }
+        SendUnlockAsset(LockID, Data);
+    }
 }
 
 void HueBoardClient::OnAssetUpdated(const Context& json)
@@ -275,6 +313,16 @@ void HueBoardClient::OnAssetUpdated(const Context& json)
     ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
     ZayWidgetDOM::SetValue(Header + ".version", "'" + Version + "'");
     ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
+
+    const Strings Pathes = String::Split(Path, '.');
+    if(0 < Pathes.Count())
+    {
+        const String PathType = Pathes[-2];
+        if(PathType == "post")
+            SendFocusRange(Path + ".sentence");
+        else if(PathType == "sentence")
+            SendFocusRange(Path + ".ripple");
+    }
 }
 
 void HueBoardClient::OnAssetChanged(const Context& json)
@@ -294,14 +342,15 @@ void HueBoardClient::OnRangeUpdated(const Context& json)
 
     const String Header = "hueboard.range." + Path;
     const sint32 Count = Math::Max(0, Last + 1 - First);
-    ZayWidgetDOM::RemoveVariables(Header + ".");
     ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(Count));
-    ZayWidgetDOM::SetValue(Header + ".select", "'x'");
+
+    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
+    const String SelSentence = ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText();
+
+    if(Path == "post" || (Path == "sentence" && SelPost != "-1"))
     for(sint32 i = 0; i < Count; ++i)
     {
         const String CurRoute = String::Format("%s.%d", (chars) Path, First + i);
-        ZayWidgetDOM::SetValue(String::Format("%s.%d", (chars) Header, i), "'" + CurRoute + "'");
-        // 각 어셋을 포커싱처리
         SendFocusAsset(CurRoute);
     }
 }
@@ -311,7 +360,12 @@ void HueBoardClient::OnErrored(const Context& json)
     const String Packet = json("packet").GetText();
     const String Text = json("text").GetText();
 
-    if(Packet == "Login")
+    if(Text == "Expired token")
+    {
+        ZayWidgetDOM::SetValue("hueboard.showlogin", "1");
+        ZayWidgetDOM::SetValue("hueboard.login.error", "'" + Text + "'");
+    }
+    else if(Packet == "Login")
     {
         if(Text == "Unregistered device")
             ZayWidgetDOM::SetValue("hueboard.showlogin", "1");

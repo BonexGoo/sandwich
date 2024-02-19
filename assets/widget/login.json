@@ -3,16 +3,7 @@
 	"expanded":"1",
 	"oncreate":
 	[
-		"connect('127.0.0.1', 8981)",
-		{
-			"curpost":"''"
-		},
-		{
-			"cursentence":"''"
-		},
-		{
-			"selripple":"-1"
-		}
+		"connect('127.0.0.1', 8981)"
 	],
 	"posx":"-207",
 	"posy":"401",
@@ -276,7 +267,7 @@
 					"compname":"ltrb",
 					"compvalues":
 					[
-						"if(('x'@'d.hueboard.range.post.select') =='x')",
+						"if(d.hueboard.select.post == -1)",
 						[
 							"0",
 							"0",
@@ -306,7 +297,7 @@
 							"ui":
 							[
 								{
-									"addw":"756",
+									"addw":"337",
 									"comment":"게시글",
 									"compid":"59",
 									"compname":"xywh",
@@ -322,17 +313,15 @@
 									"expanded":"1",
 									"onclick":
 									[
-										"if(d.hueboard.range.post.select !='nopost'@'d.hueboard.range.post.'+ iV)",
-										"selpost('nopost'@'d.hueboard.range.post.'+ iV)",
+										"if(d.hueboard.select.post != iV)",
+										"select('post.'+ iV)",
 										"else",
-										"selpost('x')",
+										"select('post.-1')",
 										"endif",
-										{
-											"selripple":"-1"
-										}
+										"select('sentence.-1')"
 									],
-									"posx":"2020",
-									"posy":"1484",
+									"posx":"2016",
+									"posy":"1401",
 									"ui":
 									[
 										{
@@ -347,8 +336,8 @@
 												]
 											],
 											"expanded":"1",
-											"posx":"3172",
-											"posy":"1461",
+											"posx":"2740",
+											"posy":"1105",
 											"ui":
 											[
 												{
@@ -365,8 +354,8 @@
 														]
 													],
 													"expanded":"1",
-													"posx":"3548",
-													"posy":"1478",
+													"posx":"3116",
+													"posy":"1122",
 													"ui":
 													[
 														{
@@ -374,163 +363,146 @@
 															"compid":"62",
 															"compname":"fill",
 															"expanded":"1",
-															"posx":"3921",
-															"posy":"1497"
+															"posx":"3489",
+															"posy":"1141"
 														}
 													]
 												}
 											]
 										},
 										{
-											"addw":"361",
-											"compid":"68",
-											"compinputs":
+											"addw":"162",
+											"compid":"63",
+											"compname":"color",
+											"compvalues":
 											[
-												{
-													"curpost":"'nopost'@'d.hueboard.range.post.'+ iV"
-												}
+												"if(d.hueboard.select.post == iV)",
+												[
+													"240",
+													"224",
+													"255"
+												],
+												"else",
+												[
+													"255",
+													"255",
+													"255"
+												]
 											],
-											"compname":"code",
 											"expanded":"1",
-											"posx":"3172",
-											"posy":"1720",
+											"posx":"2740",
+											"posy":"1330",
 											"ui":
 											[
 												{
-													"addw":"162",
-													"compid":"63",
-													"compname":"color",
-													"compvalues":
-													[
-														"if(curpost == d.hueboard.range.post.select)",
-														[
-															"240",
-															"224",
-															"255"
-														],
-														"else",
-														[
-															"255",
-															"255",
-															"255"
-														]
-													],
+													"addw":"0",
+													"compid":"64",
+													"compname":"fill",
 													"expanded":"1",
-													"posx":"3905",
-													"posy":"1693",
-													"ui":
-													[
-														{
-															"addw":"0",
-															"compid":"64",
-															"compname":"fill",
-															"expanded":"1",
-															"posx":"4436",
-															"posy":"1728"
-														}
-													]
-												},
+													"posx":"3271",
+													"posy":"1365"
+												}
+											]
+										},
+										{
+											"addw":"0",
+											"compid":"65",
+											"compname":"color",
+											"compvalues":
+											[
+												[
+													"0",
+													"0",
+													"0"
+												]
+											],
+											"expanded":"1",
+											"posx":"2739",
+											"posy":"1597",
+											"ui":
+											[
 												{
 													"addw":"0",
-													"compid":"65",
-													"compname":"color",
+													"compid":"66",
+													"compname":"font",
 													"compvalues":
 													[
 														[
-															"0",
-															"0",
-															"0"
+															"3.0"
 														]
 													],
 													"expanded":"1",
-													"posx":"3908",
-													"posy":"1961",
+													"posx":"3108",
+													"posy":"1619",
 													"ui":
 													[
 														{
-															"addw":"0",
-															"compid":"66",
-															"compname":"font",
+															"addw":"462",
+															"compid":"67",
+															"compname":"text",
 															"compvalues":
 															[
 																[
-																	"3.0"
+																	"'  '+ ('-'@'d.hueboard.asset.post.'+ iV +'.data.text')",
+																	"leftmiddle",
+																	"right"
 																]
 															],
 															"expanded":"1",
-															"posx":"4277",
-															"posy":"1983",
-															"ui":
-															[
-																{
-																	"addw":"462",
-																	"compid":"67",
-																	"compname":"text",
-																	"compvalues":
-																	[
-																		[
-																			"'  '+ ('-'@'d.hueboard.asset.'+ curpost +'.data.text')",
-																			"leftmiddle",
-																			"right"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4650",
-																	"posy":"2002"
-																}
-															]
+															"posx":"3481",
+															"posy":"1638"
 														}
 													]
-												},
+												}
+											]
+										},
+										{
+											"addw":"0",
+											"compid":"69",
+											"compname":"color",
+											"compvalues":
+											[
+												[
+													"128",
+													"128",
+													"128"
+												]
+											],
+											"expanded":"1",
+											"posx":"2735",
+											"posy":"1801",
+											"ui":
+											[
 												{
 													"addw":"0",
-													"compid":"69",
-													"compname":"color",
+													"compid":"70",
+													"compname":"font",
 													"compvalues":
 													[
 														[
-															"128",
-															"128",
-															"128"
+															"2.0"
 														]
 													],
 													"expanded":"1",
-													"posx":"3908",
-													"posy":"2156",
+													"posx":"3104",
+													"posy":"1823",
 													"ui":
 													[
 														{
-															"addw":"0",
-															"compid":"70",
-															"compname":"font",
+															"addw":"462",
+															"compid":"71",
+															"compname":"text",
 															"compvalues":
 															[
 																[
-																	"2.0"
+																	"('-'@'d.hueboard.asset.post.'+ iV +'.author') +' '",
+																	"rightbottom",
+																	"left"
 																]
 															],
 															"expanded":"1",
-															"posx":"4277",
-															"posy":"2178",
-															"ui":
-															[
-																{
-																	"addw":"462",
-																	"compid":"71",
-																	"compname":"text",
-																	"compvalues":
-																	[
-																		[
-																			"('-'@'d.hueboard.asset.'+ curpost +'.author') +' '",
-																			"rightbottom",
-																			"left"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4650",
-																	"posy":"2197"
-																}
-															]
+															"posx":"3477",
+															"posy":"1842"
 														}
 													]
 												}
@@ -561,8 +533,8 @@
 							[
 								"newpost()"
 							],
-							"posx":"1553",
-							"posy":"1836",
+							"posx":"1512",
+							"posy":"1817",
 							"ui":
 							[
 								{
@@ -579,8 +551,8 @@
 										]
 									],
 									"expanded":"1",
-									"posx":"2064",
-									"posy":"1932",
+									"posx":"2009",
+									"posy":"1882",
 									"ui":
 									[
 										{
@@ -588,8 +560,8 @@
 											"compid":"55",
 											"compname":"fill",
 											"expanded":"1",
-											"posx":"2444",
-											"posy":"1971"
+											"posx":"2391",
+											"posy":"1963"
 										},
 										{
 											"addw":"0",
@@ -602,8 +574,8 @@
 												]
 											],
 											"expanded":"1",
-											"posx":"2442",
-											"posy":"2118",
+											"posx":"2391",
+											"posy":"2114",
 											"ui":
 											[
 												{
@@ -617,8 +589,8 @@
 														]
 													],
 													"expanded":"1",
-													"posx":"2809",
-													"posy":"2158"
+													"posx":"2758",
+													"posy":"2154"
 												}
 											]
 										}
@@ -635,7 +607,7 @@
 					"compname":"ltrb",
 					"compvalues":
 					[
-						"if(('x'@'d.hueboard.range.post.select') !='x')",
+						"if(d.hueboard.select.post != -1)",
 						[
 							"pW * 0.3 - 10",
 							"0",
@@ -734,7 +706,7 @@
 													"compvalues":
 													[
 														[
-															"' '+ ('-'@'d.hueboard.asset.'+ d.hueboard.range.post.select +'.data.text')",
+															"' '+ ('-'@'d.hueboard.asset.post.'+ d.hueboard.select.post +'.data.text')",
 															"leftmiddle",
 															"right"
 														]
@@ -818,12 +790,12 @@
 									"ui":
 									[
 										{
-											"addw":"175",
+											"addw":"440",
 											"compid":"99",
 											"compname":"ltrb",
 											"compvalues":
 											[
-												"if(selripple != -1 [and] selripple < iV)",
+												"if(d.hueboard.select.sentence != -1 [and] d.hueboard.select.sentence < iV)",
 												[
 													"10",
 													"10 + 200",
@@ -839,548 +811,527 @@
 												]
 											],
 											"expanded":"1",
-											"posx":"2811",
-											"posy":"3444",
+											"posx":"2808",
+											"posy":"3411",
 											"ui":
 											[
 												{
-													"addw":"745",
-													"compid":"90",
-													"compinputs":
+													"addw":"0",
+													"compid":"93",
+													"compname":"color",
+													"compvalues":
 													[
-														{
-															"cursentence":"'x'@'d.hueboard.range.'+ d.hueboard.range.post.select +'.sentence.'+ iV"
-														}
+														[
+															"0",
+															"0",
+															"0"
+														]
 													],
-													"compname":"code",
 													"expanded":"1",
-													"posx":"3339",
-													"posy":"3470",
+													"posx":"3609",
+													"posy":"3192",
 													"ui":
 													[
 														{
 															"addw":"0",
-															"compid":"93",
+															"compid":"94",
+															"compname":"font",
+															"compvalues":
+															[
+																[
+																	"2.0"
+																]
+															],
+															"expanded":"1",
+															"posx":"3970",
+															"posy":"3201",
+															"ui":
+															[
+																{
+																	"addw":"675",
+																	"comment":"#문장",
+																	"compid":"97",
+																	"compname":"user_content",
+																	"compvalues":
+																	[
+																		[
+																			"'sentence'",
+																			"'sen'",
+																			"'-'@'d.hueboard.asset.post.' + d.hueboard.select.post + '.sentence.'+ iV +'.data.text'",
+																			"10",
+																			"25"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"4342",
+																	"posy":"3212"
+																}
+															]
+														}
+													]
+												},
+												{
+													"addw":"367",
+													"comment":"댓글버튼",
+													"compid":"100",
+													"compname":"xywh",
+													"compvalues":
+													[
+														[
+															"d.sen.x - 25 + 5",
+															"d.sen.y + 7",
+															"12",
+															"12"
+														]
+													],
+													"expanded":"1",
+													"onclick":
+													[
+														"if(d.hueboard.select.sentence != iV)",
+														"select('sentence.'+ iV)",
+														"else",
+														"select('sentence.-1')"
+													],
+													"posx":"3607",
+													"posy":"3430",
+													"ui":
+													[
+														{
+															"addw":"119",
+															"compid":"101",
 															"compname":"color",
+															"compvalues":
+															[
+																"if(d.hueboard.select.sentence == iV)",
+																[
+																	"128",
+																	"192",
+																	"128"
+																],
+																"eliffocused('ui_ripple_'+ iV)",
+																[
+																	"192",
+																	"240",
+																	"192"
+																],
+																"else",
+																[
+																	"240",
+																	"240",
+																	"240"
+																]
+															],
+															"expanded":"1",
+															"posx":"4330",
+															"posy":"3473",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"132",
+																	"compname":"rect",
+																	"compvalues":
+																	[
+																		[
+																			"3"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"4784",
+																	"posy":"3508"
+																}
+															]
+														}
+													],
+													"uiname":"'ui_ripple_' + iV"
+												},
+												{
+													"addw":"264",
+													"comment":"댓글영역",
+													"compid":"104",
+													"compname":"xywh",
+													"compvalues":
+													[
+														"if(d.hueboard.select.sentence == iV)",
+														[
+															"0",
+															"d.sen.y + 32",
+															"pW",
+															"200 - 32",
+															"true"
+														]
+													],
+													"expanded":"1",
+													"posx":"3607",
+													"posy":"3792",
+													"ui":
+													[
+														{
+															"addw":"0",
+															"compid":"105",
+															"compname":"color",
+															"compvalues":
+															[
+																[
+																	"245",
+																	"245",
+																	"245"
+																]
+															],
+															"expanded":"1",
+															"posx":"4223",
+															"posy":"3823",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"106",
+																	"compname":"fill",
+																	"expanded":"1",
+																	"posx":"4576",
+																	"posy":"3850"
+																}
+															]
+														},
+														{
+															"addw":"0",
+															"compid":"114",
+															"compname":"xywh",
 															"compvalues":
 															[
 																[
 																	"0",
 																	"0",
-																	"0"
+																	"d.sen.x + 1",
+																	"1"
 																]
 															],
 															"expanded":"1",
-															"posx":"4443",
-															"posy":"3464",
+															"posx":"4220",
+															"posy":"4033",
 															"ui":
 															[
 																{
 																	"addw":"0",
-																	"compid":"94",
-																	"compname":"font",
+																	"compid":"115",
+																	"compname":"color",
 																	"compvalues":
 																	[
 																		[
-																			"2.0"
+																			"0",
+																			"0",
+																			"0",
+																			"64"
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"4804",
-																	"posy":"3473",
+																	"posx":"4574",
+																	"posy":"4052",
 																	"ui":
 																	[
 																		{
-																			"addw":"443",
-																			"comment":"#문장",
-																			"compid":"97",
-																			"compname":"user_content",
-																			"compvalues":
-																			[
-																				[
-																					"'sentence'",
-																					"'sen'",
-																					"'-'@'d.hueboard.asset.'+ cursentence +'.data.text'",
-																					"10",
-																					"25"
-																				]
-																			],
+																			"addw":"0",
+																			"compid":"116",
+																			"compname":"fill",
 																			"expanded":"1",
-																			"posx":"5176",
-																			"posy":"3484"
+																			"posx":"4921",
+																			"posy":"4073"
 																		}
 																	]
 																}
 															]
 														},
 														{
-															"addw":"169",
-															"comment":"댓글버튼",
-															"compid":"100",
+															"addw":"0",
+															"compid":"123",
 															"compname":"xywh",
 															"compvalues":
 															[
-																[
-																	"d.sen.x - 25 + 5",
-																	"d.sen.y + 7",
-																	"12",
-																	"12"
-																]
-															],
-															"expanded":"1",
-															"onclick":
-															[
-																"if(selripple != iV)",
-																{
-																	"selripple":"iV"
-																},
-																"else",
-																{
-																	"selripple":"-1"
-																}
-															],
-															"posx":"4442",
-															"posy":"3688",
-															"ui":
-															[
-																{
-																	"addw":"77",
-																	"compid":"101",
-																	"compname":"color",
-																	"compvalues":
-																	[
-																		"if(selripple == iV)",
-																		[
-																			"128",
-																			"192",
-																			"128"
-																		],
-																		"eliffocused('ui_ripple_'+ iV)",
-																		[
-																			"192",
-																			"240",
-																			"192"
-																		],
-																		"else",
-																		[
-																			"240",
-																			"240",
-																			"240"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4986",
-																	"posy":"3723",
-																	"ui":
-																	[
-																		{
-																			"addw":"0",
-																			"compid":"132",
-																			"compname":"rect",
-																			"compvalues":
-																			[
-																				[
-																					"3"
-																				]
-																			],
-																			"expanded":"1",
-																			"posx":"5440",
-																			"posy":"3758"
-																		}
-																	]
-																}
-															],
-															"uiname":"'ui_ripple_' + iV"
-														},
-														{
-															"addw":"264",
-															"comment":"댓글영역",
-															"compid":"104",
-															"compname":"xywh",
-															"compvalues":
-															[
-																"if(selripple == iV)",
 																[
 																	"0",
-																	"d.sen.y + 32",
-																	"pW",
-																	"200 - 32",
-																	"true"
+																	"1",
+																	"1",
+																	"pH - 1"
 																]
 															],
 															"expanded":"1",
-															"posx":"4441",
-															"posy":"4064",
+															"posx":"4225",
+															"posy":"4282",
 															"ui":
 															[
 																{
 																	"addw":"0",
-																	"compid":"105",
+																	"compid":"124",
 																	"compname":"color",
 																	"compvalues":
 																	[
 																		[
-																			"245",
-																			"245",
-																			"245"
+																			"0",
+																			"0",
+																			"0",
+																			"64"
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"5057",
-																	"posy":"4095",
+																	"posx":"4579",
+																	"posy":"4301",
 																	"ui":
 																	[
 																		{
 																			"addw":"0",
-																			"compid":"106",
+																			"compid":"125",
 																			"compname":"fill",
 																			"expanded":"1",
-																			"posx":"5410",
-																			"posy":"4122"
+																			"posx":"4926",
+																			"posy":"4322"
 																		}
 																	]
-																},
+																}
+															]
+														},
+														{
+															"addw":"0",
+															"comment":"댓글영역 날개부분",
+															"compid":"110",
+															"compname":"scissor_clear",
+															"expanded":"1",
+															"posx":"4229",
+															"posy":"4538",
+															"ui":
+															[
 																{
-																	"addw":"0",
-																	"compid":"114",
-																	"compname":"xywh",
+																	"addw":"113",
+																	"compid":"107",
+																	"compname":"ltrb",
 																	"compvalues":
 																	[
 																		[
+																			"d.sen.x",
+																			"-32",
+																			"pW",
 																			"0",
-																			"0",
-																			"d.sen.x + 1",
-																			"1"
+																			"true"
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"5054",
-																	"posy":"4305",
+																	"posx":"4583",
+																	"posy":"4556",
 																	"ui":
 																	[
 																		{
 																			"addw":"0",
-																			"compid":"115",
+																			"compid":"108",
 																			"compname":"color",
 																			"compvalues":
 																			[
 																				[
-																					"0",
-																					"0",
-																					"0",
-																					"64"
+																					"240",
+																					"240",
+																					"240"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5408",
-																			"posy":"4324",
+																			"posx":"5039",
+																			"posy":"4576",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"116",
+																					"compid":"109",
 																					"compname":"fill",
 																					"expanded":"1",
-																					"posx":"5755",
-																					"posy":"4345"
+																					"posx":"5392",
+																					"posy":"4602"
 																				}
 																			]
-																		}
-																	]
-																},
-																{
-																	"addw":"0",
-																	"compid":"123",
-																	"compname":"xywh",
-																	"compvalues":
-																	[
-																		[
-																			"0",
-																			"1",
-																			"1",
-																			"pH - 1"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"5059",
-																	"posy":"4554",
-																	"ui":
-																	[
+																		},
 																		{
 																			"addw":"0",
-																			"compid":"124",
-																			"compname":"color",
+																			"compid":"117",
+																			"compname":"xywh",
 																			"compvalues":
 																			[
 																				[
 																					"0",
 																					"0",
-																					"0",
-																					"64"
-																				]
-																			],
-																			"expanded":"1",
-																			"posx":"5413",
-																			"posy":"4573",
-																			"ui":
-																			[
-																				{
-																					"addw":"0",
-																					"compid":"125",
-																					"compname":"fill",
-																					"expanded":"1",
-																					"posx":"5760",
-																					"posy":"4594"
-																				}
-																			]
-																		}
-																	]
-																},
-																{
-																	"addw":"0",
-																	"comment":"댓글영역 날개부분",
-																	"compid":"110",
-																	"compname":"scissor_clear",
-																	"expanded":"1",
-																	"posx":"5063",
-																	"posy":"4810",
-																	"ui":
-																	[
-																		{
-																			"addw":"113",
-																			"compid":"107",
-																			"compname":"ltrb",
-																			"compvalues":
-																			[
-																				[
-																					"d.sen.x",
-																					"-32",
 																					"pW",
-																					"0",
-																					"true"
+																					"1"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5417",
-																			"posy":"4828",
+																			"posx":"5038",
+																			"posy":"4780",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"108",
+																					"compid":"118",
 																					"compname":"color",
 																					"compvalues":
 																					[
 																						[
-																							"240",
-																							"240",
-																							"240"
+																							"0",
+																							"0",
+																							"0",
+																							"64"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5873",
-																					"posy":"4848",
+																					"posx":"5392",
+																					"posy":"4799",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"109",
+																							"compid":"119",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"6226",
-																							"posy":"4874"
-																						}
-																					]
-																				},
-																				{
-																					"addw":"0",
-																					"compid":"117",
-																					"compname":"xywh",
-																					"compvalues":
-																					[
-																						[
-																							"0",
-																							"0",
-																							"pW",
-																							"1"
-																						]
-																					],
-																					"expanded":"1",
-																					"posx":"5872",
-																					"posy":"5052",
-																					"ui":
-																					[
-																						{
-																							"addw":"0",
-																							"compid":"118",
-																							"compname":"color",
-																							"compvalues":
-																							[
-																								[
-																									"0",
-																									"0",
-																									"0",
-																									"64"
-																								]
-																							],
-																							"expanded":"1",
-																							"posx":"6226",
-																							"posy":"5071",
-																							"ui":
-																							[
-																								{
-																									"addw":"0",
-																									"compid":"119",
-																									"compname":"fill",
-																									"expanded":"1",
-																									"posx":"6573",
-																									"posy":"5092"
-																								}
-																							]
-																						}
-																					]
-																				},
-																				{
-																					"addw":"0",
-																					"compid":"120",
-																					"compname":"xywh",
-																					"compvalues":
-																					[
-																						[
-																							"0",
-																							"1",
-																							"1",
-																							"pH - 1"
-																						]
-																					],
-																					"expanded":"1",
-																					"posx":"5870",
-																					"posy":"5284",
-																					"ui":
-																					[
-																						{
-																							"addw":"0",
-																							"compid":"121",
-																							"compname":"color",
-																							"compvalues":
-																							[
-																								[
-																									"0",
-																									"0",
-																									"0",
-																									"64"
-																								]
-																							],
-																							"expanded":"1",
-																							"posx":"6224",
-																							"posy":"5303",
-																							"ui":
-																							[
-																								{
-																									"addw":"0",
-																									"compid":"122",
-																									"compname":"fill",
-																									"expanded":"1",
-																									"posx":"6571",
-																									"posy":"5324"
-																								}
-																							]
+																							"posx":"5739",
+																							"posy":"4820"
 																						}
 																					]
 																				}
 																			]
 																		},
 																		{
-																			"addw":"113",
-																			"compid":"111",
-																			"compname":"ltrb",
+																			"addw":"0",
+																			"compid":"120",
+																			"compname":"xywh",
 																			"compvalues":
 																			[
 																				[
 																					"0",
-																					"pH",
-																					"d.sen.x",
-																					"pH + 32",
-																					"true"
+																					"1",
+																					"1",
+																					"pH - 1"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5411",
-																			"posy":"5506",
+																			"posx":"5036",
+																			"posy":"5012",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"112",
+																					"compid":"121",
 																					"compname":"color",
 																					"compvalues":
 																					[
 																						[
-																							"240",
-																							"240",
-																							"240"
+																							"0",
+																							"0",
+																							"0",
+																							"64"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5867",
-																					"posy":"5526",
+																					"posx":"5390",
+																					"posy":"5031",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"113",
+																							"compid":"122",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"6220",
-																							"posy":"5552"
+																							"posx":"5737",
+																							"posy":"5052"
 																						}
 																					]
-																				},
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"addw":"113",
+																	"compid":"111",
+																	"compname":"ltrb",
+																	"compvalues":
+																	[
+																		[
+																			"0",
+																			"pH",
+																			"d.sen.x",
+																			"pH + 32",
+																			"true"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"4577",
+																	"posy":"5234",
+																	"ui":
+																	[
+																		{
+																			"addw":"0",
+																			"compid":"112",
+																			"compname":"color",
+																			"compvalues":
+																			[
+																				[
+																					"240",
+																					"240",
+																					"240"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5033",
+																			"posy":"5254",
+																			"ui":
+																			[
 																				{
 																					"addw":"0",
-																					"compid":"126",
-																					"compname":"xywh",
+																					"compid":"113",
+																					"compname":"fill",
+																					"expanded":"1",
+																					"posx":"5386",
+																					"posy":"5280"
+																				}
+																			]
+																		},
+																		{
+																			"addw":"0",
+																			"compid":"126",
+																			"compname":"xywh",
+																			"compvalues":
+																			[
+																				[
+																					"0",
+																					"0",
+																					"1",
+																					"pH"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5032",
+																			"posy":"5464",
+																			"ui":
+																			[
+																				{
+																					"addw":"0",
+																					"compid":"127",
+																					"compname":"color",
 																					"compvalues":
 																					[
 																						[
 																							"0",
 																							"0",
-																							"1",
-																							"pH"
+																							"0",
+																							"64"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5866",
-																					"posy":"5736",
+																					"posx":"5386",
+																					"posy":"5483",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"127",
-																							"compname":"color",
-																							"compvalues":
-																							[
-																								[
-																									"0",
-																									"0",
-																									"0",
-																									"64"
-																								]
-																							],
+																							"compid":"128",
+																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"6220",
-																							"posy":"5755",
-																							"ui":
-																							[
-																								{
-																									"addw":"0",
-																									"compid":"128",
-																									"compname":"fill",
-																									"expanded":"1",
-																									"posx":"6567",
-																									"posy":"5776"
-																								}
-																							]
+																							"posx":"5733",
+																							"posy":"5504"
 																						}
 																					]
 																				}
@@ -1395,13 +1346,13 @@
 											]
 										}
 									],
-									"uiloop":"0 @ 'd.hueboard.range.' + d.hueboard.range.post.select + '.sentence.count'",
+									"uiloop":"0 @ 'd.hueboard.range.post.' + d.hueboard.select.post + '.sentence.count'",
 									"uiname":"i"
 								}
 							]
 						},
 						{
-							"addw":"133",
+							"addw":"407",
 							"comment":"새 문장",
 							"compid":"74",
 							"compname":"xywh",
@@ -1417,6 +1368,9 @@
 							"expanded":"1",
 							"onclick":
 							[
+								"if(d.hueboard.select.sentence != -1)",
+								"newripple()",
+								"else",
 								"newsentence()"
 							],
 							"posx":"1505",
@@ -1437,8 +1391,8 @@
 										]
 									],
 									"expanded":"1",
-									"posx":"2017",
-									"posy":"3801",
+									"posx":"2282",
+									"posy":"3805",
 									"ui":
 									[
 										{
@@ -1446,8 +1400,8 @@
 											"compid":"76",
 											"compname":"fill",
 											"expanded":"1",
-											"posx":"2394",
-											"posy":"3818"
+											"posx":"2662",
+											"posy":"3822"
 										},
 										{
 											"addw":"0",
@@ -1460,8 +1414,8 @@
 												]
 											],
 											"expanded":"1",
-											"posx":"2396",
-											"posy":"3979",
+											"posx":"2661",
+											"posy":"3983",
 											"ui":
 											[
 												{
@@ -1475,8 +1429,8 @@
 														]
 													],
 													"expanded":"1",
-													"posx":"2763",
-													"posy":"4019"
+													"posx":"3028",
+													"posy":"4023"
 												}
 											]
 										}
