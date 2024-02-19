@@ -43,6 +43,8 @@ ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
         if(m->mClient.TickOnce())
             m->invalidate();
     }
+    else if(type == CT_Activate && !boolo(in).ConstValue())
+        m->clearCapture();
 }
 
 ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share* out)
@@ -67,6 +69,32 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
         {
             auto Cursor = CursorRole(sint32o(in).Value());
             m->SetCursor(Cursor);
+        }
+        else if(!String::Compare(topic, "EnterPressing"))
+        {
+            const String DomName(in);
+            if(!DomName.Compare("editor"))
+            {
+                const String Text = ZayWidgetDOM::GetComment("editor");
+                ZayWidgetDOM::SetComment("editor", "");
+                m->setCapture("ui_editor");
+
+                // 새 리플추가
+                if(ZayWidgetDOM::GetValue("hueboard.select.sentence").ToInteger() != -1)
+                {
+                    if(0 < Text.Length())
+                        m->mClient.NewRipple(Text);
+                }
+                // 새 문장추가
+                else if(ZayWidgetDOM::GetValue("hueboard.select.post").ToInteger() != -1)
+                {
+                    if(0 < Text.Length())
+                        m->mClient.NewSentence(Text);
+                }
+                // 새 포스트추가
+                else if(0 < Text.Length())
+                    m->mClient.NewPost(Text);
+            }
         }
     }
 }
@@ -137,8 +165,8 @@ hueboardData::hueboardData()
     ZayWidgetDOM::SetValue("hueboard.select.sentence", "-1");
 
     mWidgetMain = new ZayWidget();
-    InitWidget(*mWidgetMain, "login");
-    mWidgetMain->Reload("widget/login.json");
+    InitWidget(*mWidgetMain, "main");
+    mWidgetMain->Reload("widget/main.json");
 }
 
 hueboardData::~hueboardData()
@@ -469,24 +497,6 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             mClient.Logout();
             clearCapture();
         })
-        // 새 포스트추가
-        .AddGlue("newpost", ZAY_DECLARE_GLUE(params, this)
-        {
-            mClient.NewPost();
-            clearCapture();
-        })
-        // 새 문장추가
-        .AddGlue("newsentence", ZAY_DECLARE_GLUE(params, this)
-        {
-            mClient.NewSentence();
-            clearCapture();
-        })
-        // 새 리플추가
-        .AddGlue("newripple", ZAY_DECLARE_GLUE(params, this)
-        {
-            mClient.NewRipple();
-            clearCapture();
-        })
         // 요소선택(포스트 또는 문장)
         .AddGlue("select", ZAY_DECLARE_GLUE(params, this)
         {
@@ -519,6 +529,8 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             bool HasRender = false;
 
             branch;
+            jump(!Type.Compare("editor"))
+                HasRender = RenderUC_Editor(panel);
             jump(!Type.Compare("sentence") && params.ParamCount() == 5)
             {
                 const String UnitID = params.Param(1).ToText();
@@ -546,6 +558,13 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             }
             return panel._push_pass();
         });
+}
+
+bool hueboardData::RenderUC_Editor(ZayPanel& panel)
+{
+    if(ZayControl::RenderEditBox(panel, "ui_editor", "editor", 10, true, false))
+        panel.repaint();
+    return true;
 }
 
 bool hueboardData::RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, sint32 linegap, sint32 lastgap)

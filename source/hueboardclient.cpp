@@ -21,9 +21,27 @@ void HueBoardClient::Logout()
     SendLogout();
 }
 
-void HueBoardClient::NewPost()
+void HueBoardClient::NewPost(chars text)
 {
+    mNewPost = text;
     SendLockAsset("NewPost", "post<next>");
+}
+
+void HueBoardClient::NewSentence(chars text)
+{
+    mNewSentence = text;
+    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
+    if(SelPost != "-1")
+        SendLockAsset("NewSentence", "post." + SelPost + ".sentence<next>");
+}
+
+void HueBoardClient::NewRipple(chars text)
+{
+    mNewRipple = text;
+    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
+    const String SelSentence = ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText();
+    if(SelPost != "-1" && SelSentence != "-1")
+        SendLockAsset("NewRipple", "post." + SelPost + ".sentence." + SelSentence + ".ripple<next>");
 }
 
 void HueBoardClient::Select(chars type, sint32 index)
@@ -50,21 +68,6 @@ void HueBoardClient::Select(chars type, sint32 index)
             SendFocusAsset(CurRoute);
         }
     }
-}
-
-void HueBoardClient::NewSentence()
-{
-    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
-    if(SelPost != "-1")
-        SendLockAsset("NewSentence", "post." + SelPost + ".sentence<next>");
-}
-
-void HueBoardClient::NewRipple()
-{
-    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
-    const String SelSentence = ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText();
-    if(SelPost != "-1" && SelSentence != "-1")
-        SendLockAsset("NewRipple", "post." + SelPost + ".sentence." + SelSentence + ".ripple<next>");
 }
 
 bool HueBoardClient::TickOnce()
@@ -266,40 +269,19 @@ void HueBoardClient::OnAssetLocked(const Context& json)
     if(LockID == "NewPost")
     {
         Context Data;
-        switch(Platform::Utility::Random() % 5)
-        {
-        case 0: Data.At("text").Set("노원 모각코합니다"); break;
-        case 1: Data.At("text").Set("Java 질문입니다"); break;
-        case 2: Data.At("text").Set("입사하자마자 이직을 했어요"); break;
-        case 3: Data.At("text").Set("열심히해라 말하기 전에"); break;
-        case 4: Data.At("text").Set("신입 첫 직장 선택"); break;
-        }
+        Data.At("text").Set(mNewPost);
         SendUnlockAsset(LockID, Data);
     }
     else if(LockID == "NewSentence")
     {
         Context Data;
-        switch(Platform::Utility::Random() % 5)
-        {
-        case 0: Data.At("text").Set("안녕하세요."); break;
-        case 1: Data.At("text").Set("운이 따르는 사람을 이길 수 없다는 뜻이죠."); break;
-        case 2: Data.At("text").Set("그의 가면은 4강에서 벗겨졌죠."); break;
-        case 3: Data.At("text").Set("새해 복 많이 받으세요~"); break;
-        case 4: Data.At("text").Set("감사합니다."); break;
-        }
+        Data.At("text").Set(mNewSentence);
         SendUnlockAsset(LockID, Data);
     }
     else if(LockID == "NewRipple")
     {
         Context Data;
-        switch(Platform::Utility::Random() % 5)
-        {
-        case 0: Data.At("text").Set("안녕하세요."); break;
-        case 1: Data.At("text").Set("운이 따르는 사람을 이길 수 없다는 뜻이죠."); break;
-        case 2: Data.At("text").Set("그의 가면은 4강에서 벗겨졌죠."); break;
-        case 3: Data.At("text").Set("새해 복 많이 받으세요~"); break;
-        case 4: Data.At("text").Set("감사합니다."); break;
-        }
+        Data.At("text").Set(mNewRipple);
         SendUnlockAsset(LockID, Data);
     }
 }

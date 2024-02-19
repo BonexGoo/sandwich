@@ -23,6 +23,7 @@ public:
     void InitWidget(ZayWidget& widget, chars name);
 
 public:
+    bool RenderUC_Editor(ZayPanel& panel);
     bool RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, sint32 linegap, sint32 lastgap);
 
 public: // 윈도우

@@ -7,10 +7,10 @@ public:
     void Connect(chars host, sint32 port);
     void Login(chars author, chars password);
     void Logout();
-    void NewPost();
+    void NewPost(chars text);
+    void NewSentence(chars text);
+    void NewRipple(chars text);
     void Select(chars type, sint32 index);
-    void NewSentence();
-    void NewRipple();
 
 public:
     bool TickOnce();
@@ -51,4 +51,7 @@ public: // 통신
 public: // 계정
     String mAuthor;
     String mToken;
+    String mNewPost;
+    String mNewSentence;
+    String mNewRipple;
 };
