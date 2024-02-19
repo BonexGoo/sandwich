@@ -40,9 +40,9 @@ void HueBoardClient::Select(chars path)
         else if(PathType == "sentence") ChildType = "ripple";
 
         if(ChildType)
-        hook(String::Format("hueboard.range.%s.%s.", path, ChildType))
         {
-            const sint32 SentenceCount = ZayWidgetDOM::GetValue(fish + "count").ToInteger();
+            const String DomPath = String::Format("hueboard.range.%s.%s.count", path, ChildType);
+            const sint32 SentenceCount = ZayWidgetDOM::GetValue(DomPath).ToInteger();
             for(sint32 i = 0; i < SentenceCount; ++i)
             {
                 const String CurRoute = String::Format("%s.%s.%d", path, ChildType, i);
@@ -344,10 +344,15 @@ void HueBoardClient::OnRangeUpdated(const Context& json)
     const sint32 Count = Math::Max(0, Last + 1 - First);
     ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(Count));
 
-    const String SelPost = ZayWidgetDOM::GetValue("hueboard.select.post").ToText();
-    const String SelSentence = ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText();
-
-    if(Path == "post" || (Path == "sentence" && SelPost != "-1"))
+    // 포커싱 필요조건
+    bool NeedFocusing = false;
+    const Strings Pathes = String::Split(Path, '.');
+    if(Pathes[-1] == "post") NeedFocusing = true;
+    else if(Pathes[-1] == "sentence" && ZayWidgetDOM::GetValue("hueboard.select.post").ToText() != "-1")
+        NeedFocusing = true;
+    else if(Pathes[-1] == "ripple" && ZayWidgetDOM::GetValue("hueboard.select.sentence").ToText() != "-1")
+        NeedFocusing = true;
+    if(NeedFocusing)
     for(sint32 i = 0; i < Count; ++i)
     {
         const String CurRoute = String::Format("%s.%d", (chars) Path, First + i);

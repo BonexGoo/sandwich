@@ -1,9 +1,160 @@
 ﻿{
 	"addw":"193",
 	"expanded":"1",
+	"extends":
+	[
+		{
+			"addw":"0",
+			"comment":"리플함수",
+			"compid":"134",
+			"compname":"gate",
+			"expanded":"1",
+			"posx":"3759",
+			"posy":"6124",
+			"ui":
+			[
+				{
+					"addw":"1075",
+					"compid":"143",
+					"compinputs":
+					[
+						{
+							"curasset":"'d.hueboard.asset.post.'+ d.hueboard.select.post +'.sentence.'+ d.hueboard.select.sentence +'.ripple.'"
+						},
+						{
+							"currange":"'d.hueboard.range.post.'+ d.hueboard.select.post +'.sentence.'+ d.hueboard.select.sentence +'.ripple.'"
+						}
+					],
+					"compname":"code",
+					"expanded":"1",
+					"posx":"4132",
+					"posy":"6086"
+				},
+				{
+					"addw":"792",
+					"compid":"136",
+					"compname":"loop",
+					"expanded":"1",
+					"posx":"4129",
+					"posy":"6319",
+					"ui":
+					[
+						{
+							"addw":"60",
+							"compid":"137",
+							"compname":"xywh",
+							"compvalues":
+							[
+								[
+									"5",
+									"5 + 30 * iV",
+									"pW - 10",
+									"25"
+								]
+							],
+							"expanded":"1",
+							"posx":"5296",
+							"posy":"6355",
+							"ui":
+							[
+								{
+									"addw":"0",
+									"compid":"138",
+									"compname":"color",
+									"compvalues":
+									[
+										[
+											"210",
+											"255",
+											"210"
+										]
+									],
+									"expanded":"1",
+									"posx":"5723",
+									"posy":"6378",
+									"ui":
+									[
+										{
+											"addw":"0",
+											"compid":"139",
+											"compname":"fill",
+											"expanded":"1",
+											"posx":"6091",
+											"posy":"6402"
+										}
+									]
+								},
+								{
+									"addw":"0",
+									"compid":"140",
+									"compname":"color",
+									"compvalues":
+									[
+										[
+											"0",
+											"0",
+											"0"
+										]
+									],
+									"expanded":"1",
+									"posx":"5721",
+									"posy":"6592",
+									"ui":
+									[
+										{
+											"addw":"0",
+											"compid":"141",
+											"compname":"font",
+											"compvalues":
+											[
+												[
+													"1.5"
+												]
+											],
+											"expanded":"1",
+											"posx":"6090",
+											"posy":"6614",
+											"ui":
+											[
+												{
+													"addw":"253",
+													"compid":"142",
+													"compname":"text",
+													"compvalues":
+													[
+														[
+															"'...'@ curasset + iV +'.data.text'",
+															"leftmiddle",
+															"right"
+														]
+													],
+													"expanded":"1",
+													"posx":"6463",
+													"posy":"6633"
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					],
+					"uiloop":"0 @ currange + 'count'",
+					"uiname":"i"
+				}
+			],
+			"uiname":"Ripple"
+		}
+	],
 	"oncreate":
 	[
-		"connect('127.0.0.1', 8981)"
+		"connect('127.0.0.1', 8981)",
+		{
+			"curasset":"''"
+		},
+		{
+			"currange":"''"
+		}
 	],
 	"posx":"-207",
 	"posy":"401",
@@ -1095,8 +1246,8 @@
 															"compid":"110",
 															"compname":"scissor_clear",
 															"expanded":"1",
-															"posx":"4229",
-															"posy":"4538",
+															"posx":"4224",
+															"posy":"4529",
 															"ui":
 															[
 																{
@@ -1114,8 +1265,8 @@
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"4583",
-																	"posy":"4556",
+																	"posx":"4578",
+																	"posy":"4547",
 																	"ui":
 																	[
 																		{
@@ -1131,8 +1282,8 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5039",
-																			"posy":"4576",
+																			"posx":"5034",
+																			"posy":"4567",
 																			"ui":
 																			[
 																				{
@@ -1140,8 +1291,8 @@
 																					"compid":"109",
 																					"compname":"fill",
 																					"expanded":"1",
-																					"posx":"5392",
-																					"posy":"4602"
+																					"posx":"5387",
+																					"posy":"4593"
 																				}
 																			]
 																		},
@@ -1159,8 +1310,8 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5038",
-																			"posy":"4780",
+																			"posx":"5033",
+																			"posy":"4771",
 																			"ui":
 																			[
 																				{
@@ -1177,8 +1328,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5392",
-																					"posy":"4799",
+																					"posx":"5387",
+																					"posy":"4790",
 																					"ui":
 																					[
 																						{
@@ -1186,8 +1337,8 @@
 																							"compid":"119",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"5739",
-																							"posy":"4820"
+																							"posx":"5734",
+																							"posy":"4811"
 																						}
 																					]
 																				}
@@ -1207,8 +1358,8 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5036",
-																			"posy":"5012",
+																			"posx":"5031",
+																			"posy":"5003",
 																			"ui":
 																			[
 																				{
@@ -1225,8 +1376,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5390",
-																					"posy":"5031",
+																					"posx":"5385",
+																					"posy":"5022",
 																					"ui":
 																					[
 																						{
@@ -1234,8 +1385,8 @@
 																							"compid":"122",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"5737",
-																							"posy":"5052"
+																							"posx":"5732",
+																							"posy":"5043"
 																						}
 																					]
 																				}
@@ -1258,8 +1409,8 @@
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"4577",
-																	"posy":"5234",
+																	"posx":"4572",
+																	"posy":"5225",
 																	"ui":
 																	[
 																		{
@@ -1275,8 +1426,8 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5033",
-																			"posy":"5254",
+																			"posx":"5028",
+																			"posy":"5245",
 																			"ui":
 																			[
 																				{
@@ -1284,8 +1435,8 @@
 																					"compid":"113",
 																					"compname":"fill",
 																					"expanded":"1",
-																					"posx":"5386",
-																					"posy":"5280"
+																					"posx":"5381",
+																					"posy":"5271"
 																				}
 																			]
 																		},
@@ -1303,8 +1454,8 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5032",
-																			"posy":"5464",
+																			"posx":"5027",
+																			"posy":"5455",
 																			"ui":
 																			[
 																				{
@@ -1321,8 +1472,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5386",
-																					"posy":"5483",
+																					"posx":"5381",
+																					"posy":"5474",
 																					"ui":
 																					[
 																						{
@@ -1330,8 +1481,8 @@
 																							"compid":"128",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"5733",
-																							"posy":"5504"
+																							"posx":"5728",
+																							"posy":"5495"
 																						}
 																					]
 																				}
@@ -1340,6 +1491,16 @@
 																	]
 																}
 															]
+														},
+														{
+															"addw":"0",
+															"comment":"리플호출",
+															"compid":"133",
+															"compname":"jump",
+															"expanded":"1",
+															"posx":"4221",
+															"posy":"4699",
+															"uiname":"Ripple"
 														}
 													]
 												}
