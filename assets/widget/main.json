@@ -315,8 +315,8 @@
 										[
 											"10",
 											"10 + (120 + 10) * (iN - iV - 1)",
-											"pW - 20",
-											"120",
+											"pW - 20 + 1",
+											"120 + 1",
 											"true"
 										]
 									],
@@ -336,194 +336,205 @@
 									[
 										{
 											"addw":"0",
-											"compid":"183",
-											"compname":"scissor_clear",
+											"compid":"186",
+											"compname":"ltrb",
+											"compvalues":
+											[
+												[
+													"1",
+													"1",
+													"pW",
+													"pH"
+												]
+											],
 											"expanded":"1",
-											"posx":"2743",
-											"posy":"1176",
+											"posx":"2732",
+											"posy":"1260",
 											"ui":
 											[
 												{
 													"addw":"0",
-													"compid":"60",
-													"compname":"move",
+													"compid":"61",
+													"compname":"color",
 													"compvalues":
 													[
 														[
-															"2",
-															"2"
+															"0",
+															"0",
+															"0",
+															"64"
 														]
 													],
 													"expanded":"1",
-													"posx":"3114",
-													"posy":"1134",
+													"posx":"3117",
+													"posy":"1241",
 													"ui":
 													[
 														{
 															"addw":"0",
-															"compid":"61",
-															"compname":"color",
+															"compid":"62",
+															"compname":"fill",
+															"expanded":"1",
+															"posx":"3490",
+															"posy":"1260"
+														}
+													]
+												}
+											]
+										},
+										{
+											"addw":"0",
+											"compid":"187",
+											"compname":"ltrb",
+											"compvalues":
+											[
+												[
+													"0",
+													"0",
+													"pW - 1",
+													"pH - 1"
+												]
+											],
+											"expanded":"1",
+											"posx":"2729",
+											"posy":"1529",
+											"ui":
+											[
+												{
+													"addw":"162",
+													"compid":"63",
+													"compname":"color",
+													"compvalues":
+													[
+														"if(d.hueboard.select.post == iV)",
+														[
+															"240",
+															"224",
+															"255"
+														],
+														"else",
+														[
+															"255",
+															"255",
+															"255"
+														]
+													],
+													"expanded":"1",
+													"posx":"3117",
+													"posy":"1460",
+													"ui":
+													[
+														{
+															"addw":"0",
+															"compid":"64",
+															"compname":"fill",
+															"expanded":"1",
+															"posx":"3648",
+															"posy":"1495"
+														}
+													]
+												},
+												{
+													"addw":"0",
+													"compid":"65",
+													"compname":"color",
+													"compvalues":
+													[
+														[
+															"0",
+															"0",
+															"0"
+														]
+													],
+													"expanded":"1",
+													"posx":"3116",
+													"posy":"1727",
+													"ui":
+													[
+														{
+															"addw":"0",
+															"compid":"66",
+															"compname":"font",
 															"compvalues":
 															[
 																[
-																	"0",
-																	"0",
-																	"0",
-																	"64"
+																	"3.0"
 																]
 															],
 															"expanded":"1",
-															"posx":"3490",
-															"posy":"1151",
+															"posx":"3485",
+															"posy":"1749",
 															"ui":
 															[
 																{
-																	"addw":"0",
-																	"compid":"62",
-																	"compname":"fill",
+																	"addw":"462",
+																	"compid":"67",
+																	"compname":"text",
+																	"compvalues":
+																	[
+																		[
+																			"'  '+ ('-'@'d.hueboard.asset.post.'+ iV +'.data.text')",
+																			"leftmiddle",
+																			"right"
+																		]
+																	],
 																	"expanded":"1",
-																	"posx":"3863",
-																	"posy":"1170"
+																	"posx":"3858",
+																	"posy":"1768"
 																}
 															]
 														}
 													]
-												}
-											]
-										},
-										{
-											"addw":"162",
-											"compid":"63",
-											"compname":"color",
-											"compvalues":
-											[
-												"if(d.hueboard.select.post == iV)",
-												[
-													"240",
-													"224",
-													"255"
-												],
-												"else",
-												[
-													"255",
-													"255",
-													"255"
-												]
-											],
-											"expanded":"1",
-											"posx":"2740",
-											"posy":"1330",
-											"ui":
-											[
+												},
 												{
 													"addw":"0",
-													"compid":"64",
-													"compname":"fill",
-													"expanded":"1",
-													"posx":"3271",
-													"posy":"1365"
-												}
-											]
-										},
-										{
-											"addw":"0",
-											"compid":"65",
-											"compname":"color",
-											"compvalues":
-											[
-												[
-													"0",
-													"0",
-													"0"
-												]
-											],
-											"expanded":"1",
-											"posx":"2739",
-											"posy":"1597",
-											"ui":
-											[
-												{
-													"addw":"0",
-													"compid":"66",
-													"compname":"font",
+													"compid":"69",
+													"compname":"color",
 													"compvalues":
 													[
 														[
-															"3.0"
+															"128",
+															"128",
+															"128"
 														]
 													],
 													"expanded":"1",
-													"posx":"3108",
-													"posy":"1619",
+													"posx":"3112",
+													"posy":"1931",
 													"ui":
 													[
 														{
-															"addw":"462",
-															"compid":"67",
-															"compname":"text",
+															"addw":"0",
+															"compid":"70",
+															"compname":"font",
 															"compvalues":
 															[
 																[
-																	"'  '+ ('-'@'d.hueboard.asset.post.'+ iV +'.data.text')",
-																	"leftmiddle",
-																	"right"
+																	"2.0"
 																]
 															],
 															"expanded":"1",
 															"posx":"3481",
-															"posy":"1638"
-														}
-													]
-												}
-											]
-										},
-										{
-											"addw":"0",
-											"compid":"69",
-											"compname":"color",
-											"compvalues":
-											[
-												[
-													"128",
-													"128",
-													"128"
-												]
-											],
-											"expanded":"1",
-											"posx":"2735",
-											"posy":"1801",
-											"ui":
-											[
-												{
-													"addw":"0",
-													"compid":"70",
-													"compname":"font",
-													"compvalues":
-													[
-														[
-															"2.0"
-														]
-													],
-													"expanded":"1",
-													"posx":"3104",
-													"posy":"1823",
-													"ui":
-													[
-														{
-															"addw":"462",
-															"compid":"71",
-															"compname":"text",
-															"compvalues":
+															"posy":"1953",
+															"ui":
 															[
-																[
-																	"('-'@'d.hueboard.asset.post.'+ iV +'.author') +' '",
-																	"rightbottom",
-																	"left"
-																]
-															],
-															"expanded":"1",
-															"posx":"3477",
-															"posy":"1842"
+																{
+																	"addw":"462",
+																	"compid":"71",
+																	"compname":"text",
+																	"compvalues":
+																	[
+																		[
+																			"('-'@'d.hueboard.asset.post.'+ iV +'.author') +' '",
+																			"rightbottom",
+																			"left"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"3854",
+																	"posy":"1972"
+																}
+															]
 														}
 													]
 												}
@@ -1504,6 +1515,7 @@
 			"compname":"xywh",
 			"compvalues":
 			[
+				"if('x'@'d.hueboard.author'!='x')",
 				[
 					"20",
 					"pH - 80",
@@ -1513,7 +1525,7 @@
 			],
 			"expanded":"1",
 			"posx":"694",
-			"posy":"4079",
+			"posy":"4066",
 			"ui":
 			[
 				{
@@ -1527,21 +1539,21 @@
 							"64",
 							"192",
 							"64",
-							"128"
+							"224"
 						],
 						"elif(d.hueboard.select.post != -1)",
 						[
-							"64",
-							"64",
-							"64",
-							"128"
+							"160",
+							"160",
+							"160",
+							"224"
 						],
 						"else",
 						[
 							"192",
 							"64",
 							"255",
-							"128"
+							"224"
 						]
 					],
 					"expanded":"1",
@@ -1567,7 +1579,7 @@
 									"0",
 									"0",
 									"0",
-									"128"
+									"64"
 								]
 							],
 							"expanded":"1",
@@ -1714,65 +1726,88 @@
 								},
 								{
 									"addw":"0",
-									"compid":"181",
-									"compname":"inner",
+									"compid":"184",
+									"compname":"ltrb",
 									"compvalues":
 									[
 										[
 											"0",
+											"-10",
+											"pW",
+											"pH",
 											"true"
 										]
 									],
 									"expanded":"1",
-									"posx":"2020",
-									"posy":"4958",
+									"posx":"2018",
+									"posy":"4950",
 									"ui":
 									[
 										{
 											"addw":"0",
-											"compid":"179",
-											"compname":"font",
+											"compid":"185",
+											"compname":"ltrb",
 											"compvalues":
 											[
 												[
-													"2.0"
+													"0",
+													"10",
+													"pW",
+													"pH"
 												]
 											],
 											"expanded":"1",
-											"posx":"2383",
-											"posy":"4975",
+											"posx":"2379",
+											"posy":"4961",
 											"ui":
 											[
 												{
 													"addw":"0",
-													"compid":"180",
-													"compname":"color",
+													"compid":"179",
+													"compname":"font",
 													"compvalues":
 													[
 														[
-															"0",
-															"0",
-															"0"
+															"2.0"
 														]
 													],
 													"expanded":"1",
-													"posx":"2746",
-													"posy":"4987",
+													"posx":"2758",
+													"posy":"4986",
 													"ui":
 													[
 														{
 															"addw":"0",
-															"compid":"182",
-															"compname":"user_content",
+															"compid":"180",
+															"compname":"color",
 															"compvalues":
 															[
 																[
-																	"'editor'"
+																	"0",
+																	"0",
+																	"0"
 																]
 															],
 															"expanded":"1",
-															"posx":"3116",
-															"posy":"4970"
+															"posx":"3121",
+															"posy":"4998",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"182",
+																	"compname":"user_content",
+																	"compvalues":
+																	[
+																		[
+																			"'editor'"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"3491",
+																	"posy":"4981"
+																}
+															]
 														}
 													]
 												}
@@ -1784,7 +1819,7 @@
 						},
 						{
 							"addw":"0",
-							"comment":"입력상태",
+							"comment":"입력모드",
 							"compid":"153",
 							"compname":"xywh",
 							"compvalues":
@@ -1838,7 +1873,7 @@
 													"0",
 													"0",
 													"0",
-													"128"
+													"64"
 												]
 											],
 											"expanded":"1",
@@ -1888,8 +1923,7 @@
 												[
 													"64",
 													"64",
-													"64",
-													"128"
+													"64"
 												]
 											],
 											"expanded":"1",
