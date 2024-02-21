@@ -1231,383 +1231,391 @@
 																			"0",
 																			"d.sen.y + 32",
 																			"pW",
-																			"200 - 32",
-																			"true"
+																			"200 - 32"
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"4433",
-																	"posy":"4508",
+																	"posx":"4428",
+																	"posy":"4715",
 																	"ui":
 																	[
 																		{
 																			"addw":"0",
-																			"compid":"105",
-																			"compname":"color",
-																			"compvalues":
-																			[
-																				[
-																					"225",
-																					"245",
-																					"225"
-																				]
-																			],
-																			"expanded":"1",
-																			"posx":"5049",
-																			"posy":"4539",
-																			"ui":
-																			[
-																				{
-																					"addw":"0",
-																					"compid":"106",
-																					"compname":"fill",
-																					"expanded":"1",
-																					"posx":"5402",
-																					"posy":"4566"
-																				}
-																			]
-																		},
-																		{
-																			"addw":"0",
-																			"compid":"114",
-																			"compname":"xywh",
+																			"comment":"댓글 중앙",
+																			"compid":"210",
+																			"compname":"inner",
 																			"compvalues":
 																			[
 																				[
 																					"0",
-																					"0",
-																					"d.sen.x + 1",
-																					"1"
+																					"true"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5046",
-																			"posy":"4749",
+																			"posx":"5033",
+																			"posy":"4751",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"115",
+																					"compid":"105",
 																					"compname":"color",
 																					"compvalues":
 																					[
 																						[
-																							"0",
-																							"0",
-																							"0",
-																							"64"
+																							"225",
+																							"245",
+																							"225"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5400",
-																					"posy":"4768",
+																					"posx":"5397",
+																					"posy":"4730",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"116",
+																							"compid":"106",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"5747",
-																							"posy":"4789"
+																							"posx":"5750",
+																							"posy":"4757"
 																						}
 																					]
-																				}
-																			]
-																		},
-																		{
-																			"addw":"0",
-																			"compid":"123",
-																			"compname":"xywh",
-																			"compvalues":
-																			[
-																				[
-																					"0",
-																					"1",
-																					"1",
-																					"pH - 1"
-																				]
-																			],
-																			"expanded":"1",
-																			"posx":"5051",
-																			"posy":"4998",
-																			"ui":
-																			[
+																				},
 																				{
 																					"addw":"0",
-																					"compid":"124",
-																					"compname":"color",
+																					"compid":"114",
+																					"compname":"xywh",
 																					"compvalues":
 																					[
 																						[
 																							"0",
 																							"0",
-																							"0",
-																							"64"
+																							"d.sen.x + 1",
+																							"1"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5405",
-																					"posy":"5017",
+																					"posx":"5394",
+																					"posy":"4940",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"125",
-																							"compname":"fill",
-																							"expanded":"1",
-																							"posx":"5752",
-																							"posy":"5038"
-																						}
-																					]
-																				}
-																			]
-																		},
-																		{
-																			"addw":"0",
-																			"comment":"댓글영역 날개부분",
-																			"compid":"110",
-																			"compname":"scissor_clear",
-																			"expanded":"1",
-																			"posx":"5050",
-																			"posy":"5245",
-																			"ui":
-																			[
-																				{
-																					"addw":"113",
-																					"compid":"107",
-																					"compname":"ltrb",
-																					"compvalues":
-																					[
-																						[
-																							"d.sen.x",
-																							"-32",
-																							"pW",
-																							"0",
-																							"true"
-																						]
-																					],
-																					"expanded":"1",
-																					"posx":"5404",
-																					"posy":"5263",
-																					"ui":
-																					[
-																						{
-																							"addw":"0",
-																							"compid":"108",
+																							"compid":"115",
 																							"compname":"color",
 																							"compvalues":
 																							[
 																								[
-																									"215",
-																									"235",
-																									"215"
+																									"0",
+																									"0",
+																									"0",
+																									"64"
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5860",
-																							"posy":"5283",
+																							"posx":"5748",
+																							"posy":"4959",
 																							"ui":
 																							[
 																								{
 																									"addw":"0",
-																									"compid":"109",
+																									"compid":"116",
 																									"compname":"fill",
 																									"expanded":"1",
-																									"posx":"6213",
-																									"posy":"5309"
-																								}
-																							]
-																						},
-																						{
-																							"addw":"0",
-																							"compid":"117",
-																							"compname":"xywh",
-																							"compvalues":
-																							[
-																								[
-																									"0",
-																									"0",
-																									"pW",
-																									"1"
-																								]
-																							],
-																							"expanded":"1",
-																							"posx":"5859",
-																							"posy":"5487",
-																							"ui":
-																							[
-																								{
-																									"addw":"0",
-																									"compid":"118",
-																									"compname":"color",
-																									"compvalues":
-																									[
-																										[
-																											"0",
-																											"0",
-																											"0",
-																											"64"
-																										]
-																									],
-																									"expanded":"1",
-																									"posx":"6213",
-																									"posy":"5506",
-																									"ui":
-																									[
-																										{
-																											"addw":"0",
-																											"compid":"119",
-																											"compname":"fill",
-																											"expanded":"1",
-																											"posx":"6560",
-																											"posy":"5527"
-																										}
-																									]
-																								}
-																							]
-																						},
-																						{
-																							"addw":"0",
-																							"compid":"120",
-																							"compname":"xywh",
-																							"compvalues":
-																							[
-																								[
-																									"0",
-																									"1",
-																									"1",
-																									"pH - 1"
-																								]
-																							],
-																							"expanded":"1",
-																							"posx":"5857",
-																							"posy":"5719",
-																							"ui":
-																							[
-																								{
-																									"addw":"0",
-																									"compid":"121",
-																									"compname":"color",
-																									"compvalues":
-																									[
-																										[
-																											"0",
-																											"0",
-																											"0",
-																											"64"
-																										]
-																									],
-																									"expanded":"1",
-																									"posx":"6211",
-																									"posy":"5738",
-																									"ui":
-																									[
-																										{
-																											"addw":"0",
-																											"compid":"122",
-																											"compname":"fill",
-																											"expanded":"1",
-																											"posx":"6558",
-																											"posy":"5759"
-																										}
-																									]
+																									"posx":"6095",
+																									"posy":"4980"
 																								}
 																							]
 																						}
 																					]
 																				},
 																				{
-																					"addw":"113",
-																					"compid":"111",
-																					"compname":"ltrb",
+																					"addw":"0",
+																					"compid":"123",
+																					"compname":"xywh",
 																					"compvalues":
 																					[
 																						[
 																							"0",
-																							"pH",
-																							"d.sen.x",
-																							"pH + 32",
-																							"true"
+																							"1",
+																							"1",
+																							"pH - 1"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5398",
-																					"posy":"5941",
+																					"posx":"5399",
+																					"posy":"5189",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"112",
+																							"compid":"124",
 																							"compname":"color",
 																							"compvalues":
 																							[
 																								[
-																									"215",
-																									"235",
-																									"215"
+																									"0",
+																									"0",
+																									"0",
+																									"64"
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5854",
-																							"posy":"5961",
+																							"posx":"5753",
+																							"posy":"5208",
 																							"ui":
 																							[
 																								{
 																									"addw":"0",
-																									"compid":"113",
+																									"compid":"125",
 																									"compname":"fill",
 																									"expanded":"1",
-																									"posx":"6207",
-																									"posy":"5987"
+																									"posx":"6100",
+																									"posy":"5229"
 																								}
 																							]
-																						},
+																						}
+																					]
+																				}
+																			]
+																		},
+																		{
+																			"addw":"113",
+																			"comment":"댓글 위쪽날개",
+																			"compid":"107",
+																			"compname":"ltrb",
+																			"compvalues":
+																			[
+																				[
+																					"d.sen.x",
+																					"-32",
+																					"pW",
+																					"0",
+																					"true"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5039",
+																			"posy":"5452",
+																			"ui":
+																			[
+																				{
+																					"addw":"0",
+																					"compid":"108",
+																					"compname":"color",
+																					"compvalues":
+																					[
+																						[
+																							"215",
+																							"235",
+																							"215"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5495",
+																					"posy":"5472",
+																					"ui":
+																					[
 																						{
 																							"addw":"0",
-																							"compid":"126",
-																							"compname":"xywh",
+																							"compid":"109",
+																							"compname":"fill",
+																							"expanded":"1",
+																							"posx":"5848",
+																							"posy":"5498"
+																						}
+																					]
+																				},
+																				{
+																					"addw":"0",
+																					"compid":"117",
+																					"compname":"xywh",
+																					"compvalues":
+																					[
+																						[
+																							"0",
+																							"0",
+																							"pW",
+																							"1"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5494",
+																					"posy":"5676",
+																					"ui":
+																					[
+																						{
+																							"addw":"0",
+																							"compid":"118",
+																							"compname":"color",
 																							"compvalues":
 																							[
 																								[
 																									"0",
 																									"0",
-																									"1",
-																									"pH"
+																									"0",
+																									"64"
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5853",
-																							"posy":"6171",
+																							"posx":"5848",
+																							"posy":"5695",
 																							"ui":
 																							[
 																								{
 																									"addw":"0",
-																									"compid":"127",
-																									"compname":"color",
-																									"compvalues":
-																									[
-																										[
-																											"0",
-																											"0",
-																											"0",
-																											"64"
-																										]
-																									],
+																									"compid":"119",
+																									"compname":"fill",
 																									"expanded":"1",
-																									"posx":"6207",
-																									"posy":"6190",
-																									"ui":
-																									[
-																										{
-																											"addw":"0",
-																											"compid":"128",
-																											"compname":"fill",
-																											"expanded":"1",
-																											"posx":"6554",
-																											"posy":"6211"
-																										}
-																									]
+																									"posx":"6195",
+																									"posy":"5716"
+																								}
+																							]
+																						}
+																					]
+																				},
+																				{
+																					"addw":"0",
+																					"compid":"120",
+																					"compname":"xywh",
+																					"compvalues":
+																					[
+																						[
+																							"0",
+																							"1",
+																							"1",
+																							"pH - 1"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5492",
+																					"posy":"5908",
+																					"ui":
+																					[
+																						{
+																							"addw":"0",
+																							"compid":"121",
+																							"compname":"color",
+																							"compvalues":
+																							[
+																								[
+																									"0",
+																									"0",
+																									"0",
+																									"64"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"5846",
+																							"posy":"5927",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"122",
+																									"compname":"fill",
+																									"expanded":"1",
+																									"posx":"6193",
+																									"posy":"5948"
+																								}
+																							]
+																						}
+																					]
+																				}
+																			]
+																		},
+																		{
+																			"addw":"113",
+																			"comment":"댓글 아랫쪽날개",
+																			"compid":"111",
+																			"compname":"ltrb",
+																			"compvalues":
+																			[
+																				[
+																					"0",
+																					"pH",
+																					"d.sen.x",
+																					"pH + 32",
+																					"true"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5037",
+																			"posy":"6138",
+																			"ui":
+																			[
+																				{
+																					"addw":"0",
+																					"compid":"112",
+																					"compname":"color",
+																					"compvalues":
+																					[
+																						[
+																							"215",
+																							"235",
+																							"215"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5493",
+																					"posy":"6158",
+																					"ui":
+																					[
+																						{
+																							"addw":"0",
+																							"compid":"113",
+																							"compname":"fill",
+																							"expanded":"1",
+																							"posx":"5846",
+																							"posy":"6184"
+																						}
+																					]
+																				},
+																				{
+																					"addw":"0",
+																					"compid":"126",
+																					"compname":"xywh",
+																					"compvalues":
+																					[
+																						[
+																							"0",
+																							"0",
+																							"1",
+																							"pH"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5492",
+																					"posy":"6368",
+																					"ui":
+																					[
+																						{
+																							"addw":"0",
+																							"compid":"127",
+																							"compname":"color",
+																							"compvalues":
+																							[
+																								[
+																									"0",
+																									"0",
+																									"0",
+																									"64"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"5846",
+																							"posy":"6387",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"128",
+																									"compname":"fill",
+																									"expanded":"1",
+																									"posx":"6193",
+																									"posy":"6408"
 																								}
 																							]
 																						}
@@ -1623,12 +1631,13 @@
 																			"compvalues":
 																			[
 																				[
-																					"0"
+																					"0",
+																					"true"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5050",
-																			"posy":"6488",
+																			"posx":"5045",
+																			"posy":"6695",
 																			"ui":
 																			[
 																				{
@@ -1645,8 +1654,8 @@
 																					],
 																					"compname":"code",
 																					"expanded":"1",
-																					"posx":"5412",
-																					"posy":"6456"
+																					"posx":"5407",
+																					"posy":"6663"
 																				},
 																				{
 																					"addw":"440",
@@ -1705,8 +1714,8 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"6351",
-																									"posy":"6683",
+																									"posx":"6346",
+																									"posy":"6890",
 																									"ui":
 																									[
 																										{
@@ -1714,8 +1723,8 @@
 																											"compid":"207",
 																											"compname":"fill",
 																											"expanded":"1",
-																											"posx":"6948",
-																											"posy":"6768"
+																											"posx":"6943",
+																											"posy":"6975"
 																										}
 																									]
 																								}
@@ -1756,8 +1765,8 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"6351",
-																									"posy":"7019",
+																									"posx":"6346",
+																									"posy":"7226",
 																									"ui":
 																									[
 																										{
@@ -1765,8 +1774,8 @@
 																											"compid":"209",
 																											"compname":"fill",
 																											"expanded":"1",
-																											"posx":"6948",
-																											"posy":"7104"
+																											"posx":"6943",
+																											"posy":"7311"
 																										}
 																									]
 																								}
@@ -1792,8 +1801,8 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"6352",
-																									"posy":"7364",
+																									"posx":"6347",
+																									"posy":"7571",
 																									"ui":
 																									[
 																										{
@@ -1809,8 +1818,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6779",
-																											"posy":"7400",
+																											"posx":"6774",
+																											"posy":"7607",
 																											"ui":
 																											[
 																												{
@@ -1824,8 +1833,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"7148",
-																													"posy":"7422",
+																													"posx":"7143",
+																													"posy":"7629",
 																													"ui":
 																													[
 																														{
@@ -1841,8 +1850,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7521",
-																															"posy":"7441"
+																															"posx":"7516",
+																															"posy":"7648"
 																														}
 																													]
 																												}
@@ -1853,8 +1862,8 @@
 																							]
 																						}
 																					],
-																					"posx":"5412",
-																					"posy":"6910"
+																					"posx":"5407",
+																					"posy":"7117"
 																				}
 																			]
 																		}
