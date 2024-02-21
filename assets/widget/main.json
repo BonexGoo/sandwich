@@ -297,254 +297,378 @@
 					"ui":
 					[
 						{
-							"addw":"123",
-							"compid":"58",
-							"compname":"loop",
+							"addw":"442",
+							"compid":"188",
+							"compname":"scroll_view",
+							"compvalues":
+							[
+								[
+									"'ui_post_view'",
+									"130",
+									"d.hueboard.range.post.count",
+									"vertical",
+									"1",
+									"20",
+									"5",
+									"20",
+									"100",
+									"1000"
+								]
+							],
 							"expanded":"1",
-							"posx":"1522",
-							"posy":"1500",
-							"ui":
+							"insiders":
 							[
 								{
-									"addw":"337",
-									"comment":"게시글",
-									"compid":"59",
-									"compname":"xywh",
-									"compvalues":
-									[
-										[
-											"10",
-											"10 + (120 + 10) * (iN - iV - 1)",
-											"pW - 20 + 1",
-											"120 + 1",
-											"true"
-										]
-									],
-									"expanded":"1",
-									"onclick":
-									[
-										"if(d.hueboard.select.post != iV)",
-										"select('post', iV)",
-										"else",
-										"select('post', -1)",
-										"endif",
-										"select('sentence', -1)"
-									],
-									"posx":"2016",
-									"posy":"1401",
+									"ballposx":"88",
+									"ballposy":"21",
+									"name":"scrollbg",
 									"ui":
 									[
 										{
-											"addw":"0",
-											"compid":"186",
-											"compname":"ltrb",
+											"addw":"198",
+											"compid":"193",
+											"compname":"color",
 											"compvalues":
 											[
+												"ifpressed('scrollbar.ui_post_view')",
 												[
-													"1",
-													"1",
-													"pW",
-													"pH"
+													"0",
+													"64",
+													"128",
+													"32"
+												],
+												"elifpressed('scrollbg.ui_post_view')",
+												[
+													"0",
+													"64",
+													"128",
+													"32"
+												],
+												"elifhovered('scrollbg.ui_post_view')",
+												[
+													"0",
+													"64",
+													"128",
+													"32"
 												]
 											],
 											"expanded":"1",
-											"posx":"2732",
-											"posy":"1260",
+											"posx":"3348",
+											"posy":"905",
 											"ui":
 											[
 												{
 													"addw":"0",
-													"compid":"61",
-													"compname":"color",
-													"compvalues":
-													[
-														[
-															"0",
-															"0",
-															"0",
-															"64"
-														]
-													],
+													"compid":"194",
+													"compname":"fill",
 													"expanded":"1",
-													"posx":"3117",
-													"posy":"1241",
-													"ui":
-													[
-														{
-															"addw":"0",
-															"compid":"62",
-															"compname":"fill",
-															"expanded":"1",
-															"posx":"3490",
-															"posy":"1260"
-														}
-													]
-												}
-											]
-										},
-										{
-											"addw":"0",
-											"compid":"187",
-											"compname":"ltrb",
-											"compvalues":
-											[
-												[
-													"0",
-													"0",
-													"pW - 1",
-													"pH - 1"
-												]
-											],
-											"expanded":"1",
-											"posx":"2729",
-											"posy":"1529",
-											"ui":
-											[
-												{
-													"addw":"162",
-													"compid":"63",
-													"compname":"color",
-													"compvalues":
-													[
-														"if(d.hueboard.select.post == iV)",
-														[
-															"240",
-															"224",
-															"255"
-														],
-														"else",
-														[
-															"255",
-															"255",
-															"255"
-														]
-													],
-													"expanded":"1",
-													"posx":"3117",
-													"posy":"1460",
-													"ui":
-													[
-														{
-															"addw":"0",
-															"compid":"64",
-															"compname":"fill",
-															"expanded":"1",
-															"posx":"3648",
-															"posy":"1495"
-														}
-													]
-												},
-												{
-													"addw":"0",
-													"compid":"65",
-													"compname":"color",
-													"compvalues":
-													[
-														[
-															"0",
-															"0",
-															"0"
-														]
-													],
-													"expanded":"1",
-													"posx":"3116",
-													"posy":"1727",
-													"ui":
-													[
-														{
-															"addw":"0",
-															"compid":"66",
-															"compname":"font",
-															"compvalues":
-															[
-																[
-																	"3.0"
-																]
-															],
-															"expanded":"1",
-															"posx":"3485",
-															"posy":"1749",
-															"ui":
-															[
-																{
-																	"addw":"462",
-																	"compid":"67",
-																	"compname":"text",
-																	"compvalues":
-																	[
-																		[
-																			"'  '+ ('-'@'d.hueboard.asset.post.'+ iV +'.data.text')",
-																			"leftmiddle",
-																			"right"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"3858",
-																	"posy":"1768"
-																}
-															]
-														}
-													]
-												},
-												{
-													"addw":"0",
-													"compid":"69",
-													"compname":"color",
-													"compvalues":
-													[
-														[
-															"128",
-															"128",
-															"128"
-														]
-													],
-													"expanded":"1",
-													"posx":"3112",
-													"posy":"1931",
-													"ui":
-													[
-														{
-															"addw":"0",
-															"compid":"70",
-															"compname":"font",
-															"compvalues":
-															[
-																[
-																	"2.0"
-																]
-															],
-															"expanded":"1",
-															"posx":"3481",
-															"posy":"1953",
-															"ui":
-															[
-																{
-																	"addw":"462",
-																	"compid":"71",
-																	"compname":"text",
-																	"compvalues":
-																	[
-																		[
-																			"('-'@'d.hueboard.asset.post.'+ iV +'.author') +' '",
-																			"rightbottom",
-																			"left"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"3854",
-																	"posy":"1972"
-																}
-															]
-														}
-													]
+													"posx":"3945",
+													"posy":"990"
 												}
 											]
 										}
 									]
+								},
+								{
+									"ballposx":"95",
+									"ballposy":"46",
+									"name":"scrollbar",
+									"ui":
+									[
+										{
+											"addw":"198",
+											"compid":"197",
+											"compname":"color",
+											"compvalues":
+											[
+												"ifpressed('scrollbar.ui_post_view')",
+												[
+													"0",
+													"64",
+													"128",
+													"64"
+												],
+												"elifpressed('scrollbg.ui_post_view')",
+												[
+													"0",
+													"64",
+													"128",
+													"32"
+												],
+												"elifhovered('scrollbg.ui_post_view')",
+												[
+													"0",
+													"64",
+													"128",
+													"32"
+												]
+											],
+											"expanded":"1",
+											"posx":"3348",
+											"posy":"1237",
+											"ui":
+											[
+												{
+													"addw":"0",
+													"compid":"198",
+													"compname":"fill",
+													"expanded":"1",
+													"posx":"3958",
+													"posy":"1318"
+												}
+											]
+										}
+									]
+								},
+								{
+									"ballposx":"81",
+									"ballposy":"71",
+									"name":"content",
+									"ui":
+									[
+										{
+											"addw":"734",
+											"comment":"게시글",
+											"compid":"189",
+											"compname":"xywh",
+											"compvalues":
+											[
+												[
+													"10",
+													"5",
+													"pW + 1",
+													"pH - 10 + 1",
+													"true"
+												]
+											],
+											"expanded":"1",
+											"onclick":
+											[
+												"if(d.hueboard.select.post != d.hueboard.range.post.count - pV - 1)",
+												"select('post', d.hueboard.range.post.count - pV - 1)",
+												"else",
+												"select('post', -1)",
+												"endif",
+												"select('sentence', -1)"
+											],
+											"posx":"3346",
+											"posy":"1578",
+											"ui":
+											[
+												{
+													"addw":"0",
+													"compid":"186",
+													"compname":"ltrb",
+													"compvalues":
+													[
+														[
+															"1",
+															"1",
+															"pW",
+															"pH"
+														]
+													],
+													"expanded":"1",
+													"posx":"4458",
+													"posy":"1535",
+													"ui":
+													[
+														{
+															"addw":"0",
+															"compid":"61",
+															"compname":"color",
+															"compvalues":
+															[
+																[
+																	"0",
+																	"0",
+																	"0",
+																	"64"
+																]
+															],
+															"expanded":"1",
+															"posx":"4829",
+															"posy":"1430",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"62",
+																	"compname":"fill",
+																	"expanded":"1",
+																	"posx":"5193",
+																	"posy":"1459"
+																}
+															]
+														}
+													]
+												},
+												{
+													"addw":"0",
+													"compid":"187",
+													"compname":"ltrb",
+													"compvalues":
+													[
+														[
+															"0",
+															"0",
+															"pW - 1",
+															"pH - 1"
+														]
+													],
+													"expanded":"1",
+													"posx":"4454",
+													"posy":"1810",
+													"ui":
+													[
+														{
+															"addw":"325",
+															"compid":"63",
+															"compname":"color",
+															"compvalues":
+															[
+																"if(d.hueboard.select.post == d.hueboard.range.post.count - pV - 1)",
+																[
+																	"240",
+																	"224",
+																	"255"
+																],
+																"else",
+																[
+																	"255",
+																	"255",
+																	"255"
+																]
+															],
+															"expanded":"1",
+															"posx":"4824",
+															"posy":"1627",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"64",
+																	"compname":"fill",
+																	"expanded":"1",
+																	"posx":"5516",
+																	"posy":"1664"
+																}
+															]
+														},
+														{
+															"addw":"0",
+															"compid":"65",
+															"compname":"color",
+															"compvalues":
+															[
+																[
+																	"0",
+																	"0",
+																	"0"
+																]
+															],
+															"expanded":"1",
+															"posx":"4823",
+															"posy":"1894",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"66",
+																	"compname":"font",
+																	"compvalues":
+																	[
+																		[
+																			"3.0"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"5192",
+																	"posy":"1916",
+																	"ui":
+																	[
+																		{
+																			"addw":"647",
+																			"compid":"67",
+																			"compname":"text",
+																			"compvalues":
+																			[
+																				[
+																					"'  '+ ('-'@'d.hueboard.asset.post.'+ (d.hueboard.range.post.count - pV - 1) +'.data.text')",
+																					"leftmiddle",
+																					"right"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5565",
+																			"posy":"1935"
+																		}
+																	]
+																}
+															]
+														},
+														{
+															"addw":"0",
+															"compid":"69",
+															"compname":"color",
+															"compvalues":
+															[
+																[
+																	"128",
+																	"128",
+																	"128"
+																]
+															],
+															"expanded":"1",
+															"posx":"4819",
+															"posy":"2098",
+															"ui":
+															[
+																{
+																	"addw":"0",
+																	"compid":"70",
+																	"compname":"font",
+																	"compvalues":
+																	[
+																		[
+																			"2.0"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"5188",
+																	"posy":"2120",
+																	"ui":
+																	[
+																		{
+																			"addw":"617",
+																			"compid":"71",
+																			"compname":"text",
+																			"compvalues":
+																			[
+																				[
+																					"('-'@'d.hueboard.asset.post.'+ (d.hueboard.range.post.count - pV - 1) +'.author') +' '",
+																					"rightbottom",
+																					"left"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5561",
+																			"posy":"2139"
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											],
+											"uiname":"'ui_post_view_' + pV"
+										}
+									]
 								}
 							],
-							"uiloop":"d.hueboard.range.post.count",
-							"uiname":"i"
+							"posx":"2450",
+							"posy":"1316"
 						}
 					]
 				},
@@ -564,8 +688,8 @@
 						]
 					],
 					"expanded":"1",
-					"posx":"920",
-					"posy":"2035",
+					"posx":"925",
+					"posy":"2185",
 					"ui":
 					[
 						{
@@ -584,8 +708,8 @@
 								]
 							],
 							"expanded":"1",
-							"posx":"1507",
-							"posy":"2048",
+							"posx":"1572",
+							"posy":"2227",
 							"ui":
 							[
 								{
@@ -601,8 +725,8 @@
 										]
 									],
 									"expanded":"1",
-									"posx":"1929",
-									"posy":"2018",
+									"posx":"1994",
+									"posy":"2197",
 									"ui":
 									[
 										{
@@ -610,8 +734,8 @@
 											"compid":"81",
 											"compname":"fill",
 											"expanded":"1",
-											"posx":"2296",
-											"posy":"2051"
+											"posx":"2361",
+											"posy":"2230"
 										}
 									]
 								},
@@ -628,8 +752,8 @@
 										]
 									],
 									"expanded":"1",
-									"posx":"1929",
-									"posy":"2238",
+									"posx":"1994",
+									"posy":"2417",
 									"ui":
 									[
 										{
@@ -643,8 +767,8 @@
 												]
 											],
 											"expanded":"1",
-											"posx":"2295",
-											"posy":"2270",
+											"posx":"2360",
+											"posy":"2449",
 											"ui":
 											[
 												{
@@ -654,14 +778,14 @@
 													"compvalues":
 													[
 														[
-															"' '+ ('-'@'d.hueboard.asset.post.'+ d.hueboard.select.post +'.data.text')",
+															"'  '+ ('-'@'d.hueboard.asset.post.'+ d.hueboard.select.post +'.data.text')",
 															"leftmiddle",
 															"right"
 														]
 													],
 													"expanded":"1",
-													"posx":"2667",
-													"posy":"2289"
+													"posx":"2732",
+													"posy":"2468"
 												}
 											]
 										}
@@ -685,8 +809,8 @@
 								]
 							],
 							"expanded":"1",
-							"posx":"1507",
-							"posy":"2509",
+							"posx":"1531",
+							"posy":"2829",
 							"ui":
 							[
 								{
@@ -702,8 +826,8 @@
 										]
 									],
 									"expanded":"1",
-									"posx":"1967",
-									"posy":"2474",
+									"posx":"1991",
+									"posy":"2794",
 									"ui":
 									[
 										{
@@ -711,425 +835,322 @@
 											"compid":"92",
 											"compname":"fill",
 											"expanded":"1",
-											"posx":"2350",
-											"posy":"2507"
+											"posx":"2370",
+											"posy":"2820"
 										}
 									]
 								},
 								{
-									"addw":"194",
-									"compid":"98",
-									"compinputs":
+									"addw":"363",
+									"compid":"199",
+									"compname":"scroll_view",
+									"compvalues":
 									[
-										"set_sentence_pos(sen, 0, 0)"
+										"if(d.hueboard.select.sentence != -1)",
+										[
+											"'ui_text_view'",
+											"d.sen.y + 272",
+											"1",
+											"vertical",
+											"1",
+											"20",
+											"0",
+											"20",
+											"100",
+											"1000"
+										],
+										"else",
+										[
+											"'ui_text_view'",
+											"d.sen.y + 72",
+											"1",
+											"vertical",
+											"1",
+											"20",
+											"0",
+											"20",
+											"100",
+											"1000"
+										]
 									],
-									"compname":"code",
 									"expanded":"1",
-									"posx":"1966",
-									"posy":"2683"
-								},
-								{
-									"addw":"486",
-									"compid":"85",
-									"compname":"loop",
-									"expanded":"1",
-									"posx":"1965",
-									"posy":"2900",
-									"ui":
+									"insiders":
 									[
 										{
-											"addw":"440",
-											"compid":"99",
-											"compname":"ltrb",
-											"compvalues":
-											[
-												"if(d.hueboard.select.sentence != -1 [and] d.hueboard.select.sentence < iV)",
-												[
-													"10",
-													"10 + 200",
-													"pW - 10",
-													"pH - 10"
-												],
-												"else",
-												[
-													"10",
-													"10",
-													"pW - 10",
-													"pH - 10"
-												]
-											],
-											"expanded":"1",
-											"posx":"2814",
-											"posy":"2841",
+											"ballposx":"88",
+											"ballposy":"21",
+											"name":"scrollbg",
 											"ui":
 											[
 												{
-													"addw":"0",
-													"compid":"93",
+													"addw":"198",
+													"compid":"200",
 													"compname":"color",
 													"compvalues":
 													[
+														"ifpressed('scrollbar.ui_text_view')",
 														[
 															"0",
+															"64",
+															"128",
+															"32"
+														],
+														"elifpressed('scrollbg.ui_text_view')",
+														[
 															"0",
-															"0"
+															"64",
+															"128",
+															"32"
+														],
+														"elifhovered('scrollbg.ui_text_view')",
+														[
+															"0",
+															"64",
+															"128",
+															"32"
 														]
 													],
 													"expanded":"1",
-													"posx":"3615",
-													"posy":"2622",
+													"posx":"2783",
+													"posy":"2956",
 													"ui":
 													[
 														{
 															"addw":"0",
-															"compid":"94",
-															"compname":"font",
-															"compvalues":
-															[
-																[
-																	"2.0"
-																]
-															],
+															"compid":"201",
+															"compname":"fill",
 															"expanded":"1",
-															"posx":"3976",
-															"posy":"2631",
-															"ui":
-															[
-																{
-																	"addw":"675",
-																	"comment":"#문장",
-																	"compid":"97",
-																	"compname":"user_content",
-																	"compvalues":
-																	[
-																		[
-																			"'sentence'",
-																			"'sen'",
-																			"'-'@'d.hueboard.asset.post.' + d.hueboard.select.post + '.sentence.'+ iV +'.data.text'",
-																			"10",
-																			"25"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4348",
-																	"posy":"2642"
-																}
-															]
+															"posx":"3380",
+															"posy":"3041"
 														}
 													]
-												},
+												}
+											]
+										},
+										{
+											"ballposx":"95",
+											"ballposy":"46",
+											"name":"scrollbar",
+											"ui":
+											[
 												{
-													"addw":"367",
-													"comment":"댓글버튼",
-													"compid":"100",
-													"compname":"xywh",
+													"addw":"198",
+													"compid":"202",
+													"compname":"color",
 													"compvalues":
 													[
+														"ifpressed('scrollbar.ui_text_view')",
 														[
-															"d.sen.x - 25 + 5",
-															"d.sen.y + 7",
-															"12",
-															"12"
+															"0",
+															"64",
+															"128",
+															"64"
+														],
+														"elifpressed('scrollbg.ui_text_view')",
+														[
+															"0",
+															"64",
+															"128",
+															"32"
+														],
+														"elifhovered('scrollbg.ui_text_view')",
+														[
+															"0",
+															"64",
+															"128",
+															"32"
 														]
 													],
 													"expanded":"1",
-													"onclick":
-													[
-														"if(d.hueboard.select.sentence != iV)",
-														"select('sentence', iV)",
-														"else",
-														"select('sentence', -1)"
-													],
-													"posx":"3613",
-													"posy":"2860",
+													"posx":"2782",
+													"posy":"3315",
 													"ui":
 													[
 														{
-															"addw":"909",
-															"compid":"144",
-															"compinputs":
-															[
-																{
-																	"curcount":"0 @'d.hueboard.range.post.'+ d.hueboard.select.post +'.sentence.'+ iV +'.ripple.count'"
-																}
-															],
-															"compname":"code",
+															"addw":"0",
+															"compid":"203",
+															"compname":"fill",
 															"expanded":"1",
-															"posx":"4346",
-															"posy":"2888"
-														},
+															"posx":"3392",
+															"posy":"3396"
+														}
+													]
+												}
+											]
+										},
+										{
+											"ballposx":"81",
+											"ballposy":"71",
+											"name":"content",
+											"ui":
+											[
+												{
+													"addw":"194",
+													"compid":"98",
+													"compinputs":
+													[
+														"set_sentence_pos(sen, 0, 0)"
+													],
+													"compname":"code",
+													"expanded":"1",
+													"posx":"2783",
+													"posy":"3667"
+												},
+												{
+													"addw":"486",
+													"compid":"85",
+													"compname":"loop",
+													"expanded":"1",
+													"posx":"2784",
+													"posy":"3888",
+													"ui":
+													[
 														{
-															"addw":"119",
-															"compid":"101",
-															"compname":"color",
+															"addw":"440",
+															"compid":"99",
+															"compname":"ltrb",
 															"compvalues":
 															[
-																"if(d.hueboard.select.sentence == iV)",
+																"if(d.hueboard.select.sentence != -1 [and] d.hueboard.select.sentence < iV)",
 																[
-																	"128",
-																	"192",
-																	"128"
-																],
-																"eliffocused('ui_ripple_'+ iV)",
-																[
-																	"192",
-																	"240",
-																	"192"
-																],
-																"elif(0 < curcount)",
-																[
-																	"160",
-																	"160",
-																	"160"
+																	"20",
+																	"20 + 200",
+																	"pW",
+																	"pH - 20"
 																],
 																"else",
 																[
-																	"240",
-																	"240",
-																	"240"
+																	"20",
+																	"20",
+																	"pW",
+																	"pH - 20"
 																]
 															],
 															"expanded":"1",
-															"posx":"4346",
-															"posy":"3096",
+															"posx":"3633",
+															"posy":"3829",
 															"ui":
 															[
 																{
 																	"addw":"0",
-																	"compid":"132",
-																	"compname":"rect",
+																	"compid":"93",
+																	"compname":"color",
 																	"compvalues":
 																	[
 																		[
-																			"3"
+																			"0",
+																			"0",
+																			"0"
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"4823",
-																	"posy":"3117"
-																},
-																{
-																	"addw":"0",
-																	"compid":"146",
-																	"compname":"font",
-																	"compvalues":
-																	[
-																		"if(0 < curcount)",
-																		[
-																			"0.9",
-																			"'arial black'"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4824",
-																	"posy":"3320",
+																	"posx":"4434",
+																	"posy":"3610",
 																	"ui":
 																	[
 																		{
 																			"addw":"0",
-																			"compid":"147",
-																			"compname":"text",
+																			"compid":"94",
+																			"compname":"font",
 																			"compvalues":
 																			[
-																				"if(curcount < 10)",
 																				[
-																					"curcount"
-																				],
-																				"else",
-																				[
-																					"'+'"
+																					"2.0"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5187",
-																			"posy":"3343"
+																			"posx":"4795",
+																			"posy":"3619",
+																			"ui":
+																			[
+																				{
+																					"addw":"675",
+																					"comment":"#문장",
+																					"compid":"97",
+																					"compname":"user_content",
+																					"compvalues":
+																					[
+																						[
+																							"'sentence'",
+																							"'sen'",
+																							"'-'@'d.hueboard.asset.post.' + d.hueboard.select.post + '.sentence.'+ iV +'.data.text'",
+																							"10",
+																							"25"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5167",
+																					"posy":"3630"
+																				}
+																			]
 																		}
 																	]
-																}
-															]
-														}
-													],
-													"uiname":"'ui_ripple_' + iV"
-												},
-												{
-													"addw":"264",
-													"comment":"댓글영역",
-													"compid":"104",
-													"compname":"xywh",
-													"compvalues":
-													[
-														"if(d.hueboard.select.sentence == iV)",
-														[
-															"0",
-															"d.sen.y + 32",
-															"pW",
-															"200 - 32",
-															"true"
-														]
-													],
-													"expanded":"1",
-													"posx":"3614",
-													"posy":"3520",
-													"ui":
-													[
-														{
-															"addw":"0",
-															"compid":"105",
-															"compname":"color",
-															"compvalues":
-															[
-																[
-																	"245",
-																	"245",
-																	"245"
-																]
-															],
-															"expanded":"1",
-															"posx":"4230",
-															"posy":"3551",
-															"ui":
-															[
+																},
 																{
-																	"addw":"0",
-																	"compid":"106",
-																	"compname":"fill",
-																	"expanded":"1",
-																	"posx":"4583",
-																	"posy":"3578"
-																}
-															]
-														},
-														{
-															"addw":"0",
-															"compid":"114",
-															"compname":"xywh",
-															"compvalues":
-															[
-																[
-																	"0",
-																	"0",
-																	"d.sen.x + 1",
-																	"1"
-																]
-															],
-															"expanded":"1",
-															"posx":"4227",
-															"posy":"3761",
-															"ui":
-															[
-																{
-																	"addw":"0",
-																	"compid":"115",
-																	"compname":"color",
+																	"addw":"367",
+																	"comment":"댓글버튼",
+																	"compid":"100",
+																	"compname":"xywh",
 																	"compvalues":
 																	[
 																		[
-																			"0",
-																			"0",
-																			"0",
-																			"64"
+																			"d.sen.x - 25 + 5",
+																			"d.sen.y + 7",
+																			"12",
+																			"12"
 																		]
 																	],
 																	"expanded":"1",
-																	"posx":"4581",
-																	"posy":"3780",
+																	"onclick":
+																	[
+																		"if(d.hueboard.select.sentence != iV)",
+																		"select('sentence', iV)",
+																		"else",
+																		"select('sentence', -1)"
+																	],
+																	"posx":"4432",
+																	"posy":"3848",
 																	"ui":
 																	[
 																		{
-																			"addw":"0",
-																			"compid":"116",
-																			"compname":"fill",
+																			"addw":"909",
+																			"compid":"144",
+																			"compinputs":
+																			[
+																				{
+																					"curcount":"0 @'d.hueboard.range.post.'+ d.hueboard.select.post +'.sentence.'+ iV +'.ripple.count'"
+																				}
+																			],
+																			"compname":"code",
 																			"expanded":"1",
-																			"posx":"4928",
-																			"posy":"3801"
-																		}
-																	]
-																}
-															]
-														},
-														{
-															"addw":"0",
-															"compid":"123",
-															"compname":"xywh",
-															"compvalues":
-															[
-																[
-																	"0",
-																	"1",
-																	"1",
-																	"pH - 1"
-																]
-															],
-															"expanded":"1",
-															"posx":"4232",
-															"posy":"4010",
-															"ui":
-															[
-																{
-																	"addw":"0",
-																	"compid":"124",
-																	"compname":"color",
-																	"compvalues":
-																	[
-																		[
-																			"0",
-																			"0",
-																			"0",
-																			"64"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4586",
-																	"posy":"4029",
-																	"ui":
-																	[
+																			"posx":"5165",
+																			"posy":"3876"
+																		},
 																		{
-																			"addw":"0",
-																			"compid":"125",
-																			"compname":"fill",
-																			"expanded":"1",
-																			"posx":"4933",
-																			"posy":"4050"
-																		}
-																	]
-																}
-															]
-														},
-														{
-															"addw":"0",
-															"comment":"댓글영역 날개부분",
-															"compid":"110",
-															"compname":"scissor_clear",
-															"expanded":"1",
-															"posx":"4231",
-															"posy":"4257",
-															"ui":
-															[
-																{
-																	"addw":"113",
-																	"compid":"107",
-																	"compname":"ltrb",
-																	"compvalues":
-																	[
-																		[
-																			"d.sen.x",
-																			"-32",
-																			"pW",
-																			"0",
-																			"true"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4585",
-																	"posy":"4275",
-																	"ui":
-																	[
-																		{
-																			"addw":"0",
-																			"compid":"108",
+																			"addw":"119",
+																			"compid":"101",
 																			"compname":"color",
 																			"compvalues":
 																			[
+																				"if(d.hueboard.select.sentence == iV)",
+																				[
+																					"128",
+																					"192",
+																					"128"
+																				],
+																				"eliffocused('ui_ripple_'+ iV)",
+																				[
+																					"192",
+																					"240",
+																					"192"
+																				],
+																				"elif(0 < curcount)",
+																				[
+																					"160",
+																					"160",
+																					"160"
+																				],
+																				"else",
 																				[
 																					"240",
 																					"240",
@@ -1137,41 +1158,136 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5041",
-																			"posy":"4295",
+																			"posx":"5165",
+																			"posy":"4084",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"109",
+																					"compid":"132",
+																					"compname":"rect",
+																					"compvalues":
+																					[
+																						[
+																							"3"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5642",
+																					"posy":"4105"
+																				},
+																				{
+																					"addw":"0",
+																					"compid":"146",
+																					"compname":"font",
+																					"compvalues":
+																					[
+																						"if(0 < curcount)",
+																						[
+																							"0.9",
+																							"'arial black'"
+																						]
+																					],
+																					"expanded":"1",
+																					"posx":"5643",
+																					"posy":"4308",
+																					"ui":
+																					[
+																						{
+																							"addw":"0",
+																							"compid":"147",
+																							"compname":"text",
+																							"compvalues":
+																							[
+																								"if(curcount < 10)",
+																								[
+																									"curcount"
+																								],
+																								"else",
+																								[
+																									"'+'"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"6006",
+																							"posy":"4331"
+																						}
+																					]
+																				}
+																			]
+																		}
+																	],
+																	"uiname":"'ui_ripple_' + iV"
+																},
+																{
+																	"addw":"264",
+																	"comment":"댓글영역",
+																	"compid":"104",
+																	"compname":"xywh",
+																	"compvalues":
+																	[
+																		"if(d.hueboard.select.sentence == iV)",
+																		[
+																			"0",
+																			"d.sen.y + 32",
+																			"pW",
+																			"200 - 32",
+																			"true"
+																		]
+																	],
+																	"expanded":"1",
+																	"posx":"4433",
+																	"posy":"4508",
+																	"ui":
+																	[
+																		{
+																			"addw":"0",
+																			"compid":"105",
+																			"compname":"color",
+																			"compvalues":
+																			[
+																				[
+																					"225",
+																					"245",
+																					"225"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5049",
+																			"posy":"4539",
+																			"ui":
+																			[
+																				{
+																					"addw":"0",
+																					"compid":"106",
 																					"compname":"fill",
 																					"expanded":"1",
-																					"posx":"5394",
-																					"posy":"4321"
+																					"posx":"5402",
+																					"posy":"4566"
 																				}
 																			]
 																		},
 																		{
 																			"addw":"0",
-																			"compid":"117",
+																			"compid":"114",
 																			"compname":"xywh",
 																			"compvalues":
 																			[
 																				[
 																					"0",
 																					"0",
-																					"pW",
+																					"d.sen.x + 1",
 																					"1"
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5040",
-																			"posy":"4499",
+																			"posx":"5046",
+																			"posy":"4749",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"118",
+																					"compid":"115",
 																					"compname":"color",
 																					"compvalues":
 																					[
@@ -1183,17 +1299,17 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5394",
-																					"posy":"4518",
+																					"posx":"5400",
+																					"posy":"4768",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"119",
+																							"compid":"116",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"5741",
-																							"posy":"4539"
+																							"posx":"5747",
+																							"posy":"4789"
 																						}
 																					]
 																				}
@@ -1201,7 +1317,7 @@
 																		},
 																		{
 																			"addw":"0",
-																			"compid":"120",
+																			"compid":"123",
 																			"compname":"xywh",
 																			"compvalues":
 																			[
@@ -1213,13 +1329,13 @@
 																				]
 																			],
 																			"expanded":"1",
-																			"posx":"5038",
-																			"posy":"4731",
+																			"posx":"5051",
+																			"posy":"4998",
 																			"ui":
 																			[
 																				{
 																					"addw":"0",
-																					"compid":"121",
+																					"compid":"124",
 																					"compname":"color",
 																					"compvalues":
 																					[
@@ -1231,276 +1347,530 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5392",
-																					"posy":"4750",
+																					"posx":"5405",
+																					"posy":"5017",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"122",
+																							"compid":"125",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"5739",
-																							"posy":"4771"
+																							"posx":"5752",
+																							"posy":"5038"
 																						}
 																					]
-																				}
-																			]
-																		}
-																	]
-																},
-																{
-																	"addw":"113",
-																	"compid":"111",
-																	"compname":"ltrb",
-																	"compvalues":
-																	[
-																		[
-																			"0",
-																			"pH",
-																			"d.sen.x",
-																			"pH + 32",
-																			"true"
-																		]
-																	],
-																	"expanded":"1",
-																	"posx":"4579",
-																	"posy":"4953",
-																	"ui":
-																	[
-																		{
-																			"addw":"0",
-																			"compid":"112",
-																			"compname":"color",
-																			"compvalues":
-																			[
-																				[
-																					"240",
-																					"240",
-																					"240"
-																				]
-																			],
-																			"expanded":"1",
-																			"posx":"5035",
-																			"posy":"4973",
-																			"ui":
-																			[
-																				{
-																					"addw":"0",
-																					"compid":"113",
-																					"compname":"fill",
-																					"expanded":"1",
-																					"posx":"5388",
-																					"posy":"4999"
 																				}
 																			]
 																		},
 																		{
 																			"addw":"0",
-																			"compid":"126",
-																			"compname":"xywh",
-																			"compvalues":
-																			[
-																				[
-																					"0",
-																					"0",
-																					"1",
-																					"pH"
-																				]
-																			],
+																			"comment":"댓글영역 날개부분",
+																			"compid":"110",
+																			"compname":"scissor_clear",
 																			"expanded":"1",
-																			"posx":"5034",
-																			"posy":"5183",
+																			"posx":"5050",
+																			"posy":"5245",
 																			"ui":
 																			[
 																				{
-																					"addw":"0",
-																					"compid":"127",
-																					"compname":"color",
+																					"addw":"113",
+																					"compid":"107",
+																					"compname":"ltrb",
 																					"compvalues":
 																					[
 																						[
+																							"d.sen.x",
+																							"-32",
+																							"pW",
 																							"0",
-																							"0",
-																							"0",
-																							"64"
+																							"true"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"5388",
-																					"posy":"5202",
+																					"posx":"5404",
+																					"posy":"5263",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"128",
-																							"compname":"fill",
+																							"compid":"108",
+																							"compname":"color",
+																							"compvalues":
+																							[
+																								[
+																									"215",
+																									"235",
+																									"215"
+																								]
+																							],
 																							"expanded":"1",
-																							"posx":"5735",
-																							"posy":"5223"
-																						}
-																					]
-																				}
-																			]
-																		}
-																	]
-																}
-															]
-														},
-														{
-															"addw":"0",
-															"comment":"댓글들",
-															"compid":"148",
-															"compname":"inner",
-															"compvalues":
-															[
-																[
-																	"0"
-																]
-															],
-															"expanded":"1",
-															"posx":"4231",
-															"posy":"5500",
-															"ui":
-															[
-																{
-																	"addw":"1075",
-																	"compid":"143",
-																	"compinputs":
-																	[
-																		{
-																			"curasset":"'d.hueboard.asset.post.'+ d.hueboard.select.post +'.sentence.'+ d.hueboard.select.sentence +'.ripple.'"
-																		},
-																		{
-																			"currange":"'d.hueboard.range.post.'+ d.hueboard.select.post +'.sentence.'+ d.hueboard.select.sentence +'.ripple.'"
-																		}
-																	],
-																	"compname":"code",
-																	"expanded":"1",
-																	"posx":"4593",
-																	"posy":"5468"
-																},
-																{
-																	"addw":"792",
-																	"compid":"136",
-																	"compname":"loop",
-																	"expanded":"1",
-																	"posx":"4590",
-																	"posy":"5701",
-																	"ui":
-																	[
-																		{
-																			"addw":"60",
-																			"compid":"137",
-																			"compname":"xywh",
-																			"compvalues":
-																			[
-																				[
-																					"5",
-																					"5 + 30 * iV",
-																					"pW - 10",
-																					"25"
-																				]
-																			],
-																			"expanded":"1",
-																			"posx":"5757",
-																			"posy":"5737",
-																			"ui":
-																			[
-																				{
-																					"addw":"0",
-																					"compid":"138",
-																					"compname":"color",
-																					"compvalues":
-																					[
-																						[
-																							"230",
-																							"255",
-																							"230"
-																						]
-																					],
-																					"expanded":"1",
-																					"posx":"6184",
-																					"posy":"5760",
-																					"ui":
-																					[
+																							"posx":"5860",
+																							"posy":"5283",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"109",
+																									"compname":"fill",
+																									"expanded":"1",
+																									"posx":"6213",
+																									"posy":"5309"
+																								}
+																							]
+																						},
 																						{
 																							"addw":"0",
-																							"compid":"139",
-																							"compname":"fill",
+																							"compid":"117",
+																							"compname":"xywh",
+																							"compvalues":
+																							[
+																								[
+																									"0",
+																									"0",
+																									"pW",
+																									"1"
+																								]
+																							],
 																							"expanded":"1",
-																							"posx":"6552",
-																							"posy":"5784"
+																							"posx":"5859",
+																							"posy":"5487",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"118",
+																									"compname":"color",
+																									"compvalues":
+																									[
+																										[
+																											"0",
+																											"0",
+																											"0",
+																											"64"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6213",
+																									"posy":"5506",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"119",
+																											"compname":"fill",
+																											"expanded":"1",
+																											"posx":"6560",
+																											"posy":"5527"
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"addw":"0",
+																							"compid":"120",
+																							"compname":"xywh",
+																							"compvalues":
+																							[
+																								[
+																									"0",
+																									"1",
+																									"1",
+																									"pH - 1"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"5857",
+																							"posy":"5719",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"121",
+																									"compname":"color",
+																									"compvalues":
+																									[
+																										[
+																											"0",
+																											"0",
+																											"0",
+																											"64"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6211",
+																									"posy":"5738",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"122",
+																											"compname":"fill",
+																											"expanded":"1",
+																											"posx":"6558",
+																											"posy":"5759"
+																										}
+																									]
+																								}
+																							]
 																						}
 																					]
 																				},
 																				{
-																					"addw":"0",
-																					"compid":"140",
-																					"compname":"color",
+																					"addw":"113",
+																					"compid":"111",
+																					"compname":"ltrb",
 																					"compvalues":
 																					[
 																						[
 																							"0",
-																							"0",
-																							"0"
+																							"pH",
+																							"d.sen.x",
+																							"pH + 32",
+																							"true"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"6182",
-																					"posy":"5974",
+																					"posx":"5398",
+																					"posy":"5941",
 																					"ui":
 																					[
 																						{
 																							"addw":"0",
-																							"compid":"141",
-																							"compname":"font",
+																							"compid":"112",
+																							"compname":"color",
 																							"compvalues":
 																							[
 																								[
-																									"1.5"
+																									"215",
+																									"235",
+																									"215"
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"6551",
-																							"posy":"5996",
+																							"posx":"5854",
+																							"posy":"5961",
 																							"ui":
 																							[
 																								{
-																									"addw":"253",
-																									"compid":"142",
-																									"compname":"text",
+																									"addw":"0",
+																									"compid":"113",
+																									"compname":"fill",
+																									"expanded":"1",
+																									"posx":"6207",
+																									"posy":"5987"
+																								}
+																							]
+																						},
+																						{
+																							"addw":"0",
+																							"compid":"126",
+																							"compname":"xywh",
+																							"compvalues":
+																							[
+																								[
+																									"0",
+																									"0",
+																									"1",
+																									"pH"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"5853",
+																							"posy":"6171",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"127",
+																									"compname":"color",
 																									"compvalues":
 																									[
 																										[
-																											"'...'@ curasset + iV +'.data.text'",
-																											"leftmiddle",
-																											"right"
+																											"0",
+																											"0",
+																											"0",
+																											"64"
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"6924",
-																									"posy":"6015"
+																									"posx":"6207",
+																									"posy":"6190",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"128",
+																											"compname":"fill",
+																											"expanded":"1",
+																											"posx":"6554",
+																											"posy":"6211"
+																										}
+																									]
 																								}
 																							]
 																						}
 																					]
 																				}
 																			]
+																		},
+																		{
+																			"addw":"0",
+																			"comment":"댓글들",
+																			"compid":"148",
+																			"compname":"inner",
+																			"compvalues":
+																			[
+																				[
+																					"0"
+																				]
+																			],
+																			"expanded":"1",
+																			"posx":"5050",
+																			"posy":"6488",
+																			"ui":
+																			[
+																				{
+																					"addw":"1075",
+																					"compid":"143",
+																					"compinputs":
+																					[
+																						{
+																							"curasset":"'d.hueboard.asset.post.'+ d.hueboard.select.post +'.sentence.'+ d.hueboard.select.sentence +'.ripple.'"
+																						},
+																						{
+																							"currange":"'d.hueboard.range.post.'+ d.hueboard.select.post +'.sentence.'+ d.hueboard.select.sentence +'.ripple.'"
+																						}
+																					],
+																					"compname":"code",
+																					"expanded":"1",
+																					"posx":"5412",
+																					"posy":"6456"
+																				},
+																				{
+																					"addw":"440",
+																					"compid":"204",
+																					"compname":"scroll_view",
+																					"compvalues":
+																					[
+																						[
+																							"'ui_ripple_view'",
+																							"25",
+																							"0 @ currange +'count'",
+																							"vertical",
+																							"1",
+																							"20",
+																							"5",
+																							"20",
+																							"100",
+																							"500"
+																						]
+																					],
+																					"expanded":"1",
+																					"insiders":
+																					[
+																						{
+																							"ballposx":"88",
+																							"ballposy":"21",
+																							"name":"scrollbg",
+																							"ui":
+																							[
+																								{
+																									"addw":"198",
+																									"compid":"206",
+																									"compname":"color",
+																									"compvalues":
+																									[
+																										"ifpressed('scrollbar.ui_ripple_view')",
+																										[
+																											"0",
+																											"64",
+																											"128",
+																											"32"
+																										],
+																										"elifpressed('scrollbg.ui_ripple_view')",
+																										[
+																											"0",
+																											"64",
+																											"128",
+																											"32"
+																										],
+																										"elifhovered('scrollbg.ui_ripple_view')",
+																										[
+																											"0",
+																											"64",
+																											"128",
+																											"32"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6351",
+																									"posy":"6683",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"207",
+																											"compname":"fill",
+																											"expanded":"1",
+																											"posx":"6948",
+																											"posy":"6768"
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"ballposx":"95",
+																							"ballposy":"46",
+																							"name":"scrollbar",
+																							"ui":
+																							[
+																								{
+																									"addw":"198",
+																									"compid":"208",
+																									"compname":"color",
+																									"compvalues":
+																									[
+																										"ifpressed('scrollbar.ui_ripple_view')",
+																										[
+																											"0",
+																											"64",
+																											"128",
+																											"64"
+																										],
+																										"elifpressed('scrollbg.ui_ripple_view')",
+																										[
+																											"0",
+																											"64",
+																											"128",
+																											"32"
+																										],
+																										"elifhovered('scrollbg.ui_ripple_view')",
+																										[
+																											"0",
+																											"64",
+																											"128",
+																											"32"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6351",
+																									"posy":"7019",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"209",
+																											"compname":"fill",
+																											"expanded":"1",
+																											"posx":"6948",
+																											"posy":"7104"
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"ballposx":"81",
+																							"ballposy":"71",
+																							"name":"content",
+																							"ui":
+																							[
+																								{
+																									"addw":"60",
+																									"compid":"137",
+																									"compname":"xywh",
+																									"compvalues":
+																									[
+																										[
+																											"5",
+																											"-2",
+																											"pW + 10",
+																											"pH"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6352",
+																									"posy":"7364",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"140",
+																											"compname":"color",
+																											"compvalues":
+																											[
+																												[
+																													"0",
+																													"0",
+																													"0"
+																												]
+																											],
+																											"expanded":"1",
+																											"posx":"6779",
+																											"posy":"7400",
+																											"ui":
+																											[
+																												{
+																													"addw":"0",
+																													"compid":"141",
+																													"compname":"font",
+																													"compvalues":
+																													[
+																														[
+																															"1.5"
+																														]
+																													],
+																													"expanded":"1",
+																													"posx":"7148",
+																													"posy":"7422",
+																													"ui":
+																													[
+																														{
+																															"addw":"596",
+																															"compid":"142",
+																															"compname":"text",
+																															"compvalues":
+																															[
+																																[
+																																	"'['+ ('noname'@ curasset + iV +'.author') +'] '+ ('...'@ curasset + iV +'.data.text')",
+																																	"leftmiddle",
+																																	"right"
+																																]
+																															],
+																															"expanded":"1",
+																															"posx":"7521",
+																															"posy":"7441"
+																														}
+																													]
+																												}
+																											]
+																										}
+																									]
+																								}
+																							]
+																						}
+																					],
+																					"posx":"5412",
+																					"posy":"6910"
+																				}
+																			]
 																		}
-																	],
-																	"uiloop":"0 @ currange + 'count'",
-																	"uiname":"i"
+																	]
 																}
 															]
 														}
-													]
+													],
+													"uiloop":"0 @ 'd.hueboard.range.post.' + d.hueboard.select.post + '.sentence.count'",
+													"uiname":"i"
 												}
 											]
 										}
 									],
-									"uiloop":"0 @ 'd.hueboard.range.post.' + d.hueboard.select.post + '.sentence.count'",
-									"uiname":"i"
+									"posx":"1994",
+									"posy":"3165"
 								}
 							]
 						}
