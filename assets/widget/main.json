@@ -1835,7 +1835,7 @@
 																															"compvalues":
 																															[
 																																[
-																																	"'['+ ('noname'@ curasset + iV +'.author') +'] '+ ('...'@ curasset + iV +'.data.text')",
+																																	"'['+ ('noname'@ curasset + pV +'.author') +'] '+ ('...'@ curasset + pV +'.data.text')",
 																																	"leftmiddle",
 																																	"right"
 																																]
