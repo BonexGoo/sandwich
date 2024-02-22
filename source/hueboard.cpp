@@ -141,6 +141,13 @@ ZAY_VIEW_API OnGesture(GestureType type, sint32 x, sint32 y)
         else ReleaseMsec = CurReleaseMsec;
         m->mIsWindowMoving = false;
     }
+    else if(type == GT_WheelUp || type == GT_WheelDown)
+    {
+        if(type == GT_WheelDown)
+            m->mZoomPercent = Math::Min(m->mZoomPercent + 5, 600);
+        else m->mZoomPercent = Math::Max(30, m->mZoomPercent - 5);
+        ZayWidgetDOM::SetValue("hueboard.zoom", String::FromInteger(m->mZoomPercent));
+    }
 }
 
 ZAY_VIEW_API OnRender(ZayPanel& panel)
@@ -161,6 +168,7 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 
 hueboardData::hueboardData()
 {
+    ZayWidgetDOM::SetValue("hueboard.zoom", String::FromInteger(mZoomPercent));
     ZayWidgetDOM::SetValue("hueboard.select.post", "-1");
     ZayWidgetDOM::SetValue("hueboard.select.sentence", "-1");
 

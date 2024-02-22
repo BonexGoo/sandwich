@@ -37,6 +37,7 @@ public: // 윈도우
     bool mIsFullScreen {false};
     bool mIsWindowMoving {false};
     rect128 mSavedNormalRect {0, 0, 0, 0};
+    sint32 mZoomPercent {100};
 
 public: // 위젯
     uint64 mUpdateMsec {0};
