@@ -10,6 +10,9 @@ ZAY_DECLARE_VIEW_CLASS("hueboardView", hueboardData)
 
 extern sint32 gProgramWidth;
 extern sint32 gProgramHeight;
+extern String gBoardName;
+extern String gServerHost;
+const sint32 gServerPort = 8981;
 
 ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
 {
@@ -35,12 +38,10 @@ ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
             m->invalidate(2);
         }
 
-        // 위젯 틱실행
-        if(m->mWidgetMain && m->mWidgetMain->TickOnce())
+        // 위젯과 통신 틱실행
+        if(m->mWidget && m->mWidget->TickOnce())
             m->invalidate();
-
-        // 통신 틱실행
-        if(m->mClient.TickOnce())
+        if(m->mClient && m->mClient->TickOnce())
             m->invalidate();
     }
     else if(type == CT_Activate && !boolo(in).ConstValue())
@@ -57,10 +58,24 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
             if(m->mUpdateMsec < Msec)
                 m->mUpdateMsec = Msec;
         }
+        else if(!String::Compare(topic, "InitHueBoard"))
+        {
+            const sint32 ShowLogin = sint32o(in).ConstValue();
+            m->InitBoard();
+            ZayWidgetDOM::SetValue("hueboard.showlogin", String::FromInteger(ShowLogin));
+            m->invalidate();
+        }
+        else if(!String::Compare(topic, "Reconnect"))
+        {
+            gBoardName = ZayWidgetDOM::GetComment("program.boardname");
+            gServerHost = ZayWidgetDOM::GetComment("program.serverhost");
+            m->RemoveSet();
+            m->CreateSet();
+        }
     }
     else if(type == NT_SocketReceive)
     {
-        if(m->mClient.TryRecvOnce())
+        if(m->mClient && m->mClient->TryRecvOnce())
             m->invalidate();
     }
     else if(type == NT_ZayWidget)
@@ -79,21 +94,24 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
                 ZayWidgetDOM::SetComment("editor", "");
                 m->setCapture("ui_editor");
 
-                // 새 리플추가
-                if(ZayWidgetDOM::GetValue("hueboard.select.sentence").ToInteger() != -1)
+                if(m->mClient)
                 {
-                    if(0 < Text.Length())
-                        m->mClient.NewRipple(Text);
+                    // 새 리플추가
+                    if(ZayWidgetDOM::GetValue("hueboard.select.sentence").ToInteger() != -1)
+                    {
+                        if(0 < Text.Length())
+                            m->mClient->NewRipple(Text);
+                    }
+                    // 새 문장추가
+                    else if(ZayWidgetDOM::GetValue("hueboard.select.post").ToInteger() != -1)
+                    {
+                        if(0 < Text.Length())
+                            m->mClient->NewSentence(Text);
+                    }
+                    // 새 포스트추가
+                    else if(0 < Text.Length())
+                        m->mClient->NewPost(Text);
                 }
-                // 새 문장추가
-                else if(ZayWidgetDOM::GetValue("hueboard.select.post").ToInteger() != -1)
-                {
-                    if(0 < Text.Length())
-                        m->mClient.NewSentence(Text);
-                }
-                // 새 포스트추가
-                else if(0 < Text.Length())
-                    m->mClient.NewPost(Text);
             }
         }
     }
@@ -144,9 +162,10 @@ ZAY_VIEW_API OnGesture(GestureType type, sint32 x, sint32 y)
     else if(type == GT_WheelUp || type == GT_WheelDown)
     {
         if(type == GT_WheelDown)
-            m->mZoomPercent = Math::Min(m->mZoomPercent + 5, 600);
+            m->mZoomPercent = Math::Min(m->mZoomPercent + 5, 300);
         else m->mZoomPercent = Math::Max(30, m->mZoomPercent - 5);
         ZayWidgetDOM::SetValue("hueboard.zoom", String::FromInteger(m->mZoomPercent));
+        m->invalidate();
     }
 }
 
@@ -154,8 +173,8 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 {
     ZAY_XYWH(panel, 0, 0, gProgramWidth, gProgramHeight)
     {
-        if(m->mWidgetMain)
-            m->mWidgetMain->Render(panel);
+        if(m->mWidget)
+            m->mWidget->Render(panel);
         else ZAY_RGBA(panel, 255, 0, 0, 64)
             panel.fill();
 
@@ -168,17 +187,14 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 
 hueboardData::hueboardData()
 {
-    ZayWidgetDOM::SetValue("hueboard.zoom", String::FromInteger(mZoomPercent));
-    ZayWidgetDOM::SetValue("hueboard.select.post", "-1");
-    ZayWidgetDOM::SetValue("hueboard.select.sentence", "-1");
-
-    mWidgetMain = new ZayWidget();
-    InitWidget(*mWidgetMain, "main");
-    mWidgetMain->Reload("widget/main.json");
+    ZayWidgetDOM::SetComment("program.boardname", gBoardName);
+    ZayWidgetDOM::SetComment("program.serverhost", gServerHost);
+    CreateSet();
 }
 
 hueboardData::~hueboardData()
 {
+    RemoveSet();
 }
 
 void hueboardData::SetCursor(CursorRole role)
@@ -463,6 +479,42 @@ void hueboardData::SetNormalWindow()
     }
 }
 
+void hueboardData::CreateSet()
+{
+    // 파일이 존재하지 않으면 복사
+    const String WidgetPath = String::Format("widget/%s.json", (chars) gBoardName.Lower());
+    if(!Asset::Exist(WidgetPath))
+        String::FromAsset("widget/lobby.json").ToAsset(WidgetPath, true);
+
+    // 위젯구성과 서버연결
+    InitBoard();
+    mWidget = new ZayWidget();
+    InitWidget(*mWidget, "main");
+    mWidget->Reload(WidgetPath);
+    mClient = new HueBoardClient();
+    mClient->Connect(gBoardName, gServerHost, gServerPort);
+
+    // 윈도우명
+    Platform::SetWindowName("HueBoard[" + gBoardName + "]");
+}
+
+void hueboardData::RemoveSet()
+{
+    delete mWidget;
+    delete mClient;
+    mWidget = nullptr;
+    mClient = nullptr;
+}
+
+void hueboardData::InitBoard()
+{
+    ZayWidgetDOM::RemoveVariables("hueboard.");
+    ZayWidgetDOM::SetValue("hueboard.name", "'" + gBoardName + "'");
+    ZayWidgetDOM::SetValue("hueboard.zoom", String::FromInteger(mZoomPercent));
+    ZayWidgetDOM::SetValue("hueboard.select.post", "-1");
+    ZayWidgetDOM::SetValue("hueboard.select.sentence", "-1");
+}
+
 void hueboardData::InitWidget(ZayWidget& widget, chars name)
 {
     widget.Init(name, nullptr,
@@ -477,15 +529,11 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
                     mUpdateMsec = UpdateMsec;
             }
         })
-        // 통신연결
-        .AddGlue("connect", ZAY_DECLARE_GLUE(params, this)
+        // 재접속
+        .AddGlue("reconnect", ZAY_DECLARE_GLUE(params, this)
         {
-            if(params.ParamCount() == 2)
-            {
-                const String Host = params.Param(0).ToText();
-                const sint32 Port = params.Param(1).ToInteger();
-                mClient.Connect(Host, Port);
-            }
+            Platform::BroadcastNotify("Reconnect", nullptr);
+            clearCapture();
         })
         // 로그인
         .AddGlue("login", ZAY_DECLARE_GLUE(params, this)
@@ -493,16 +541,18 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             if(params.ParamCount() == 2)
             {
                 const String Author = ZayWidgetDOM::GetComment(params.Param(0).ToText());
-                const String PasswordSeed = ZayWidgetDOM::GetComment(params.Param(1).ToText()) + "_HueBoard_" + Author;
+                const String PasswordSeed = ZayWidgetDOM::GetComment(params.Param(1).ToText()) + "_" + gBoardName + "_" + Author;
                 const String PasswordMD5 = AddOn::Ssl::ToMD5((bytes)(chars) PasswordSeed, PasswordSeed.Length());
-                mClient.Login(Author, PasswordMD5);
+                if(mClient)
+                    mClient->Login(Author, PasswordMD5);
                 clearCapture();
             }
         })
         // 로그아웃
         .AddGlue("logout", ZAY_DECLARE_GLUE(params, this)
         {
-            mClient.Logout();
+            if(mClient)
+                mClient->Logout();
             clearCapture();
         })
         // 요소선택(포스트 또는 문장)
@@ -512,7 +562,8 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             {
                 const String Type = params.Param(0).ToText();
                 const sint32 Index = params.Param(1).ToInteger();
-                mClient.Select(Type, Index);
+                if(mClient)
+                    mClient->Select(Type, Index);
                 clearCapture();
             }
         })

@@ -4,7 +4,7 @@
 class HueBoardClient
 {
 public:
-    void Connect(chars host, sint32 port);
+    void Connect(chars programid, chars host, sint32 port);
     void Login(chars author, chars password);
     void Logout();
     void NewPost(chars text);
@@ -40,6 +40,7 @@ private:
     void OnErrored(const Context& json);
 
 public: // 통신
+    String mProgramID;
     String mHost;
     sint32 mPort {0};
     id_socket mSocket {nullptr};

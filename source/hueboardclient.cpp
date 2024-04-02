@@ -4,8 +4,9 @@
 #include <platform/boss_platform.hpp>
 #include <service/boss_zaywidget.hpp>
 
-void HueBoardClient::Connect(chars host, sint32 port)
+void HueBoardClient::Connect(chars programid, chars host, sint32 port)
 {
+    mProgramID = programid;
     mHost = host;
     mPort = port;
     Reconnect();
@@ -13,7 +14,7 @@ void HueBoardClient::Connect(chars host, sint32 port)
 
 void HueBoardClient::Login(chars author, chars password)
 {
-    SendLogin("HueBoard", author, password);
+    SendLogin(mProgramID, author, password);
 }
 
 void HueBoardClient::Logout()
@@ -85,7 +86,7 @@ bool HueBoardClient::TickOnce()
         if(mNeedLogin)
         {
             mNeedLogin = false;
-            SendFastLogin("HueBoard");
+            SendFastLogin(mProgramID);
         }
         // 지연된 송신처리
         for(sint32 i = 0, iend = mSendTasks.Count(); i < iend; ++i)
@@ -192,8 +193,7 @@ void HueBoardClient::SendLogout()
 
     mAuthor.Empty();
     mToken.Empty();
-    ZayWidgetDOM::RemoveVariables("hueboard.");
-    ZayWidgetDOM::SetValue("hueboard.showlogin", "1");
+    Platform::BroadcastNotify("InitHueBoard", sint32o(1));
 }
 
 void HueBoardClient::SendLockAsset(chars lockid, chars route)

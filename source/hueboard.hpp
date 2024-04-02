@@ -20,6 +20,9 @@ public:
     bool IsFullScreen();
     void SetFullScreen();
     void SetNormalWindow();
+    void CreateSet();
+    void RemoveSet();
+    void InitBoard();
     void InitWidget(ZayWidget& widget, chars name);
 
 public:
@@ -39,11 +42,9 @@ public: // 윈도우
     rect128 mSavedNormalRect {0, 0, 0, 0};
     sint32 mZoomPercent {100};
 
-public: // 위젯
+public: // 위젯과 통신
     uint64 mUpdateMsec {0};
     uint64 mLastModifyTime {0};
-    ZayWidget* mWidgetMain {nullptr};
-
-public: // 통신
-    HueBoardClient mClient;
+    ZayWidget* mWidget {nullptr};
+    HueBoardClient* mClient {nullptr};
 };
