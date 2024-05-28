@@ -22,7 +22,7 @@
 #define BOSS_NEED_ADDON_OGG        0
 #define BOSS_NEED_ADDON_OPENCV     0
 #define BOSS_NEED_ADDON_PSD        0
-#define BOSS_NEED_ADDON_SSL        1
+#define BOSS_NEED_ADDON_SSL        0
 #define BOSS_NEED_ADDON_TENSORFLOW 0
 #define BOSS_NEED_ADDON_TESSERACT  0
 #define BOSS_NEED_ADDON_TIF        0
@@ -41,7 +41,7 @@
 #define BOSS_NEED_PROFILE          0
 #define BOSS_NEED_RELEASE_TRACE    1
 #define BOSS_NEED_NATIVE_OPENGL    0
-#define BOSS_NEED_EMBEDDED_ASSET   (BOSS_WASM | BOSS_WINDOWS_MINGW)
-#define BOSS_NEED_EMBEDDED_CACHE   (BOSS_WASM | BOSS_WINDOWS_MINGW)
+#define BOSS_NEED_EMBEDDED_ASSET   (BOSS_NDEBUG | BOSS_WASM)
+#define BOSS_NEED_EMBEDDED_CACHE   (BOSS_WASM)
 #define BOSS_ASSET_IGNORES         {".json.pipe", ".json.old", ".json.f5"}
 #define BOSS_SUMMIT_DOMAIN         "summit.zaylab.com:8109"

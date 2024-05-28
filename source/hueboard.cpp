@@ -2,6 +2,10 @@
 #include "hueboard.hpp"
 
 #include <resource.hpp>
+#if BOSS_WASM
+    #include <boss_assets.hpp>
+#endif
+
 #include <service/boss_zaywidget.hpp>
 #include <format/boss_bmp.hpp>
 #include <format/boss_flv.hpp>
@@ -115,6 +119,15 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
             }
         }
     }
+    else if(type == NT_ZayAtlas)
+    {
+        if(!String::Compare(topic, "AtlasUpdated"))
+        {
+            const String AtlasJson = R::PrintUpdatedAtlas();
+            if(m->mWidget)
+                m->mWidget->UpdateAtlas(AtlasJson);
+        }
+    }
 }
 
 ZAY_VIEW_API OnGesture(GestureType type, sint32 x, sint32 y)
@@ -179,7 +192,7 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
             panel.fill();
 
         // 윈도우시스템
-        #if !BOSS_ANDROID
+        #if BOSS_WINDOWS
             m->RenderWindowSystem(panel);
         #endif
     }
@@ -187,6 +200,33 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 
 hueboardData::hueboardData()
 {
+    #if BOSS_WASM
+        for(sint32 i = 0, iend = BOSS_EMBEDDED_ASSET_COUNT; i < iend; ++i)
+        {
+            const String CurPath = gSortedEmbeddedFiles[i].mPath;
+            if(!String::CompareNoCase(CurPath, strpair("font/")))
+            {
+                if(buffer NewFont = Asset::ToBuffer(CurPath))
+                {
+                    auto CurFontName = Platform::Utility::CreateSystemFont((bytes) NewFont, Buffer::CountOf(NewFont));
+                    Buffer::Free(NewFont);
+                    ZayWidgetDOM::SetValue("fonts." + CurPath.Offset(5), "'" + CurFontName + "'");
+                }
+            }
+        }
+    #else
+        Platform::File::Search(Platform::File::RootForAssets() + "font",
+            [](chars itemname, payload data)->void
+            {
+                if(buffer NewFont = Asset::ToBuffer(String::Format("font/%s", itemname)))
+                {
+                    auto CurFontName = Platform::Utility::CreateSystemFont((bytes) NewFont, Buffer::CountOf(NewFont));
+                    Buffer::Free(NewFont);
+                    ZayWidgetDOM::SetValue(String::Format("fonts.%s", itemname), "'" + CurFontName + "'");
+                }
+            }, nullptr, false);
+    #endif
+
     ZayWidgetDOM::SetComment("program.boardname", gBoardName);
     ZayWidgetDOM::SetComment("program.serverhost", gServerHost);
     CreateSet();
@@ -249,7 +289,7 @@ void hueboardData::RenderWindowSystem(ZayPanel& panel)
     ZAY_ZOOM(panel, 0.8)
     {
         const bool Hovered = ((panel.state("ui_win_min") & (PS_Focused | PS_Dropping)) == PS_Focused);
-        panel.icon(R((Hovered)? "btn_minimize_h" : "btn_minimize_n"), UIA_CenterMiddle);
+        panel.icon(R((Hovered)? "btn_minimimize_h_" : "btn_minimimize_n"), UIA_CenterMiddle);
     }
 
     // 최대화버튼
@@ -266,7 +306,7 @@ void hueboardData::RenderWindowSystem(ZayPanel& panel)
     ZAY_ZOOM(panel, 0.8)
     {
         const bool Hovered = ((panel.state("ui_win_max") & (PS_Focused | PS_Dropping)) == PS_Focused);
-        panel.icon(R((Hovered)? "btn_downsizing_h" : "btn_downsizing_n"), UIA_CenterMiddle);
+        panel.icon(R((Hovered)? "btn_upsizing_h_p" : "btn_upsizing_n"), UIA_CenterMiddle);
     }
 
     // 종료버튼
@@ -279,7 +319,7 @@ void hueboardData::RenderWindowSystem(ZayPanel& panel)
     ZAY_ZOOM(panel, 0.8)
     {
         const bool Hovered = ((panel.state("ui_win_close") & (PS_Focused | PS_Dropping)) == PS_Focused);
-        panel.icon(R((Hovered)? "btn_close_h" : "btn_close_n"), UIA_CenterMiddle);
+        panel.icon(R((Hovered)? "btn_close_h_p" : "btn_close_n"), UIA_CenterMiddle);
     }
 
     // 아웃라인
@@ -482,9 +522,9 @@ void hueboardData::SetNormalWindow()
 void hueboardData::CreateSet()
 {
     // 파일이 존재하지 않으면 복사
-    const String WidgetPath = String::Format("widget/%s.json", (chars) gBoardName.Lower());
+    const String WidgetPath = String::Format("widget/%s.zay", (chars) gBoardName.Lower());
     if(!Asset::Exist(WidgetPath))
-        String::FromAsset("widget/lobby.json").ToAsset(WidgetPath, true);
+        String::FromAsset("widget/lobby.zay").ToAsset(WidgetPath, true);
 
     // 위젯구성과 서버연결
     InitBoard();
@@ -542,7 +582,7 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
             {
                 const String Author = ZayWidgetDOM::GetComment(params.Param(0).ToText());
                 const String PasswordSeed = ZayWidgetDOM::GetComment(params.Param(1).ToText()) + "_" + gBoardName + "_" + Author;
-                const String PasswordMD5 = AddOn::Ssl::ToMD5((bytes)(chars) PasswordSeed, PasswordSeed.Length());
+                const String PasswordMD5 = PasswordSeed;//AddOn::Ssl::ToMD5((bytes)(chars) PasswordSeed, PasswordSeed.Length());
                 if(mClient)
                     mClient->Login(Author, PasswordMD5);
                 clearCapture();
@@ -621,7 +661,7 @@ void hueboardData::InitWidget(ZayWidget& widget, chars name)
 
 bool hueboardData::RenderUC_Editor(ZayPanel& panel)
 {
-    if(ZayControl::RenderEditBox(panel, "ui_editor", "editor", 10, true, false))
+    if(ZayControl::RenderEditBox(panel, "ui_editor", "editor", 10, true, false, false))
         panel.repaint();
     return true;
 }

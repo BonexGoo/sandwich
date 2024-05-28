@@ -21,16 +21,15 @@ bool PlatformInit()
         Platform::InitForMDI(true);
         if(Asset::RebuildForEmbedded())
             return false;
-
-        String DataPath = Platform::File::RootForData();
-        Platform::File::ResetAssetsRemRoot(DataPath);
+        //String DataPath = Platform::File::RootForData();
+        //Platform::File::ResetAssetsRemRoot(DataPath);
     #endif
 
     // 보드정보
     String BoardInfoString = String::FromAsset("boardinfo.json");
     Context BoardInfo(ST_Json, SO_OnlyReference, BoardInfoString, BoardInfoString.Length());
     gBoardName = BoardInfo("boardname").GetText("Lobby");
-    gServerHost = BoardInfo("serverhost").GetText("127.0.0.1");
+    gServerHost = BoardInfo("serverhost").GetText("183.111.181.137");
 
     Platform::SetViewCreator(ZayView::Creator);
     Platform::SetWindowName("HueBoard");
@@ -53,7 +52,7 @@ bool PlatformInit()
     const String AtlasInfoString = String::FromAsset("atlasinfo.json");
     Context AtlasInfo(ST_Json, SO_OnlyReference, AtlasInfoString, AtlasInfoString.Length());
     R::SetAtlasDir("image");
-    R::AddAtlas("ui_atlaskey.png", "atlas.png", AtlasInfo);
+    R::AddAtlas("ui_atlaskey2.png", "main.png", AtlasInfo, 2);
     if(R::IsAtlasUpdated()) R::RebuildAll();
     Platform::AddProcedure(PE_100MSEC,
         [](payload data)->void

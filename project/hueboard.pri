@@ -10,7 +10,8 @@ QT_PACKAGE_RPATH = no #ok #no
 }
 
 wasm{
-    QMAKE_LFLAGS += -s TOTAL_MEMORY=26214400
+    QT -= bluetooth
+    QMAKE_LFLAGS += -s TOTAL_MEMORY=65536000
 }
 
 INCLUDEPATH += ../source-gen
@@ -21,18 +22,14 @@ HEADERS += ../source-gen/boss_buildtag.hpp
 INCLUDEPATH += ../source
 SOURCES += ../source/hueboard.cpp
 HEADERS += ../source/hueboard.hpp
+SOURCES += ../source/hueboardclient.cpp
+HEADERS += ../source/hueboardclient.hpp
 SOURCES += ../source/main.cpp
 SOURCES += ../source/resource.cpp
 HEADERS += ../source/resource.hpp
 
-ASSETS_FONT.files += ../assets/font
-ASSETS_FONT.path = /assets
-ASSETS_HTML.files += ../assets/html
-ASSETS_HTML.path = /assets
 ASSETS_IMAGE.files += ../assets/image
 ASSETS_IMAGE.path = /assets
-ASSETS_SOUND.files += ../assets/sound
-ASSETS_SOUND.path = /assets
 ASSETS_WIDGET.files += ../assets/widget
 ASSETS_WIDGET.path = /assets
 
@@ -41,10 +38,7 @@ win32{
 }
 
 macx{
-    QMAKE_BUNDLE_DATA += ASSETS_FONT
-    QMAKE_BUNDLE_DATA += ASSETS_HTML
     QMAKE_BUNDLE_DATA += ASSETS_IMAGE
-    QMAKE_BUNDLE_DATA += ASSETS_SOUND
     QMAKE_BUNDLE_DATA += ASSETS_WIDGET
     QMAKE_INFO_PLIST = $$PWD/../common/macx/Info.plist
     QMAKE_ASSET_CATALOGS += $$PWD/../common/macx/Assets.xcassets
@@ -52,10 +46,7 @@ macx{
 }
 
 ios{
-    QMAKE_BUNDLE_DATA += ASSETS_FONT
-    QMAKE_BUNDLE_DATA += ASSETS_HTML
     QMAKE_BUNDLE_DATA += ASSETS_IMAGE
-    QMAKE_BUNDLE_DATA += ASSETS_SOUND
     QMAKE_BUNDLE_DATA += ASSETS_WIDGET
     QMAKE_INFO_PLIST = $$PWD/../common/ios/Info.plist
     QMAKE_ASSET_CATALOGS += $$PWD/../common/ios/Assets.xcassets
@@ -63,10 +54,7 @@ ios{
 }
 
 android{
-    INSTALLS += ASSETS_FONT
-    INSTALLS += ASSETS_HTML
     INSTALLS += ASSETS_IMAGE
-    INSTALLS += ASSETS_SOUND
     INSTALLS += ASSETS_WIDGET
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../common/android
 }
