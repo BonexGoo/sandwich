@@ -12,6 +12,7 @@ QT_PACKAGE_RPATH = no #ok #no
 wasm{
     QT -= bluetooth
     QMAKE_LFLAGS += -s TOTAL_MEMORY=65536000
+    QMAKE_LFLAGS += -s ASYNCIFY=1 -lidbfs.js
 }
 
 INCLUDEPATH += ../source-gen
