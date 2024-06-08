@@ -28,11 +28,11 @@ bool PlatformInit()
     // 보드정보
     String BoardInfoString = String::FromAsset("boardinfo.json");
     Context BoardInfo(ST_Json, SO_OnlyReference, BoardInfoString, BoardInfoString.Length());
-    gBoardName = BoardInfo("boardname").GetText("Lobby");
-    gServerHost = BoardInfo("serverhost").GetText("183.111.181.137");
+    gBoardName = BoardInfo("boardname").GetText("sandwich");
+    gServerHost = BoardInfo("serverhost").GetText("127.0.0.1");
 
     Platform::SetViewCreator(ZayView::Creator);
-    Platform::SetWindowName("HueBoard");
+    Platform::SetWindowName("sand-wich.com");
 
     // 윈도우 위치설정
     String WindowInfoString = String::FromAsset("windowinfo.json");
@@ -64,7 +64,7 @@ bool PlatformInit()
             }
         });
 
-    Platform::SetWindowView("hueboardView");
+    Platform::SetWindowView("sandwichView");
     return true;
 }
 

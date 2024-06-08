@@ -1,0 +1,368 @@
+﻿#include <boss.hpp>
+#include "sandwichclient.hpp"
+
+#include <platform/boss_platform.hpp>
+#include <service/boss_zaywidget.hpp>
+
+void SandWichClient::Connect(chars programid, chars host, sint32 port)
+{
+    mProgramID = programid;
+    mHost = host;
+    mPort = port;
+    Reconnect();
+}
+
+void SandWichClient::Login(chars author, chars password)
+{
+    SendLogin(mProgramID, author, password);
+}
+
+void SandWichClient::Logout()
+{
+    SendLogout();
+}
+
+void SandWichClient::NewPost(chars text)
+{
+    mNewPost = text;
+    SendLockAsset("NewPost", "post<next>");
+}
+
+void SandWichClient::NewSentence(chars text)
+{
+    mNewSentence = text;
+    const String SelPost = ZayWidgetDOM::GetValue("sandwich.select.post").ToText();
+    if(SelPost != "-1")
+        SendLockAsset("NewSentence", "post." + SelPost + ".sentence<next>");
+}
+
+void SandWichClient::NewRipple(chars text)
+{
+    mNewRipple = text;
+    const String SelPost = ZayWidgetDOM::GetValue("sandwich.select.post").ToText();
+    const String SelSentence = ZayWidgetDOM::GetValue("sandwich.select.sentence").ToText();
+    if(SelPost != "-1" && SelSentence != "-1")
+        SendLockAsset("NewRipple", "post." + SelPost + ".sentence." + SelSentence + ".ripple<next>");
+}
+
+void SandWichClient::Select(chars type, sint32 index)
+{
+    ZayWidgetDOM::SetValue(String::Format("sandwich.select.%s", type), String::FromInteger(index));
+    if(index != -1)
+    {
+        String Path;
+        if(!String::Compare(type, "post"))
+            Path = String::Format("post.%d.sentence", index);
+        else if(!String::Compare(type, "sentence"))
+        {
+            const sint32 PostIndex = ZayWidgetDOM::GetValue("sandwich.select.post").ToInteger();
+            Path = String::Format("post.%d.sentence.%d.ripple", PostIndex, index);
+        }
+        else return;
+
+        // 어셋포커싱
+        const String DomPath = String::Format("sandwich.range.%s.count", (chars) Path);
+        const sint32 SentenceCount = ZayWidgetDOM::GetValue(DomPath).ToInteger();
+        for(sint32 i = 0; i < SentenceCount; ++i)
+        {
+            const String CurRoute = String::Format("%s.%d", (chars) Path, i);
+            SendFocusAsset(CurRoute);
+        }
+    }
+}
+
+bool SandWichClient::TickOnce()
+{
+    bool NeedUpdate = false;
+    // 통신 연결확인
+    if(!mConnected && Platform::Socket::IsConnected(mSocket))
+    {
+        mConnected = true;
+        NeedUpdate = true;
+    }
+    if(mConnected)
+    {
+        // 필요시 로그인
+        if(mNeedLogin)
+        {
+            mNeedLogin = false;
+            SendFastLogin(mProgramID);
+        }
+        // 지연된 송신처리
+        for(sint32 i = 0, iend = mSendTasks.Count(); i < iend; ++i)
+            Platform::Socket::Send(mSocket, (bytes)(chars) mSendTasks[i],
+                mSendTasks[i].Length() + 1, 3000, true);
+        mSendTasks.Clear();
+    }
+    return NeedUpdate;
+}
+
+bool SandWichClient::TryRecvOnce()
+{
+    bool NeedUpdate = false;
+    while(0 < Platform::Socket::RecvAvailable(mSocket))
+    {
+        uint08 RecvTemp[4096];
+        sint32 RecvSize = Platform::Socket::Recv(mSocket, RecvTemp, 4096);
+        if(0 < RecvSize)
+            Memory::Copy(mRecvQueue.AtDumpingAdded(RecvSize), RecvTemp, RecvSize);
+        else if(RecvSize < 0)
+            break;
+
+        sint32 QueueEndPos = 0;
+        for(sint32 iend = mRecvQueue.Count(), i = iend - RecvSize; i < iend; ++i)
+        {
+            if(mRecvQueue[i] == '\0')
+            {
+                // 스트링 읽기
+                const String Packet((chars) &mRecvQueue[QueueEndPos], i - QueueEndPos);
+                QueueEndPos = i + 1;
+                if(0 < Packet.Length())
+                {
+                    const Context RecvJson(ST_Json, SO_OnlyReference, Packet);
+                    const String Type = RecvJson("type").GetText();
+
+                    branch;
+                    jump(Type == "Logined") OnLogined(RecvJson);
+                    jump(Type == "AssetLocked") OnAssetLocked(RecvJson);
+                    jump(Type == "AssetUpdated") OnAssetUpdated(RecvJson);
+                    jump(Type == "AssetChanged") OnAssetChanged(RecvJson);
+                    jump(Type == "RangeUpdated") OnRangeUpdated(RecvJson);
+                    jump(Type == "Errored") OnErrored(RecvJson);
+                }
+                NeedUpdate = true;
+            }
+        }
+        if(0 < QueueEndPos)
+            mRecvQueue.SubtractionSection(0, QueueEndPos);
+    }
+    return NeedUpdate;
+}
+
+void SandWichClient::Reconnect()
+{
+    mConnected = false;
+    Platform::Socket::Close(mSocket);
+    mSocket = Platform::Socket::OpenForWS(false);
+    Platform::Socket::ConnectAsync(mSocket, mHost, mPort);
+}
+
+void SandWichClient::Send(const Context& json)
+{
+    const String NewPacket = json.SaveJson();
+    if(mConnected)
+    {
+        const sint32 Result = Platform::Socket::Send(mSocket,
+            (bytes)(chars) NewPacket, NewPacket.Length() + 1, 3000, true);
+        if(Result < 0)
+        {
+            mConnected = false;
+            Reconnect();
+        }
+    }
+    if(!mConnected)
+        mSendTasks.AtAdding() = NewPacket;
+}
+
+void SandWichClient::SendFastLogin(chars programid)
+{
+    Context Json;
+    Json.At("type").Set("Login");
+    Json.At("programid").Set(programid);
+    Json.At("deviceid").Set(Platform::Utility::GetDeviceID());
+    Send(Json);
+}
+
+void SandWichClient::SendLogin(chars programid, chars author, chars password)
+{
+    Context Json;
+    Json.At("type").Set("LoginUpdate");
+    Json.At("programid").Set(programid);
+    Json.At("deviceid").Set(Platform::Utility::GetDeviceID());
+    Json.At("author").Set(author);
+    Json.At("password").Set(password);
+    Send(Json);
+}
+
+void SandWichClient::SendLogout()
+{
+    Context Json;
+    Json.At("type").Set("Logout");
+    Json.At("token").Set(mToken);
+    Send(Json);
+
+    mAuthor.Empty();
+    mToken.Empty();
+    Platform::BroadcastNotify("InitSandWich", sint32o(1));
+}
+
+void SandWichClient::SendLockAsset(chars lockid, chars route)
+{
+    Context Json;
+    Json.At("type").Set("LockAsset");
+    Json.At("token").Set(mToken);
+    Json.At("lockid").Set(lockid);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void SandWichClient::SendUnlockAsset(chars lockid, const Context& data)
+{
+    Context Json;
+    Json.At("type").Set("UnlockAsset");
+    Json.At("token").Set(mToken);
+    Json.At("lockid").Set(lockid);
+    Json.At("data").LoadJson(SO_NeedCopy, data.SaveJson());
+    Send(Json);
+}
+
+void SandWichClient::SendFocusAsset(chars route)
+{
+    Context Json;
+    Json.At("type").Set("FocusAsset");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void SandWichClient::SendUnfocusAsset(chars route)
+{
+    Context Json;
+    Json.At("type").Set("UnfocusAsset");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void SandWichClient::SendFocusRange(chars route)
+{
+    Context Json;
+    Json.At("type").Set("FocusRange");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void SandWichClient::SendUnfocusRange(chars route)
+{
+    Context Json;
+    Json.At("type").Set("UnfocusRange");
+    Json.At("token").Set(mToken);
+    Json.At("route").Set(route);
+    Send(Json);
+}
+
+void SandWichClient::OnLogined(const Context& json)
+{
+    mAuthor = json("author").GetText();
+    mToken = json("token").GetText();
+    ZayWidgetDOM::SetValue("sandwich.showlogin", "0");
+    ZayWidgetDOM::SetValue("sandwich.author", "'" + mAuthor + "'");
+    ZayWidgetDOM::SetValue("sandwich.token", "'" + mToken + "'");
+    ZayWidgetDOM::RemoveVariables("sandwich.login.");
+    SendFocusRange("post");
+}
+
+void SandWichClient::OnAssetLocked(const Context& json)
+{
+    const String LockID = json("lockid").GetText();
+    if(LockID == "NewPost")
+    {
+        Context Data;
+        Data.At("text").Set(mNewPost);
+        SendUnlockAsset(LockID, Data);
+    }
+    else if(LockID == "NewSentence")
+    {
+        Context Data;
+        Data.At("text").Set(mNewSentence);
+        SendUnlockAsset(LockID, Data);
+    }
+    else if(LockID == "NewRipple")
+    {
+        Context Data;
+        Data.At("text").Set(mNewRipple);
+        SendUnlockAsset(LockID, Data);
+    }
+}
+
+void SandWichClient::OnAssetUpdated(const Context& json)
+{
+    const String Author = json("author").GetText();
+    const String Path = String(json("path").GetText()).Replace('/', '.');
+    const String Status = json("status").GetText();
+    const String Version = json("version").GetText();
+
+    const String Header = "sandwich.asset." + Path;
+    ZayWidgetDOM::SetValue(Header + ".author", "'" + Author + "'");
+    ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
+    ZayWidgetDOM::SetValue(Header + ".version", "'" + Version + "'");
+    ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
+
+    const Strings Pathes = String::Split(Path, '.');
+    if(0 < Pathes.Count())
+    {
+        const String PathType = Pathes[-2];
+        if(PathType == "post")
+            SendFocusRange(Path + ".sentence");
+        else if(PathType == "sentence")
+            SendFocusRange(Path + ".ripple");
+    }
+}
+
+void SandWichClient::OnAssetChanged(const Context& json)
+{
+    const String Path = String(json("path").GetText()).Replace('/', '.');
+    const String Status = json("status").GetText();
+
+    const String Header = "sandwich.asset." + Path;
+    ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
+}
+
+void SandWichClient::OnRangeUpdated(const Context& json)
+{
+    const String Path = String(json("path").GetText()).Replace('/', '.');
+    const sint32 First = json("first").GetInt();
+    const sint32 Last = json("last").GetInt();
+
+    const String Header = "sandwich.range." + Path;
+    const sint32 Count = Math::Max(0, Last + 1 - First);
+    ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(Count));
+
+    bool NeedFocusing = false;
+    const Strings Pathes = String::Split(Path, '.');
+    if(Pathes[-1] == "post") NeedFocusing = true;
+    else if(Pathes[-1] == "sentence" && ZayWidgetDOM::GetValue("sandwich.select.post").ToText() != "-1")
+        NeedFocusing = true;
+    else if(Pathes[-1] == "ripple" && ZayWidgetDOM::GetValue("sandwich.select.sentence").ToText() != "-1")
+        NeedFocusing = true;
+
+    // 어셋포커싱
+    if(NeedFocusing)
+    for(sint32 i = 0; i < Count; ++i)
+    {
+        const String CurRoute = String::Format("%s.%d", (chars) Path, First + i);
+        SendFocusAsset(CurRoute);
+    }
+}
+
+void SandWichClient::OnErrored(const Context& json)
+{
+    const String Packet = json("packet").GetText();
+    const String Text = json("text").GetText();
+
+    if(Text == "Expired token")
+    {
+        ZayWidgetDOM::SetValue("sandwich.showlogin", "1");
+        ZayWidgetDOM::SetValue("sandwich.login.error", "'" + Text + "'");
+    }
+    else if(Packet == "Login")
+    {
+        if(Text == "Unregistered device")
+            ZayWidgetDOM::SetValue("sandwich.showlogin", "1");
+        else ZayWidgetDOM::SetValue("sandwich.login.error", "'" + Text + "'");
+    }
+    else if(Packet == "LoginUpdate")
+        ZayWidgetDOM::SetValue("sandwich.login.error", "'" + Text + "'");
+    else BOSS_TRACE("OnErrored[%s] \"%s\"", (chars) Packet, (chars) Text);
+}

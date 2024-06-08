@@ -10,7 +10,7 @@
     <application android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:label="-- %%INSERT_APP_NAME%% --" android:extractNativeLibs="true" android:icon="@drawable/icon">
         <activity android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation"
 		android:name="org.qtproject.qt5.android.bindings.QtActivity"
-		android:label="hueboard"
+		android:label="sandwich"
 		android:screenOrientation="unspecified"
 		android:launchMode="singleTop">
             <intent-filter>
