@@ -29,7 +29,7 @@ bool PlatformInit()
     String BoardInfoString = String::FromAsset("boardinfo.json");
     Context BoardInfo(ST_Json, SO_OnlyReference, BoardInfoString, BoardInfoString.Length());
     gBoardName = BoardInfo("boardname").GetText("sandwich");
-    gServerHost = BoardInfo("serverhost").GetText("127.0.0.1");
+    gServerHost = BoardInfo("serverhost").GetText("sand-wich.com");
 
     Platform::SetViewCreator(ZayView::Creator);
     Platform::SetWindowName("sand-wich.com");
