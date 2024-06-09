@@ -33,6 +33,7 @@ private:
 
 private:
     void OnLogined(const Context& json);
+    void OnLogouted(const Context& json);
     void OnAssetLocked(const Context& json);
     void OnAssetUpdated(const Context& json);
     void OnAssetChanged(const Context& json);

@@ -30,7 +30,8 @@
         <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
       </center>
     </figure>
-    <canvas id="qtcanvas" oncontextmenu="event.preventDefault()" contenteditable="true"></canvas>
+
+    <canvas id="qtcanvas" oncontextmenu="event.preventDefault()"></canvas>
 
     <script type='text/javascript'>
         function init() {
@@ -66,6 +67,16 @@
           });
           qtLoader.loadEmscriptenModule("sandwich");
       }
+
+	  document.querySelector('#qtcanvas').addEventListener('focus', function(event) {
+          event.target.blur();
+      });
+
+	  document.addEventListener('touchstart', function(event) {
+          if (event.target === document.querySelector('#qtcanvas')) {
+              event.preventDefault();
+          }
+      }, { passive: false });
     </script>
     <script type="text/javascript" src="qtloader.js"></script>
   </body>

@@ -19,30 +19,40 @@ void SandWichClient::Login(chars author, chars password)
 
 void SandWichClient::Logout()
 {
-    SendLogout();
+    if(mAuthor != "-")
+        SendLogout();
 }
 
 void SandWichClient::NewPost(chars text)
 {
-    mNewPost = text;
-    SendLockAsset("NewPost", "post<next>");
+    if(mAuthor != "-")
+    {
+        mNewPost = text;
+        SendLockAsset("NewPost", "post<next>");
+    }
 }
 
 void SandWichClient::NewSentence(chars text)
 {
-    mNewSentence = text;
-    const String SelPost = ZayWidgetDOM::GetValue("sandwich.select.post").ToText();
-    if(SelPost != "-1")
-        SendLockAsset("NewSentence", "post." + SelPost + ".sentence<next>");
+    if(mAuthor != "-")
+    {
+        mNewSentence = text;
+        const String SelPost = ZayWidgetDOM::GetValue("sandwich.select.post").ToText();
+        if(SelPost != "-1")
+            SendLockAsset("NewSentence", "post." + SelPost + ".sentence<next>");
+    }
 }
 
 void SandWichClient::NewRipple(chars text)
 {
-    mNewRipple = text;
-    const String SelPost = ZayWidgetDOM::GetValue("sandwich.select.post").ToText();
-    const String SelSentence = ZayWidgetDOM::GetValue("sandwich.select.sentence").ToText();
-    if(SelPost != "-1" && SelSentence != "-1")
-        SendLockAsset("NewRipple", "post." + SelPost + ".sentence." + SelSentence + ".ripple<next>");
+    if(mAuthor != "-")
+    {
+        mNewRipple = text;
+        const String SelPost = ZayWidgetDOM::GetValue("sandwich.select.post").ToText();
+        const String SelSentence = ZayWidgetDOM::GetValue("sandwich.select.sentence").ToText();
+        if(SelPost != "-1" && SelSentence != "-1")
+            SendLockAsset("NewRipple", "post." + SelPost + ".sentence." + SelSentence + ".ripple<next>");
+    }
 }
 
 void SandWichClient::Select(chars type, sint32 index)
@@ -124,6 +134,7 @@ bool SandWichClient::TryRecvOnce()
 
                     branch;
                     jump(Type == "Logined") OnLogined(RecvJson);
+                    jump(Type == "Logouted") OnLogouted(RecvJson);
                     jump(Type == "AssetLocked") OnAssetLocked(RecvJson);
                     jump(Type == "AssetUpdated") OnAssetUpdated(RecvJson);
                     jump(Type == "AssetChanged") OnAssetChanged(RecvJson);
@@ -256,11 +267,17 @@ void SandWichClient::OnLogined(const Context& json)
 {
     mAuthor = json("author").GetText();
     mToken = json("token").GetText();
-    ZayWidgetDOM::SetValue("sandwich.showlogin", "0");
+    ZayWidgetDOM::SetValue("sandwich.showlogin", (mAuthor == "-")? "1" : "0");
     ZayWidgetDOM::SetValue("sandwich.author", "'" + mAuthor + "'");
     ZayWidgetDOM::SetValue("sandwich.token", "'" + mToken + "'");
     ZayWidgetDOM::RemoveVariables("sandwich.login.");
     SendFocusRange("post");
+}
+
+void SandWichClient::OnLogouted(const Context& json)
+{
+    if(0 < mProgramID.Length())
+        SendFastLogin(mProgramID);
 }
 
 void SandWichClient::OnAssetLocked(const Context& json)
@@ -355,12 +372,6 @@ void SandWichClient::OnErrored(const Context& json)
     {
         ZayWidgetDOM::SetValue("sandwich.showlogin", "1");
         ZayWidgetDOM::SetValue("sandwich.login.error", "'" + Text + "'");
-    }
-    else if(Packet == "Login")
-    {
-        if(Text == "Unregistered device")
-            ZayWidgetDOM::SetValue("sandwich.showlogin", "1");
-        else ZayWidgetDOM::SetValue("sandwich.login.error", "'" + Text + "'");
     }
     else if(Packet == "LoginUpdate")
         ZayWidgetDOM::SetValue("sandwich.login.error", "'" + Text + "'");
