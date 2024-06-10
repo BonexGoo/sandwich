@@ -79,6 +79,7 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
     }
     else if(type == NT_SocketReceive)
     {
+        if(ZayWidgetDOM::GetValue("program.debug").ToInteger() == 0) ///////////////////////////////////////
         if(m->mClient && m->mClient->TryRecvOnce())
             m->invalidate();
     }
@@ -195,6 +196,11 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
         #if BOSS_WINDOWS
             m->RenderWindowSystem(panel);
         #endif
+
+        // 프레임시간
+        const uint64 CurRenderMsec = Platform::Utility::CurrentTimeMsec();
+        ZayWidgetDOM::SetValue("program.frame", String::FromFloat(1000.0 / (CurRenderMsec - m->mRenderMsec)));
+        m->mRenderMsec = CurRenderMsec;
     }
 }
 
@@ -236,6 +242,10 @@ sandwichData::sandwichData()
     const String Day = String::Format("%02d", Parser::GetInt(DateText.Middle(2, DateText.Length() - 6).Trim()));
     DateText = DateText.Right(4) + "/" + DateText.Left(2) + "/" + Day;
     ZayWidgetDOM::SetValue("program.build", "'" + DateText + "_" + TimeText.Left(2) + "H'");
+
+    mRenderMsec = Platform::Utility::CurrentTimeMsec();
+    ZayWidgetDOM::SetValue("program.frame", "0");
+    ZayWidgetDOM::SetValue("program.debug", "0");
 
     #if BOSS_WINDOWS
         ZayWidgetDOM::SetValue("program.os", "windows");
@@ -625,7 +635,7 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 clearCapture();
             }
         })
-        // 문장 위치초기화
+        // 포스트형식 전환
         .AddGlue("turn_post_type", ZAY_DECLARE_GLUE(params, this)
         {
             const String OldPostType = ZayWidgetDOM::GetValue("sandwich.select.posttype").ToText();
@@ -644,6 +654,12 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 ZayWidgetDOM::SetValue(UnitID + ".x", String::FromInteger(PosX));
                 ZayWidgetDOM::SetValue(UnitID + ".y", String::FromInteger(PosY));
             }
+        })
+        // 디버그형식 전환
+        .AddGlue("turn_debug", ZAY_DECLARE_GLUE(params, this)
+        {
+            const sint32 OldDebug = ZayWidgetDOM::GetValue("program.debug").ToInteger();
+            ZayWidgetDOM::SetValue("program.debug", String::FromInteger(1 - OldDebug));
         })
         // user_content
         .AddComponent(ZayExtend::ComponentType::ContentWithParameter, "user_content", ZAY_DECLARE_COMPONENT(panel, params, this)

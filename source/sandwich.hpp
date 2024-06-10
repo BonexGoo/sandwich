@@ -44,7 +44,7 @@ public: // 윈도우
 
 public: // 위젯과 통신
     uint64 mUpdateMsec {0};
-    uint64 mLastModifyTime {0};
+    uint64 mRenderMsec {0};
     ZayWidget* mWidget {nullptr};
     SandWichClient* mClient {nullptr};
 };

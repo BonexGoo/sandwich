@@ -22,6 +22,12 @@
 			"showlogin":"0"
 		},
 		{
+			"curpython":"0"
+		},
+		{
+			"appwidth":"0"
+		},
+		{
 			"appheight":"0"
 		}
 	],
@@ -36,7 +42,7 @@
 			"compvalues":
 			[
 				[
-					"1.2",
+					"1.0",
 					"d.fonts.default.ttf"
 				]
 			],
@@ -82,7 +88,7 @@
 						[
 							"10",
 							"10",
-							"pW - 230",
+							"pW - 350",
 							"50"
 						]
 					],
@@ -506,6 +512,65 @@
 					]
 				},
 				{
+					"addw":"66",
+					"comment":"디버깅옵션",
+					"compid":"305",
+					"compname":"xyrr",
+					"compvalues":
+					[
+						[
+							"pW / 2",
+							"35",
+							"25",
+							"25"
+						]
+					],
+					"expanded":"1",
+					"onclick":
+					[
+						"turn_debug()"
+					],
+					"posx":"387",
+					"posy":"467",
+					"ui":
+					[
+						{
+							"addw":"0",
+							"compid":"306",
+							"compname":"color",
+							"compvalues":
+							[
+								"if(d.program.debug)",
+								[
+									"192",
+									"0",
+									"0"
+								],
+								"else",
+								[
+									"0",
+									"128",
+									"0"
+								]
+							],
+							"expanded":"1",
+							"posx":"822",
+							"posy":"492",
+							"ui":
+							[
+								{
+									"addw":"0",
+									"compid":"307",
+									"compname":"circle",
+									"expanded":"1",
+									"posx":"1190",
+									"posy":"516"
+								}
+							]
+						}
+					]
+				},
+				{
 					"addw":"135",
 					"comment":"게시판",
 					"compid":"48",
@@ -794,8 +859,8 @@
 																				"endif",
 																				"select('sentence', -1)"
 																			],
-																			"posx":"3608",
-																			"posy":"1710",
+																			"posx":"3607",
+																			"posy":"1698",
 																			"ui":
 																			[
 																				{
@@ -812,8 +877,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"4716",
-																					"posy":"1663",
+																					"posx":"5284",
+																					"posy":"1665",
 																					"ui":
 																					[
 																						{
@@ -830,8 +895,8 @@
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5087",
-																							"posy":"1558",
+																							"posx":"5655",
+																							"posy":"1560",
 																							"ui":
 																							[
 																								{
@@ -839,12 +904,26 @@
 																									"compid":"62",
 																									"compname":"fill",
 																									"expanded":"1",
-																									"posx":"5451",
-																									"posy":"1587"
+																									"posx":"6019",
+																									"posy":"1589"
 																								}
 																							]
 																						}
 																					]
+																				},
+																				{
+																					"addw":"1017",
+																					"compid":"303",
+																					"compinputs":
+																					[
+																						{
+																							"curpython":"'text'@'d.sandwich.asset.post.'+ (d.sandwich.range.post.count - pV - 1) +'.data.type'=='python'"
+																						}
+																					],
+																					"compname":"code",
+																					"expanded":"1",
+																					"posx":"5281",
+																					"posy":"1900"
 																				},
 																				{
 																					"addw":"0",
@@ -860,8 +939,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"4712",
-																					"posy":"1938",
+																					"posx":"5280",
+																					"posy":"2101",
 																					"ui":
 																					[
 																						{
@@ -870,22 +949,28 @@
 																							"compname":"color",
 																							"compvalues":
 																							[
-																								"if(d.sandwich.select.post == d.sandwich.range.post.count - pV - 1)",
+																								"if(d.sandwich.select.post != d.sandwich.range.post.count - pV - 1)",
 																								[
-																									"240",
+																									"255",
+																									"255",
+																									"255"
+																								],
+																								"elif(curpython != 0)",
+																								[
 																									"224",
+																									"240",
 																									"255"
 																								],
 																								"else",
 																								[
-																									"255",
-																									"255",
+																									"240",
+																									"224",
 																									"255"
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5082",
-																							"posy":"1755",
+																							"posx":"5636",
+																							"posy":"2094",
 																							"ui":
 																							[
 																								{
@@ -893,14 +978,136 @@
 																									"compid":"64",
 																									"compname":"fill",
 																									"expanded":"1",
-																									"posx":"5774",
-																									"posy":"1792"
+																									"posx":"6328",
+																									"posy":"2131"
 																								}
 																							]
 																						},
 																						{
 																							"addw":"0",
-																							"compid":"65",
+																							"compname":"if(curpython != 0)",
+																							"expanded":"1",
+																							"posx":"5636",
+																							"posy":"2413"
+																						},
+																						{
+																							"addw":"0",
+																							"compid":"296",
+																							"compname":"ltrb",
+																							"compvalues":
+																							[
+																								[
+																									"0",
+																									"0",
+																									"pH",
+																									"pH"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"5636",
+																							"posy":"2549",
+																							"ui":
+																							[
+																								{
+																									"addw":"48",
+																									"compid":"299",
+																									"compname":"icon",
+																									"compvalues":
+																									[
+																										"if(d.program.debug == 0)",
+																										[
+																											"r.python_logo",
+																											"centermiddle"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6029",
+																									"posy":"2537"
+																								}
+																							]
+																						},
+																						{
+																							"addw":"0",
+																							"compid":"298",
+																							"compname":"ltrb",
+																							"compvalues":
+																							[
+																								[
+																									"pH",
+																									"0",
+																									"pW",
+																									"pH"
+																								]
+																							],
+																							"expanded":"1",
+																							"posx":"5635",
+																							"posy":"2778",
+																							"ui":
+																							[
+																								{
+																									"addw":"0",
+																									"compid":"65",
+																									"compname":"color",
+																									"compvalues":
+																									[
+																										[
+																											"0",
+																											"0",
+																											"0"
+																										]
+																									],
+																									"expanded":"1",
+																									"posx":"6030",
+																									"posy":"2792",
+																									"ui":
+																									[
+																										{
+																											"addw":"0",
+																											"compid":"66",
+																											"compname":"font",
+																											"compvalues":
+																											[
+																												[
+																													"3.0"
+																												]
+																											],
+																											"expanded":"1",
+																											"posx":"6399",
+																											"posy":"2814",
+																											"ui":
+																											[
+																												{
+																													"addw":"647",
+																													"compid":"67",
+																													"compname":"text",
+																													"compvalues":
+																													[
+																														[
+																															"' '+ ('-'@'d.sandwich.asset.post.'+ (d.sandwich.range.post.count - pV - 1) +'.data.text')",
+																															"leftmiddle",
+																															"right"
+																														]
+																													],
+																													"expanded":"1",
+																													"posx":"6772",
+																													"posy":"2833"
+																												}
+																											]
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"addw":"0",
+																							"compname":"else",
+																							"expanded":"1",
+																							"posx":"5633",
+																							"posy":"3000"
+																						},
+																						{
+																							"addw":"0",
+																							"compid":"300",
 																							"compname":"color",
 																							"compvalues":
 																							[
@@ -911,13 +1118,13 @@
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5081",
-																							"posy":"2022",
+																							"posx":"5635",
+																							"posy":"3102",
 																							"ui":
 																							[
 																								{
 																									"addw":"0",
-																									"compid":"66",
+																									"compid":"301",
 																									"compname":"font",
 																									"compvalues":
 																									[
@@ -926,13 +1133,13 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"5450",
-																									"posy":"2044",
+																									"posx":"6004",
+																									"posy":"3124",
 																									"ui":
 																									[
 																										{
 																											"addw":"647",
-																											"compid":"67",
+																											"compid":"302",
 																											"compname":"text",
 																											"compvalues":
 																											[
@@ -943,12 +1150,19 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"5823",
-																											"posy":"2063"
+																											"posx":"6377",
+																											"posy":"3143"
 																										}
 																									]
 																								}
 																							]
+																						},
+																						{
+																							"addw":"0",
+																							"compname":"endif",
+																							"expanded":"1",
+																							"posx":"5633",
+																							"posy":"3303"
 																						},
 																						{
 																							"addw":"0",
@@ -963,8 +1177,8 @@
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"5077",
-																							"posy":"2226",
+																							"posx":"5632",
+																							"posy":"3411",
 																							"ui":
 																							[
 																								{
@@ -978,8 +1192,8 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"5446",
-																									"posy":"2248",
+																									"posx":"6010",
+																									"posy":"3428",
 																									"ui":
 																									[
 																										{
@@ -995,8 +1209,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"5819",
-																											"posy":"2267"
+																											"posx":"6396",
+																											"posy":"3447"
 																										}
 																									]
 																								}
@@ -1204,13 +1418,16 @@
 													]
 												},
 												{
-													"addw":"935",
+													"addw":"846",
 													"compid":"285",
 													"compinputs":
 													[
 														"if('text'@'d.sandwich.asset.post.'+ d.sandwich.select.post +'.data.type'=='python')",
 														{
-															"appheight":"(pW [divide] 1.5) + 20"
+															"appwidth":"(pW - gap * 2) [min] 320"
+														},
+														{
+															"appheight":"(appwidth [divide] 1.333) - 20"
 														},
 														"else",
 														{
@@ -1219,8 +1436,8 @@
 													],
 													"compname":"code",
 													"expanded":"1",
-													"posx":"2381",
-													"posy":"3002"
+													"posx":"2379",
+													"posy":"2996"
 												},
 												{
 													"addw":"0",
@@ -1324,8 +1541,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"4068",
-																					"posy":"3064",
+																					"posx":"4071",
+																					"posy":"3254",
 																					"ui":
 																					[
 																						{
@@ -1333,8 +1550,8 @@
 																							"compid":"201",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"4665",
-																							"posy":"3149"
+																							"posx":"4668",
+																							"posy":"3339"
 																						}
 																					]
 																				}
@@ -1375,8 +1592,8 @@
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"4067",
-																					"posy":"3423",
+																					"posx":"4070",
+																					"posy":"3613",
 																					"ui":
 																					[
 																						{
@@ -1384,8 +1601,8 @@
 																							"compid":"203",
 																							"compname":"fill",
 																							"expanded":"1",
-																							"posx":"4677",
-																							"posy":"3504"
+																							"posx":"4680",
+																							"posy":"3694"
 																						}
 																					]
 																				}
@@ -1406,8 +1623,8 @@
 																					],
 																					"compname":"code",
 																					"expanded":"1",
-																					"posx":"4068",
-																					"posy":"3775"
+																					"posx":"4071",
+																					"posy":"3965"
 																				},
 																				{
 																					"addw":"151",
@@ -1419,13 +1636,14 @@
 																						[
 																							"gap",
 																							"gap",
-																							"pW",
-																							"appheight + 20"
+																							"appwidth",
+																							"appheight + 20",
+																							"true"
 																						]
 																					],
 																					"expanded":"1",
-																					"posx":"4068",
-																					"posy":"4006",
+																					"posx":"4071",
+																					"posy":"4196",
 																					"ui":
 																					[
 																						{
@@ -1441,8 +1659,8 @@
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"4609",
-																							"posy":"4033",
+																							"posx":"4612",
+																							"posy":"4223",
 																							"ui":
 																							[
 																								{
@@ -1450,8 +1668,8 @@
 																									"compid":"288",
 																									"compname":"fill",
 																									"expanded":"1",
-																									"posx":"5004",
-																									"posy":"4052"
+																									"posx":"5007",
+																									"posy":"4242"
 																								}
 																							]
 																						},
@@ -1468,8 +1686,8 @@
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"4606",
-																							"posy":"4240",
+																							"posx":"4609",
+																							"posy":"4430",
 																							"ui":
 																							[
 																								{
@@ -1479,29 +1697,30 @@
 																									"compvalues":
 																									[
 																										[
-																											"2.0"
+																											"1.5",
+																											"'arial'"
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"5001",
-																									"posy":"4259",
+																									"posx":"5004",
+																									"posy":"4449",
 																									"ui":
 																									[
 																										{
-																											"addw":"120",
+																											"addw":"328",
 																											"compid":"290",
 																											"compname":"text",
 																											"compvalues":
 																											[
 																												[
-																													"' ('+ pW +'x'+ pH +')'",
+																													"' [W'+ pW +' x H'+ pH +' x '+ d.sandwich.zoom +'%]'",
 																													"lefttop",
 																													"right"
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"5412",
-																											"posy":"4241"
+																											"posx":"5415",
+																											"posy":"4431"
 																										}
 																									]
 																								}
@@ -1514,8 +1733,8 @@
 																					"compid":"85",
 																					"compname":"loop",
 																					"expanded":"1",
-																					"posx":"4064",
-																					"posy":"4535",
+																					"posx":"4067",
+																					"posy":"4725",
 																					"ui":
 																					[
 																						{
@@ -1540,8 +1759,8 @@
 																								]
 																							],
 																							"expanded":"1",
-																							"posx":"4954",
-																							"posy":"4500",
+																							"posx":"4957",
+																							"posy":"4690",
 																							"ui":
 																							[
 																								{
@@ -1557,8 +1776,8 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"5784",
-																									"posy":"4455",
+																									"posx":"5787",
+																									"posy":"4645",
 																									"ui":
 																									[
 																										{
@@ -1572,8 +1791,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6145",
-																											"posy":"4464",
+																											"posx":"6148",
+																											"posy":"4654",
 																											"ui":
 																											[
 																												{
@@ -1592,8 +1811,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6517",
-																													"posy":"4475"
+																													"posx":"6520",
+																													"posy":"4665"
 																												}
 																											]
 																										}
@@ -1621,8 +1840,8 @@
 																										"else",
 																										"select('sentence', -1)"
 																									],
-																									"posx":"5782",
-																									"posy":"4693",
+																									"posx":"5785",
+																									"posy":"4883",
 																									"ui":
 																									[
 																										{
@@ -1636,8 +1855,8 @@
 																											],
 																											"compname":"code",
 																											"expanded":"1",
-																											"posx":"6515",
-																											"posy":"4721"
+																											"posx":"6518",
+																											"posy":"4911"
 																										},
 																										{
 																											"addw":"119",
@@ -1671,8 +1890,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6515",
-																											"posy":"4929",
+																											"posx":"6518",
+																											"posy":"5119",
 																											"ui":
 																											[
 																												{
@@ -1686,8 +1905,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6992",
-																													"posy":"4950"
+																													"posx":"6995",
+																													"posy":"5140"
 																												},
 																												{
 																													"addw":"0",
@@ -1702,8 +1921,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6993",
-																													"posy":"5153",
+																													"posx":"6996",
+																													"posy":"5343",
 																													"ui":
 																													[
 																														{
@@ -1722,8 +1941,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7356",
-																															"posy":"5176"
+																															"posx":"7359",
+																															"posy":"5366"
 																														}
 																													]
 																												}
@@ -1748,8 +1967,8 @@
 																										]
 																									],
 																									"expanded":"1",
-																									"posx":"5778",
-																									"posy":"5560",
+																									"posx":"5781",
+																									"posy":"5750",
 																									"ui":
 																									[
 																										{
@@ -1765,8 +1984,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6383",
-																											"posy":"5596",
+																											"posx":"6386",
+																											"posy":"5786",
 																											"ui":
 																											[
 																												{
@@ -1782,8 +2001,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6747",
-																													"posy":"5575",
+																													"posx":"6750",
+																													"posy":"5765",
 																													"ui":
 																													[
 																														{
@@ -1791,8 +2010,8 @@
 																															"compid":"106",
 																															"compname":"fill",
 																															"expanded":"1",
-																															"posx":"7100",
-																															"posy":"5602"
+																															"posx":"7103",
+																															"posy":"5792"
 																														}
 																													]
 																												},
@@ -1810,8 +2029,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6744",
-																													"posy":"5785",
+																													"posx":"6747",
+																													"posy":"5975",
 																													"ui":
 																													[
 																														{
@@ -1828,8 +2047,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7098",
-																															"posy":"5804",
+																															"posx":"7101",
+																															"posy":"5994",
 																															"ui":
 																															[
 																																{
@@ -1837,8 +2056,8 @@
 																																	"compid":"116",
 																																	"compname":"fill",
 																																	"expanded":"1",
-																																	"posx":"7445",
-																																	"posy":"5825"
+																																	"posx":"7448",
+																																	"posy":"6015"
 																																}
 																															]
 																														}
@@ -1858,8 +2077,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6749",
-																													"posy":"6034",
+																													"posx":"6752",
+																													"posy":"6224",
 																													"ui":
 																													[
 																														{
@@ -1876,8 +2095,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7103",
-																															"posy":"6053",
+																															"posx":"7106",
+																															"posy":"6243",
 																															"ui":
 																															[
 																																{
@@ -1885,8 +2104,8 @@
 																																	"compid":"125",
 																																	"compname":"fill",
 																																	"expanded":"1",
-																																	"posx":"7450",
-																																	"posy":"6074"
+																																	"posx":"7453",
+																																	"posy":"6264"
 																																}
 																															]
 																														}
@@ -1910,8 +2129,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6389",
-																											"posy":"6297",
+																											"posx":"6392",
+																											"posy":"6487",
 																											"ui":
 																											[
 																												{
@@ -1927,8 +2146,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6845",
-																													"posy":"6317",
+																													"posx":"6848",
+																													"posy":"6507",
 																													"ui":
 																													[
 																														{
@@ -1936,8 +2155,8 @@
 																															"compid":"109",
 																															"compname":"fill",
 																															"expanded":"1",
-																															"posx":"7198",
-																															"posy":"6343"
+																															"posx":"7201",
+																															"posy":"6533"
 																														}
 																													]
 																												},
@@ -1955,8 +2174,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6844",
-																													"posy":"6521",
+																													"posx":"6847",
+																													"posy":"6711",
 																													"ui":
 																													[
 																														{
@@ -1973,8 +2192,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7198",
-																															"posy":"6540",
+																															"posx":"7201",
+																															"posy":"6730",
 																															"ui":
 																															[
 																																{
@@ -1982,8 +2201,8 @@
 																																	"compid":"119",
 																																	"compname":"fill",
 																																	"expanded":"1",
-																																	"posx":"7545",
-																																	"posy":"6561"
+																																	"posx":"7548",
+																																	"posy":"6751"
 																																}
 																															]
 																														}
@@ -2003,8 +2222,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6842",
-																													"posy":"6753",
+																													"posx":"6845",
+																													"posy":"6943",
 																													"ui":
 																													[
 																														{
@@ -2021,8 +2240,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7196",
-																															"posy":"6772",
+																															"posx":"7199",
+																															"posy":"6962",
 																															"ui":
 																															[
 																																{
@@ -2030,8 +2249,8 @@
 																																	"compid":"122",
 																																	"compname":"fill",
 																																	"expanded":"1",
-																																	"posx":"7543",
-																																	"posy":"6793"
+																																	"posx":"7546",
+																																	"posy":"6983"
 																																}
 																															]
 																														}
@@ -2055,8 +2274,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6387",
-																											"posy":"6983",
+																											"posx":"6390",
+																											"posy":"7173",
 																											"ui":
 																											[
 																												{
@@ -2072,8 +2291,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6843",
-																													"posy":"7003",
+																													"posx":"6846",
+																													"posy":"7193",
 																													"ui":
 																													[
 																														{
@@ -2081,8 +2300,8 @@
 																															"compid":"113",
 																															"compname":"fill",
 																															"expanded":"1",
-																															"posx":"7196",
-																															"posy":"7029"
+																															"posx":"7199",
+																															"posy":"7219"
 																														}
 																													]
 																												},
@@ -2100,8 +2319,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6842",
-																													"posy":"7213",
+																													"posx":"6845",
+																													"posy":"7403",
 																													"ui":
 																													[
 																														{
@@ -2118,8 +2337,8 @@
 																																]
 																															],
 																															"expanded":"1",
-																															"posx":"7196",
-																															"posy":"7232",
+																															"posx":"7199",
+																															"posy":"7422",
 																															"ui":
 																															[
 																																{
@@ -2127,8 +2346,8 @@
 																																	"compid":"128",
 																																	"compname":"fill",
 																																	"expanded":"1",
-																																	"posx":"7543",
-																																	"posy":"7253"
+																																	"posx":"7546",
+																																	"posy":"7443"
 																																}
 																															]
 																														}
@@ -2149,8 +2368,8 @@
 																												]
 																											],
 																											"expanded":"1",
-																											"posx":"6395",
-																											"posy":"7540",
+																											"posx":"6398",
+																											"posy":"7730",
 																											"ui":
 																											[
 																												{
@@ -2164,8 +2383,8 @@
 																														]
 																													],
 																													"expanded":"1",
-																													"posx":"6769",
-																													"posy":"7554",
+																													"posx":"6772",
+																													"posy":"7744",
 																													"ui":
 																													[
 																														{
@@ -2182,8 +2401,8 @@
 																															],
 																															"compname":"code",
 																															"expanded":"1",
-																															"posx":"7132",
-																															"posy":"7524"
+																															"posx":"7135",
+																															"posy":"7714"
 																														},
 																														{
 																															"addw":"482",
@@ -2242,8 +2461,8 @@
 																																				]
 																																			],
 																																			"expanded":"1",
-																																			"posx":"8071",
-																																			"posy":"7751",
+																																			"posx":"8074",
+																																			"posy":"7941",
 																																			"ui":
 																																			[
 																																				{
@@ -2251,8 +2470,8 @@
 																																					"compid":"207",
 																																					"compname":"fill",
 																																					"expanded":"1",
-																																					"posx":"8668",
-																																					"posy":"7836"
+																																					"posx":"8671",
+																																					"posy":"8026"
 																																				}
 																																			]
 																																		}
@@ -2293,8 +2512,8 @@
 																																				]
 																																			],
 																																			"expanded":"1",
-																																			"posx":"8071",
-																																			"posy":"8087",
+																																			"posx":"8074",
+																																			"posy":"8277",
 																																			"ui":
 																																			[
 																																				{
@@ -2302,8 +2521,8 @@
 																																					"compid":"209",
 																																					"compname":"fill",
 																																					"expanded":"1",
-																																					"posx":"8668",
-																																					"posy":"8172"
+																																					"posx":"8671",
+																																					"posy":"8362"
 																																				}
 																																			]
 																																		}
@@ -2329,8 +2548,8 @@
 																																				]
 																																			],
 																																			"expanded":"1",
-																																			"posx":"8072",
-																																			"posy":"8432",
+																																			"posx":"8075",
+																																			"posy":"8622",
 																																			"ui":
 																																			[
 																																				{
@@ -2346,8 +2565,8 @@
 																																						]
 																																					],
 																																					"expanded":"1",
-																																					"posx":"8499",
-																																					"posy":"8468",
+																																					"posx":"8502",
+																																					"posy":"8658",
 																																					"ui":
 																																					[
 																																						{
@@ -2361,8 +2580,8 @@
 																																								]
 																																							],
 																																							"expanded":"1",
-																																							"posx":"8868",
-																																							"posy":"8490",
+																																							"posx":"8871",
+																																							"posy":"8680",
 																																							"ui":
 																																							[
 																																								{
@@ -2378,8 +2597,8 @@
 																																										]
 																																									],
 																																									"expanded":"1",
-																																									"posx":"9241",
-																																									"posy":"8509"
+																																									"posx":"9244",
+																																									"posy":"8699"
 																																								}
 																																							]
 																																						}
@@ -2390,8 +2609,8 @@
 																																	]
 																																}
 																															],
-																															"posx":"7132",
-																															"posy":"7978"
+																															"posx":"7135",
+																															"posy":"8168"
 																														}
 																													]
 																												}
@@ -2408,8 +2627,8 @@
 																			]
 																		}
 																	],
-																	"posx":"3147",
-																	"posy":"3274"
+																	"posx":"3150",
+																	"posy":"3271"
 																}
 															]
 														}
@@ -3298,7 +3517,7 @@
 											"compvalues":
 											[
 												[
-													"0.8",
+													"1.0",
 													"'arial'"
 												]
 											],
@@ -3315,13 +3534,27 @@
 													[
 														[
 															"'BUILD.'+ d.program.build",
-															"rightmiddle",
-															"left"
+															"rightmiddle"
 														]
 													],
 													"expanded":"1",
 													"posx":"2317",
 													"posy":"7871"
+												},
+												{
+													"addw":"185",
+													"compid":"304",
+													"compname":"text",
+													"compvalues":
+													[
+														[
+															"'FRAME.'+ d.program.frame",
+															"leftmiddle"
+														]
+													],
+													"expanded":"1",
+													"posx":"2317",
+													"posy":"8092"
 												}
 											]
 										}
