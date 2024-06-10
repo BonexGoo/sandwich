@@ -227,6 +227,16 @@ sandwichData::sandwichData()
             }, nullptr, false);
     #endif
 
+    String DateText = __DATE__;
+    String TimeText = __TIME__;
+    DateText.Replace("Jan", "01"); DateText.Replace("Feb", "02"); DateText.Replace("Mar", "03");
+    DateText.Replace("Apr", "04"); DateText.Replace("May", "05"); DateText.Replace("Jun", "06");
+    DateText.Replace("Jul", "07"); DateText.Replace("Aug", "08"); DateText.Replace("Sep", "09");
+    DateText.Replace("Oct", "10"); DateText.Replace("Nov", "11"); DateText.Replace("Dec", "12");
+    const String Day = String::Format("%02d", Parser::GetInt(DateText.Middle(2, DateText.Length() - 6).Trim()));
+    DateText = DateText.Right(4) + "/" + DateText.Left(2) + "/" + Day;
+    ZayWidgetDOM::SetValue("program.build", "'" + DateText + "_" + TimeText.Left(2) + "H'");
+
     #if BOSS_WINDOWS
         ZayWidgetDOM::SetValue("program.os", "windows");
     #elif BOSS_WASM
@@ -559,6 +569,7 @@ void sandwichData::InitBoard()
     ZayWidgetDOM::SetValue("sandwich.name", "'" + gBoardName + "'");
     ZayWidgetDOM::SetValue("sandwich.zoom", String::FromInteger(mZoomPercent));
     ZayWidgetDOM::SetValue("sandwich.select.post", "-1");
+    ZayWidgetDOM::SetValue("sandwich.select.posttype", "'text'");
     ZayWidgetDOM::SetValue("sandwich.select.sentence", "-1");
 }
 
@@ -613,6 +624,14 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                     mClient->Select(Type, Index);
                 clearCapture();
             }
+        })
+        // 문장 위치초기화
+        .AddGlue("turn_post_type", ZAY_DECLARE_GLUE(params, this)
+        {
+            const String OldPostType = ZayWidgetDOM::GetValue("sandwich.select.posttype").ToText();
+            if(OldPostType == "text")
+                ZayWidgetDOM::SetValue("sandwich.select.posttype", "'python'");
+            else ZayWidgetDOM::SetValue("sandwich.select.posttype", "'text'");
         })
         // 문장 위치초기화
         .AddGlue("set_sentence_pos", ZAY_DECLARE_GLUE(params, this)

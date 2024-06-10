@@ -285,7 +285,9 @@ void SandWichClient::OnAssetLocked(const Context& json)
     const String LockID = json("lockid").GetText();
     if(LockID == "NewPost")
     {
+        const String PostType = ZayWidgetDOM::GetValue("sandwich.select.posttype").ToText();
         Context Data;
+        Data.At("type").Set(PostType);
         Data.At("text").Set(mNewPost);
         SendUnlockAsset(LockID, Data);
     }
