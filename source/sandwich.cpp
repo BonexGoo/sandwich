@@ -47,6 +47,10 @@ ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
             m->invalidate();
         if(m->mClient && m->mClient->TickOnce())
             m->invalidate();
+
+        // 워킹 틱실행
+        if(m->mClient && m->mClient->TryWorkingOnce())
+            m->invalidate();
     }
     else if(type == CT_Activate && !boolo(in).ConstValue())
         m->clearCapture();
@@ -79,7 +83,6 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
     }
     else if(type == NT_SocketReceive)
     {
-        if(ZayWidgetDOM::GetValue("program.debug").ToInteger() == 0) ///////////////////////////////////////
         if(m->mClient && m->mClient->TryRecvOnce())
             m->invalidate();
     }
@@ -583,6 +586,18 @@ void sandwichData::InitBoard()
     ZayWidgetDOM::SetValue("sandwich.select.sentence", "-1");
 }
 
+void sandwichData::CollectFiles(chars path, Strings& collector)
+{
+    Platform::File::Search(path,
+        [](chars itemname, payload data)->void
+        {
+            Strings& Collector = *((Strings*) data);
+            if(Platform::File::ExistForDir(itemname))
+                CollectFiles(itemname, Collector);
+            else Collector.AtAdding() = itemname;
+        }, (payload) &collector, true);
+}
+
 void sandwichData::InitWidget(ZayWidget& widget, chars name)
 {
     widget.Init(name, nullptr,
@@ -655,6 +670,33 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 ZayWidgetDOM::SetValue(UnitID + ".y", String::FromInteger(PosY));
             }
         })
+        // 파일 업로드
+        .AddGlue("upload_files", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 1)
+            {
+                const sint32 PostIndex = params.Param(0).ToInteger();
+                String LocalPath;
+                if(Platform::Popup::FileDialog(DST_Dir, LocalPath, nullptr, "Find Your Sandwich Project Folder"))
+                {
+                    const String LockID = String::Format("NewUpload_%d", PostIndex);
+                    const String Header = "sandwich.work." + LockID;
+                    Strings UploadPathes;
+                    CollectFiles(LocalPath, UploadPathes);
+                    for(sint32 i = 0, iend = UploadPathes.Count(); i < iend; ++i)
+                    {
+                        const String ItemPath = UploadPathes[i].Offset(LocalPath.Length() + 1);
+                        const String ServerPath = String::Format("post/%d/python", PostIndex);
+                        ZayWidgetDOM::SetValue(Header + String::Format(".%d.itempath", i), "'" + ItemPath + "'");
+                        ZayWidgetDOM::SetValue(Header + String::Format(".%d.localpath", i), "'" + LocalPath + "'");
+                        ZayWidgetDOM::SetValue(Header + String::Format(".%d.serverpath", i), "'" + ServerPath + "'");
+                    }
+                    ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(UploadPathes.Count()));
+                    ZayWidgetDOM::SetValue(Header + ".focus", "0");
+                    m->mClient->NewUpload(LockID, String::Format("post.%d.python", PostIndex));
+                }
+            }
+        })
         // 디버그형식 전환
         .AddGlue("turn_debug", ZAY_DECLARE_GLUE(params, this)
         {
@@ -671,7 +713,9 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
 
             branch;
             jump(!Type.Compare("editor"))
+            {
                 HasRender = RenderUC_Editor(panel);
+            }
             jump(!Type.Compare("sentence") && params.ParamCount() == 5)
             {
                 const String UnitID = params.Param(1).ToText();
@@ -679,6 +723,11 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 const sint32 LineGap = params.Param(3).ToInteger();
                 const sint32 LastGap = params.Param(4).ToInteger();
                 HasRender = RenderUC_Sentence(panel, UnitID, Text, LineGap, LastGap);
+            }
+            jump(!Type.Compare("python") && params.ParamCount() == 2)
+            {
+                const sint32 PostIndex = params.Param(1).ToInteger();
+                HasRender = RenderUC_Python(panel, PostIndex);
             }
 
             // 그외 처리
@@ -747,5 +796,18 @@ bool sandwichData::RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, 
     }
     ZayWidgetDOM::SetValue(UnitX, String::FromInteger(PosX));
     ZayWidgetDOM::SetValue(UnitY, String::FromInteger(PosY));
+    return true;
+}
+
+bool sandwichData::RenderUC_Python(ZayPanel& panel, sint32 postidx)
+{
+    ZAY_RGB(panel, 64, 128, 255)
+        panel.fill();
+
+    ZAY_RGB(panel, 255, 255, 0)
+    ZAY_FONT(panel, 1.5, "arial")
+        panel.text(String::Format("[W%d x H%d x %d%%]",
+            (sint32) panel.w(), (sint32) panel.h(), sint32(panel.zoom().scale * 100 + 0.5)),
+            UIFA_CenterMiddle, UIFE_Right);
     return true;
 }

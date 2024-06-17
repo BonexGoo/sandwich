@@ -22,7 +22,7 @@
 #define BOSS_NEED_ADDON_OGG        0
 #define BOSS_NEED_ADDON_OPENCV     0
 #define BOSS_NEED_ADDON_PSD        0
-#define BOSS_NEED_ADDON_SSL        0
+#define BOSS_NEED_ADDON_SSL        1
 #define BOSS_NEED_ADDON_TENSORFLOW 0
 #define BOSS_NEED_ADDON_TESSERACT  0
 #define BOSS_NEED_ADDON_TIF        0

@@ -55,6 +55,11 @@ void SandWichClient::NewRipple(chars text)
     }
 }
 
+void SandWichClient::NewUpload(chars lockid, chars route)
+{
+    SendLockAsset(lockid, route);
+}
+
 void SandWichClient::Select(chars type, sint32 index)
 {
     ZayWidgetDOM::SetValue(String::Format("sandwich.select.%s", type), String::FromInteger(index));
@@ -148,6 +153,92 @@ bool SandWichClient::TryRecvOnce()
             mRecvQueue.SubtractionSection(0, QueueEndPos);
     }
     return NeedUpdate;
+}
+
+bool SandWichClient::TryWorkingOnce()
+{
+    if(const sint32 LockIDCount = mWorkingLockIDs.Count())
+    {
+        const sint32 LockIDIndex = Platform::Utility::Random() % LockIDCount;
+        const String& CurLockID = mWorkingLockIDs[LockIDIndex];
+        if(!String::Compare(CurLockID, strpair("NewUpload_")))
+        {
+            const String Header = "sandwich.work." + CurLockID;
+            const sint32 Count = ZayWidgetDOM::GetValue(Header + ".count").ToInteger();
+            const sint32 Focus = ZayWidgetDOM::GetValue(Header + ".focus").ToInteger();
+            if(Focus < Count)
+            {
+                const String CurHeader = Header + String::Format(".%d", Focus);
+                const String ItemPath = ZayWidgetDOM::GetValue(CurHeader + ".itempath").ToText();
+                // 워킹 데이터준비
+                if(mWorkingData.Count() == 0)
+                {
+                    const String Path = ZayWidgetDOM::GetValue(CurHeader + ".localpath").ToText() + "/" + ItemPath;
+                    if(auto OneFile = Platform::File::OpenForRead(Path))
+                    {
+                        const sint32 FileSize = Platform::File::Size(OneFile);
+                        ZayWidgetDOM::SetValue(CurHeader + ".total", String::FromInteger(FileSize));
+                        ZayWidgetDOM::SetValue(CurHeader + ".offset", "0");
+                        if(FileSize == 0)
+                        {
+                            Platform::File::Close(OneFile);
+                            ZayWidgetDOM::SetValue(Header + ".focus", String::FromInteger(Focus + 1));
+                            mWorkingData.Clear();
+                            return true;
+                        }
+                        Platform::File::Read(OneFile, mWorkingData.AtDumpingAdded(FileSize), FileSize);
+                        Platform::File::Close(OneFile);
+                        // 체크섬
+                        const String NewMD5 = AddOn::Ssl::ToMD5(&mWorkingData[0], FileSize);
+                        ZayWidgetDOM::SetValue(CurHeader + ".checksum",
+                            String::Format("'size/%d/md5/%s'", FileSize, (chars) NewMD5));
+                    }
+                }
+                // 분할송신
+                if(0 < mWorkingData.Count())
+                {
+                    const String Path = ZayWidgetDOM::GetValue(CurHeader + ".serverpath").ToText() + "/" + ItemPath;
+                    const sint32 Total = ZayWidgetDOM::GetValue(CurHeader + ".total").ToInteger();
+                    const sint32 Offset = ZayWidgetDOM::GetValue(CurHeader + ".offset").ToInteger();
+                    const sint32 Size = Math::Min(4096, Total - Offset);
+                    const String Base64 = AddOn::Ssl::ToBASE64(&mWorkingData[Offset], Size);
+                    const bool IsLastData = (Offset + Size == Total);
+                    Context Json;
+                    Json.At("type").Set((IsLastData)? "FileUploaded" : "FileUploading");
+                    Json.At("token").Set(mToken);
+                    Json.At("lockid").Set(CurLockID);
+                    Json.At("path").Set(Path);
+                    Json.At("total").Set(String::FromInteger(Total));
+                    Json.At("offset").Set(String::FromInteger(Offset));
+                    Json.At("base64").Set(Base64);
+                    Send(Json);
+                    ZayWidgetDOM::SetValue(CurHeader + ".offset", String::FromInteger(Offset + Size));
+                    if(IsLastData)
+                    {
+                        ZayWidgetDOM::SetValue(Header + ".focus", String::FromInteger(Focus + 1));
+                        mWorkingData.Clear();
+                    }
+                }
+            }
+            else
+            {
+                Context Data;
+                for(sint32 i = 0; i < Count; ++i)
+                {
+                    const String CurHeader = Header + String::Format(".%d", i);
+                    const String ItemPath = ZayWidgetDOM::GetValue(CurHeader + ".itempath").ToText();
+                    const String CheckSum = ZayWidgetDOM::GetValue(CurHeader + ".checksum").ToText();
+                    Data.At(ItemPath).Set(CheckSum);
+                }
+                SendUnlockAsset(CurLockID, Data);
+                ZayWidgetDOM::RemoveVariables(Header + ".");
+                mWorkingLockIDs.SubtractionSection(LockIDIndex);
+                mWorkingData.Clear();
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 void SandWichClient::Reconnect()
@@ -302,6 +393,10 @@ void SandWichClient::OnAssetLocked(const Context& json)
         Context Data;
         Data.At("text").Set(mNewRipple);
         SendUnlockAsset(LockID, Data);
+    }
+    else if(!String::Compare(LockID, strpair("NewUpload_")))
+    {
+        mWorkingLockIDs.AtAdding() = LockID;
     }
 }
 

@@ -23,11 +23,13 @@ public:
     void CreateSet();
     void RemoveSet();
     void InitBoard();
+    static void CollectFiles(chars path, Strings& collector);
     void InitWidget(ZayWidget& widget, chars name);
 
 public:
     bool RenderUC_Editor(ZayPanel& panel);
     bool RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, sint32 linegap, sint32 lastgap);
+    bool RenderUC_Python(ZayPanel& panel, sint32 postidx);
 
 public: // 윈도우
     static const sint32 mMinWindowWidth = 400;

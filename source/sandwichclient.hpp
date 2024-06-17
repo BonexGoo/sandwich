@@ -10,11 +10,13 @@ public:
     void NewPost(chars text);
     void NewSentence(chars text);
     void NewRipple(chars text);
+    void NewUpload(chars lockid, chars route);
     void Select(chars type, sint32 index);
 
 public:
     bool TickOnce();
     bool TryRecvOnce();
+    bool TryWorkingOnce();
 
 private:
     void Reconnect();
@@ -56,4 +58,6 @@ public: // 계정
     String mNewPost;
     String mNewSentence;
     String mNewRipple;
+    Strings mWorkingLockIDs;
+    uint08s mWorkingData;
 };
