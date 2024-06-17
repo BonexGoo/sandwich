@@ -67,7 +67,12 @@ void SandWichClient::Select(chars type, sint32 index)
     {
         String Path;
         if(!String::Compare(type, "post"))
+        {
             Path = String::Format("post.%d.sentence", index);
+            const String Type = ZayWidgetDOM::GetValue(String::Format("sandwich.asset.post.%d.data.type", index)).ToText();
+            if(Type == "python")
+                SendFocusAsset(String::Format("post.%d.python", index));
+        }
         else if(!String::Compare(type, "sentence"))
         {
             const sint32 PostIndex = ZayWidgetDOM::GetValue("sandwich.select.post").ToInteger();
@@ -223,12 +228,15 @@ bool SandWichClient::TryWorkingOnce()
             else
             {
                 Context Data;
+                Data.At("asset").Set("python_" + CurLockID.Offset(strsize("NewUpload_")));
                 for(sint32 i = 0; i < Count; ++i)
                 {
                     const String CurHeader = Header + String::Format(".%d", i);
                     const String ItemPath = ZayWidgetDOM::GetValue(CurHeader + ".itempath").ToText();
                     const String CheckSum = ZayWidgetDOM::GetValue(CurHeader + ".checksum").ToText();
-                    Data.At(ItemPath).Set(CheckSum);
+                    auto& NewData = Data.At("files").AtAdding();
+                    NewData.At("path").Set(ItemPath);
+                    NewData.At("checksum").Set(CheckSum);
                 }
                 SendUnlockAsset(CurLockID, Data);
                 ZayWidgetDOM::RemoveVariables(Header + ".");
@@ -411,7 +419,18 @@ void SandWichClient::OnAssetUpdated(const Context& json)
     ZayWidgetDOM::SetValue(Header + ".author", "'" + Author + "'");
     ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
     ZayWidgetDOM::SetValue(Header + ".version", "'" + Version + "'");
-    ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
+
+    // 어셋데이터
+    const String AssetName = json("data")("asset").GetText();
+    if(0 < AssetName.Length())
+    {
+        ZayWidgetDOM::SetValue(Header + ".asset", "'" + AssetName + "'");
+        ///////////////////////////////////
+        // 어셋경로에 다운로드를 해야 할 파일을 추출
+        ///////////////////////////////////
+    }
+    // 일반데이터
+    else ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
 
     const Strings Pathes = String::Split(Path, '.');
     if(0 < Pathes.Count())
