@@ -49,4 +49,5 @@ public: // 위젯과 통신
     uint64 mRenderMsec {0};
     ZayWidget* mWidget {nullptr};
     SandWichClient* mClient {nullptr};
+    Map<ZayWidget*> mPythonWidgets;
 };

@@ -21,6 +21,7 @@ public:
 private:
     void Reconnect();
     void Send(const Context& json);
+    String GetCheckSum(chars asset, chars path);
 
 private:
     void SendFastLogin(chars programid);
@@ -32,6 +33,7 @@ private:
     void SendUnfocusAsset(chars route);
     void SendFocusRange(chars route);
     void SendUnfocusRange(chars route);
+    void SendDownloadFile(chars memo, chars path);
 
 private:
     void OnLogined(const Context& json);
@@ -40,6 +42,8 @@ private:
     void OnAssetUpdated(const Context& json);
     void OnAssetChanged(const Context& json);
     void OnRangeUpdated(const Context& json);
+    void OnFileDownloading(const Context& json);
+    void OnFileDownloaded(const Context& json);
     void OnErrored(const Context& json);
 
 public: // 통신
@@ -60,4 +64,5 @@ public: // 계정
     String mNewRipple;
     Strings mWorkingLockIDs;
     uint08s mWorkingData;
+    Map<uint08s> mDownloadingData;
 };

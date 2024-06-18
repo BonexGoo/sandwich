@@ -149,6 +149,8 @@ bool SandWichClient::TryRecvOnce()
                     jump(Type == "AssetUpdated") OnAssetUpdated(RecvJson);
                     jump(Type == "AssetChanged") OnAssetChanged(RecvJson);
                     jump(Type == "RangeUpdated") OnRangeUpdated(RecvJson);
+                    jump(Type == "FileDownloading") OnFileDownloading(RecvJson);
+                    jump(Type == "FileDownloaded") OnFileDownloaded(RecvJson);
                     jump(Type == "Errored") OnErrored(RecvJson);
                 }
                 NeedUpdate = true;
@@ -274,6 +276,34 @@ void SandWichClient::Send(const Context& json)
         mSendTasks.AtAdding() = NewPacket;
 }
 
+String SandWichClient::GetCheckSum(chars asset, chars path)
+{
+    uint64 DataSize = 0, DataTime = 0;
+    const String DataPath = String::Format("%s/data/%s", asset, path);
+    if(Asset::Exist(DataPath, nullptr, &DataSize, nullptr, nullptr, &DataTime))
+    {
+        uint64 CheckSize = 0, CheckTime = 0;
+        const String CheckPath = String::Format("%s/checksum/%s.checksum", asset, path);
+        if(Asset::Exist(CheckPath, nullptr, &CheckSize, nullptr, nullptr, &CheckTime))
+        {
+            if(DataTime < CheckTime)
+                return String::FromAsset(CheckPath);
+        }
+        // CheckSum생성
+        if(auto DataAsset = Asset::OpenForRead(DataPath))
+        {
+            uint08s DataBinary;
+            Asset::Read(DataAsset, DataBinary.AtDumpingAdded(DataSize), DataSize);
+            Asset::Close(DataAsset);
+            const String NewMD5 = AddOn::Ssl::ToMD5(&DataBinary[0], DataSize);
+            const String NewCheckSum = String::Format("size/%d/md5/%s", (sint32) DataSize, (chars) NewMD5);
+            NewCheckSum.ToAsset(CheckPath, true);
+            return NewCheckSum;
+        }
+    }
+    return String();
+}
+
 void SandWichClient::SendFastLogin(chars programid)
 {
     Context Json;
@@ -362,6 +392,18 @@ void SandWichClient::SendUnfocusRange(chars route)
     Send(Json);
 }
 
+void SandWichClient::SendDownloadFile(chars memo, chars path)
+{
+    Context Json;
+    Json.At("type").Set("DownloadFile");
+    Json.At("token").Set(mToken);
+    Json.At("memo").Set(memo);
+    Json.At("path").Set(path);
+    Json.At("offset").Set("0");
+    Json.At("size").Set("-1");
+    Send(Json);
+}
+
 void SandWichClient::OnLogined(const Context& json)
 {
     mAuthor = json("author").GetText();
@@ -411,11 +453,12 @@ void SandWichClient::OnAssetLocked(const Context& json)
 void SandWichClient::OnAssetUpdated(const Context& json)
 {
     const String Author = json("author").GetText();
-    const String Path = String(json("path").GetText()).Replace('/', '.');
+    const String ServerPath = json("path").GetText();
+    const String DomPath = String(ServerPath).Replace('/', '.');
     const String Status = json("status").GetText();
     const String Version = json("version").GetText();
 
-    const String Header = "sandwich.asset." + Path;
+    const String Header = "sandwich.asset." + DomPath;
     ZayWidgetDOM::SetValue(Header + ".author", "'" + Author + "'");
     ZayWidgetDOM::SetValue(Header + ".status", "'" + Status + "'");
     ZayWidgetDOM::SetValue(Header + ".version", "'" + Version + "'");
@@ -425,21 +468,26 @@ void SandWichClient::OnAssetUpdated(const Context& json)
     if(0 < AssetName.Length())
     {
         ZayWidgetDOM::SetValue(Header + ".asset", "'" + AssetName + "'");
-        ///////////////////////////////////
-        // 어셋경로에 다운로드를 해야 할 파일을 추출
-        ///////////////////////////////////
+        for(sint32 i = 0, iend = json("data")("files").LengthOfIndexable(); i < iend; ++i)
+        {
+            const String ItemPath = json("data")("files")[i]("path").GetText();
+            const String NewCheckSum = json("data")("files")[i]("checksum").GetText();
+            const String OldCheckSum = GetCheckSum(AssetName, ItemPath);
+            if(NewCheckSum != OldCheckSum)
+                SendDownloadFile(AssetName + "/data/" + ItemPath, ServerPath + '/' + ItemPath);
+        }
     }
     // 일반데이터
     else ZayWidgetDOM::SetJson(json("data"), Header + ".data.");
 
-    const Strings Pathes = String::Split(Path, '.');
+    const Strings Pathes = String::Split(DomPath, '.');
     if(0 < Pathes.Count())
     {
         const String PathType = Pathes[-2];
         if(PathType == "post")
-            SendFocusRange(Path + ".sentence");
+            SendFocusRange(DomPath + ".sentence");
         else if(PathType == "sentence")
-            SendFocusRange(Path + ".ripple");
+            SendFocusRange(DomPath + ".ripple");
     }
 }
 
@@ -477,6 +525,39 @@ void SandWichClient::OnRangeUpdated(const Context& json)
         const String CurRoute = String::Format("%s.%d", (chars) Path, First + i);
         SendFocusAsset(CurRoute);
     }
+}
+
+void SandWichClient::OnFileDownloading(const Context& json)
+{
+    const String Memo = json("memo").GetText();
+    const sint32 Total = json("total").GetInt();
+    const sint32 Offset = json("offset").GetInt();
+    if(buffer NewData = AddOn::Ssl::FromBASE64(json("base64").GetText()))
+    {
+        const sint32 DataSize = Buffer::CountOf(NewData);
+        // 메모리에 쓰기
+        if(0 < DataSize)
+        {
+            auto& CurData = mDownloadingData(Memo);
+            Memory::Copy(CurData.AtDumping(Offset, DataSize), NewData, DataSize);
+        }
+        Buffer::Free(NewData);
+    }
+}
+
+void SandWichClient::OnFileDownloaded(const Context& json)
+{
+    OnFileDownloading(json);
+
+    // 파일에 쓰기
+    const String Memo = json("memo").GetText();
+    auto& CurData = mDownloadingData(Memo);
+    if(auto NewAsset = Asset::OpenForWrite(Memo, true))
+    {
+        Asset::Write(NewAsset, &CurData[0], CurData.Count());
+        Asset::Close(NewAsset);
+    }
+    mDownloadingData.Remove(Memo);
 }
 
 void SandWichClient::OnErrored(const Context& json)

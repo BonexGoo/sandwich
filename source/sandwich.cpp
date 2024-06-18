@@ -42,15 +42,17 @@ ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
             m->invalidate(2);
         }
 
-        // 위젯과 통신 틱실행
+        // 틱실행
         if(m->mWidget && m->mWidget->TickOnce())
             m->invalidate();
         if(m->mClient && m->mClient->TickOnce())
             m->invalidate();
-
-        // 워킹 틱실행
         if(m->mClient && m->mClient->TryWorkingOnce())
             m->invalidate();
+        for(sint32 i = 0, iend = m->mPythonWidgets.Count(); i < iend; ++i)
+            if(auto CurWidget = m->mPythonWidgets.AccessByOrder(i))
+            if(*CurWidget && (*CurWidget)->TickOnce())
+                m->invalidate();
     }
     else if(type == CT_Activate && !boolo(in).ConstValue())
         m->clearCapture();
@@ -574,6 +576,10 @@ void sandwichData::RemoveSet()
     delete mClient;
     mWidget = nullptr;
     mClient = nullptr;
+    for(sint32 i = 0, iend = mPythonWidgets.Count(); i < iend; ++i)
+        if(auto OldWidget = mPythonWidgets.AccessByOrder(i))
+            delete *OldWidget;
+    mPythonWidgets.Reset();
 }
 
 void sandwichData::InitBoard()
@@ -801,13 +807,33 @@ bool sandwichData::RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, 
 
 bool sandwichData::RenderUC_Python(ZayPanel& panel, sint32 postidx)
 {
-    ZAY_RGB(panel, 64, 128, 255)
-        panel.fill();
+    if(!mPythonWidgets.Access(postidx))
+        mPythonWidgets[postidx] = nullptr;
+    if(!mPythonWidgets[postidx])
+    {
+        const String ZayShowJson = String::FromAsset(String::Format("python_%d/data/widget/zayshow.json", postidx));
+        const Context ZayShow(ST_Json, SO_OnlyReference, ZayShowJson);
+        const String Title = ZayShow("title").GetText();
+        if(0 < Title.Length())
+        {
+            auto& NewWidget = mPythonWidgets[postidx];
+            NewWidget = new ZayWidget();
+            InitWidget(*NewWidget, String::Format("python_%d", postidx));
+            NewWidget->Reload(String::Format("python_%d/data/widget/%s.zay", postidx, (chars) Title));
+        }
+    }
 
-    ZAY_RGB(panel, 255, 255, 0)
-    ZAY_FONT(panel, 1.5, "arial")
-        panel.text(String::Format("[W%d x H%d x %d%%]",
-            (sint32) panel.w(), (sint32) panel.h(), sint32(panel.zoom().scale * 100 + 0.5)),
-            UIFA_CenterMiddle, UIFE_Right);
+    auto& CurWidget = mPythonWidgets[postidx];
+    if(!CurWidget || !CurWidget->Render(panel))
+    {
+        ZAY_RGB(panel, 64, 128, 255)
+            panel.fill();
+
+        ZAY_RGB(panel, 255, 255, 0)
+        ZAY_FONT(panel, 1.5, "arial")
+            panel.text(String::Format("[W%d x H%d x %d%%]",
+                (sint32) panel.w(), (sint32) panel.h(), sint32(panel.zoom().scale * 100 + 0.5)),
+                UIFA_CenterMiddle, UIFE_Right);
+    }
     return true;
 }
