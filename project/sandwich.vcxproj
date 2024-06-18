@@ -34,12 +34,14 @@
     <ClInclude Include="..\source\sandwichclient.hpp" />
     <ClInclude Include="..\source\sandwich.hpp" />
     <ClInclude Include="..\source\resource.hpp" />
+    <ClInclude Include="..\source\sandwichutil.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\sandwichclient.cpp" />
     <ClCompile Include="..\source\sandwich.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\resource.cpp" />
+    <ClCompile Include="..\source\sandwichutil.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C8332454-4D7E-40CB-A0A3-8FA930D8BF7F}</ProjectGuid>

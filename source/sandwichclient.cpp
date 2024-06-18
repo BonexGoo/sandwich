@@ -1,6 +1,7 @@
 ﻿#include <boss.hpp>
 #include "sandwichclient.hpp"
 
+#include <sandwichutil.hpp>
 #include <platform/boss_platform.hpp>
 #include <service/boss_zaywidget.hpp>
 
@@ -196,9 +197,9 @@ bool SandWichClient::TryWorkingOnce()
                         Platform::File::Read(OneFile, mWorkingData.AtDumpingAdded(FileSize), FileSize);
                         Platform::File::Close(OneFile);
                         // 체크섬
-                        const String NewMD5 = AddOn::Ssl::ToMD5(&mWorkingData[0], FileSize);
+                        const String NewCRC64 = SandWichUtil::ToCRC64(&mWorkingData[0], FileSize);
                         ZayWidgetDOM::SetValue(CurHeader + ".checksum",
-                            String::Format("'size/%d/md5/%s'", FileSize, (chars) NewMD5));
+                            String::Format("'size/%d/crc64/%s'", FileSize, (chars) NewCRC64));
                     }
                 }
                 // 분할송신
@@ -208,7 +209,7 @@ bool SandWichClient::TryWorkingOnce()
                     const sint32 Total = ZayWidgetDOM::GetValue(CurHeader + ".total").ToInteger();
                     const sint32 Offset = ZayWidgetDOM::GetValue(CurHeader + ".offset").ToInteger();
                     const sint32 Size = Math::Min(4096, Total - Offset);
-                    const String Base64 = AddOn::Ssl::ToBASE64(&mWorkingData[Offset], Size);
+                    const String& Base64 = SandWichUtil::ToBASE64(&mWorkingData[Offset], Size);
                     const bool IsLastData = (Offset + Size == Total);
                     Context Json;
                     Json.At("type").Set((IsLastData)? "FileUploaded" : "FileUploading");
@@ -282,6 +283,9 @@ String SandWichClient::GetCheckSum(chars asset, chars path)
     const String DataPath = String::Format("%s/data/%s", asset, path);
     if(Asset::Exist(DataPath, nullptr, &DataSize, nullptr, nullptr, &DataTime))
     {
+        if(DataSize == 0)
+            return "size/0/crc64/0000000000000000";
+
         uint64 CheckSize = 0, CheckTime = 0;
         const String CheckPath = String::Format("%s/checksum/%s.checksum", asset, path);
         if(Asset::Exist(CheckPath, nullptr, &CheckSize, nullptr, nullptr, &CheckTime))
@@ -289,14 +293,15 @@ String SandWichClient::GetCheckSum(chars asset, chars path)
             if(DataTime < CheckTime)
                 return String::FromAsset(CheckPath);
         }
+
         // CheckSum생성
         if(auto DataAsset = Asset::OpenForRead(DataPath))
         {
             uint08s DataBinary;
             Asset::Read(DataAsset, DataBinary.AtDumpingAdded(DataSize), DataSize);
             Asset::Close(DataAsset);
-            const String NewMD5 = AddOn::Ssl::ToMD5(&DataBinary[0], DataSize);
-            const String NewCheckSum = String::Format("size/%d/md5/%s", (sint32) DataSize, (chars) NewMD5);
+            const String NewCRC64 = SandWichUtil::ToCRC64(&DataBinary[0], DataSize);
+            const String NewCheckSum = String::Format("size/%d/crc64/%s", (sint32) DataSize, (chars) NewCRC64);
             NewCheckSum.ToAsset(CheckPath, true);
             return NewCheckSum;
         }
@@ -532,7 +537,8 @@ void SandWichClient::OnFileDownloading(const Context& json)
     const String Memo = json("memo").GetText();
     const sint32 Total = json("total").GetInt();
     const sint32 Offset = json("offset").GetInt();
-    if(buffer NewData = AddOn::Ssl::FromBASE64(json("base64").GetText()))
+    const String& Base64 = json("base64").GetText();
+    if(buffer NewData = SandWichUtil::FromBASE64(Base64, Base64.Length()))
     {
         const sint32 DataSize = Buffer::CountOf(NewData);
         // 메모리에 쓰기
@@ -552,6 +558,7 @@ void SandWichClient::OnFileDownloaded(const Context& json)
     // 파일에 쓰기
     const String Memo = json("memo").GetText();
     auto& CurData = mDownloadingData(Memo);
+    if(0 < CurData.Count())
     if(auto NewAsset = Asset::OpenForWrite(Memo, true))
     {
         Asset::Write(NewAsset, &CurData[0], CurData.Count());

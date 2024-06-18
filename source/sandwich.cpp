@@ -1,6 +1,7 @@
 ﻿#include <boss.hpp>
 #include "sandwich.hpp"
 
+#include <sandwichutil.hpp>
 #include <resource.hpp>
 #if BOSS_WASM
     #include <boss_assets.hpp>
@@ -631,9 +632,9 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
             {
                 const String Author = ZayWidgetDOM::GetComment(params.Param(0).ToText());
                 const String PasswordSeed = ZayWidgetDOM::GetComment(params.Param(1).ToText()) + "_" + gBoardName + "_" + Author;
-                const String PasswordMD5 = PasswordSeed;//AddOn::Ssl::ToMD5((bytes)(chars) PasswordSeed, PasswordSeed.Length());
+                const String PasswordCRC64 = SandWichUtil::ToCRC64((bytes)(chars) PasswordSeed, PasswordSeed.Length());
                 if(mClient)
-                    mClient->Login(Author, PasswordMD5);
+                    mClient->Login(Author, PasswordCRC64);
                 clearCapture();
             }
         })
