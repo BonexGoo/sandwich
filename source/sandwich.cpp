@@ -690,13 +690,13 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                     const String Header = "sandwich.work." + LockID;
                     Strings UploadPathes;
                     CollectFiles(LocalPath, UploadPathes);
+                    const String ServerPath = String::Format("post/%d/python", PostIndex);
+                    ZayWidgetDOM::SetValue(Header + ".localpath", "'" + LocalPath + "'");
+                    ZayWidgetDOM::SetValue(Header + ".serverpath", "'" + ServerPath + "'");
                     for(sint32 i = 0, iend = UploadPathes.Count(); i < iend; ++i)
                     {
                         const String ItemPath = UploadPathes[i].Offset(LocalPath.Length() + 1);
-                        const String ServerPath = String::Format("post/%d/python", PostIndex);
                         ZayWidgetDOM::SetValue(Header + String::Format(".%d.itempath", i), "'" + ItemPath + "'");
-                        ZayWidgetDOM::SetValue(Header + String::Format(".%d.localpath", i), "'" + LocalPath + "'");
-                        ZayWidgetDOM::SetValue(Header + String::Format(".%d.serverpath", i), "'" + ServerPath + "'");
                     }
                     ZayWidgetDOM::SetValue(Header + ".count", String::FromInteger(UploadPathes.Count()));
                     ZayWidgetDOM::SetValue(Header + ".focus", "0");
@@ -812,9 +812,9 @@ bool sandwichData::RenderUC_Python(ZayPanel& panel, sint32 postidx)
         mPythonWidgets[postidx] = nullptr;
     if(!mPythonWidgets[postidx])
     {
-        const String ZayShowJson = String::FromAsset(String::Format("python_%d/data/widget/zayshow.json", postidx));
-        const Context ZayShow(ST_Json, SO_OnlyReference, ZayShowJson);
-        const String Title = ZayShow("title").GetText();
+        const String ShowJson = String::FromAsset(String::Format("python_%d/data/widget/zayshow.json", postidx));
+        const Context Show(ST_Json, SO_OnlyReference, ShowJson);
+        const String Title = Show("title").GetText();
         if(0 < Title.Length())
         {
             auto& NewWidget = mPythonWidgets[postidx];

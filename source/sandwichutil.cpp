@@ -154,7 +154,8 @@ String SandWichUtil::ToBASE64(bytes binary, sint32 length)
 {
     unsigned char input[3] = {0, 0, 0};
     unsigned char output[4] = {0, 0, 0, 0};
-    int index, i, j, size = (4 * (length / 3)) + ((length % 3)? 4 : 0) + 1;
+    const int size = (4 * (length / 3)) + ((length % 3)? 4 : 0) + 1;
+    int index, i, j;
     bytes p, plen = binary + length - 1;
 
     chararray Result;
@@ -204,8 +205,10 @@ buffer SandWichUtil::FromBASE64(chars base64, sint32 length)
     int space_idx = 0, phase = 0;
     int d, prev_d = 0;
     unsigned char c;
+    const int size = length / 4 * 3
+        - (base64[length - 2] == '=') - (base64[length - 1] == '=');
 
-    buffer Result = Buffer::Alloc(BOSS_DBG length * 6 / 8);
+    buffer Result = Buffer::Alloc(BOSS_DBG size);
     unsigned char* decoded = (unsigned char*) Result;
     for(cp = base64; *cp != '\0'; ++cp)
     {

@@ -174,6 +174,8 @@ bool SandWichClient::TryWorkingOnce()
             const String Header = "sandwich.work." + CurLockID;
             const sint32 Count = ZayWidgetDOM::GetValue(Header + ".count").ToInteger();
             const sint32 Focus = ZayWidgetDOM::GetValue(Header + ".focus").ToInteger();
+            const String LocalPath = ZayWidgetDOM::GetValue(Header + ".localpath").ToText();
+            const String ServerPath = ZayWidgetDOM::GetValue(Header + ".serverpath").ToText();
             if(Focus < Count)
             {
                 const String CurHeader = Header + String::Format(".%d", Focus);
@@ -181,8 +183,7 @@ bool SandWichClient::TryWorkingOnce()
                 // 워킹 데이터준비
                 if(mWorkingData.Count() == 0)
                 {
-                    const String Path = ZayWidgetDOM::GetValue(CurHeader + ".localpath").ToText() + "/" + ItemPath;
-                    if(auto OneFile = Platform::File::OpenForRead(Path))
+                    if(auto OneFile = Platform::File::OpenForRead(LocalPath + "/" + ItemPath))
                     {
                         const sint32 FileSize = Platform::File::Size(OneFile);
                         ZayWidgetDOM::SetValue(CurHeader + ".total", String::FromInteger(FileSize));
@@ -205,7 +206,6 @@ bool SandWichClient::TryWorkingOnce()
                 // 분할송신
                 if(0 < mWorkingData.Count())
                 {
-                    const String Path = ZayWidgetDOM::GetValue(CurHeader + ".serverpath").ToText() + "/" + ItemPath;
                     const sint32 Total = ZayWidgetDOM::GetValue(CurHeader + ".total").ToInteger();
                     const sint32 Offset = ZayWidgetDOM::GetValue(CurHeader + ".offset").ToInteger();
                     const sint32 Size = Math::Min(4096, Total - Offset);
@@ -215,7 +215,7 @@ bool SandWichClient::TryWorkingOnce()
                     Json.At("type").Set((IsLastData)? "FileUploaded" : "FileUploading");
                     Json.At("token").Set(mToken);
                     Json.At("lockid").Set(CurLockID);
-                    Json.At("path").Set(Path);
+                    Json.At("path").Set(ServerPath + "/" + ItemPath);
                     Json.At("total").Set(String::FromInteger(Total));
                     Json.At("offset").Set(String::FromInteger(Offset));
                     Json.At("base64").Set(Base64);
@@ -232,6 +232,9 @@ bool SandWichClient::TryWorkingOnce()
             {
                 Context Data;
                 Data.At("asset").Set("python_" + CurLockID.Offset(strsize("NewUpload_")));
+                const String ShowJson = String::FromFile(LocalPath + "/widget/zayshow.json");
+                if(0 < ShowJson.Length())
+                    Data.At("show").LoadJson(SO_NeedCopy, ShowJson);
                 for(sint32 i = 0; i < Count; ++i)
                 {
                     const String CurHeader = Header + String::Format(".%d", i);
@@ -473,6 +476,7 @@ void SandWichClient::OnAssetUpdated(const Context& json)
     if(0 < AssetName.Length())
     {
         ZayWidgetDOM::SetValue(Header + ".asset", "'" + AssetName + "'");
+        ZayWidgetDOM::SetJson(json("data")("show"), Header + ".show.");
         for(sint32 i = 0, iend = json("data")("files").LengthOfIndexable(); i < iend; ++i)
         {
             const String ItemPath = json("data")("files")[i]("path").GetText();
