@@ -137,7 +137,7 @@ String SandWichUtil::ToCRC64(bytes binary, sint32 length)
     bytes CrcFocus = binary;
     for(int i = 0; i < length; ++i)
         CrcCode = gCrcTable[((CrcCode >> 56) & 0xFF) ^ *(CrcFocus++)] ^ (CrcCode << 8);
-    return String::Format("%016x", CrcCode);
+    return String::Format("%016llx", CrcCode);
 }
 
 static const char gBase64Encode[] = {

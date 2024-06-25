@@ -48,6 +48,9 @@
     <ClInclude Include="..\source\sandwichutil.hpp">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\sandwichpython.hpp">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\sandwich.cpp">
@@ -63,6 +66,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\sandwichutil.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\sandwichpython.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

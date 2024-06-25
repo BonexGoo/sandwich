@@ -92,6 +92,13 @@ void SandWichClient::Select(chars type, sint32 index)
     }
 }
 
+void SandWichClient::PythonExecute(sint32 postindex)
+{
+    const String Header = String::Format("sandwich.asset.post.%d.python.show.python", postindex);
+    const String PythonPath = ZayWidgetDOM::GetValue(Header).ToText();
+    SendPythonExecute(String::Format("run_%d", postindex), String::Format("post/%d/python/", postindex) + PythonPath);
+}
+
 bool SandWichClient::TickOnce()
 {
     bool NeedUpdate = false;
@@ -152,6 +159,7 @@ bool SandWichClient::TryRecvOnce()
                     jump(Type == "RangeUpdated") OnRangeUpdated(RecvJson);
                     jump(Type == "FileDownloading") OnFileDownloading(RecvJson);
                     jump(Type == "FileDownloaded") OnFileDownloaded(RecvJson);
+                    jump(Type == "ExecutedPython") OnExecutedPython(RecvJson);
                     jump(Type == "Errored") OnErrored(RecvJson);
                 }
                 NeedUpdate = true;
@@ -185,22 +193,31 @@ bool SandWichClient::TryWorkingOnce()
                 {
                     if(auto OneFile = Platform::File::OpenForRead(LocalPath + "/" + ItemPath))
                     {
+                        bool Success = false;
                         const sint32 FileSize = Platform::File::Size(OneFile);
                         ZayWidgetDOM::SetValue(CurHeader + ".total", String::FromInteger(FileSize));
                         ZayWidgetDOM::SetValue(CurHeader + ".offset", "0");
-                        if(FileSize == 0)
+                        if(0 < FileSize)
                         {
+                            Platform::File::Read(OneFile, mWorkingData.AtDumpingAdded(FileSize), FileSize);
                             Platform::File::Close(OneFile);
+                            // 체크섬
+                            const String NewCRC64 = SandWichUtil::ToCRC64(&mWorkingData[0], FileSize);
+                            const String NewCheckSum = String::Format("size/%d/crc64/%s", FileSize, (chars) NewCRC64);
+                            const String CurPost = "sandwich.asset.post." + CurLockID.Offset(strsize("NewUpload_"));
+                            const String OldCheckSum = ZayWidgetDOM::GetValue(
+                                String::Format("%s.python.checksum.%s", (chars) CurPost, (chars) ItemPath)).ToText();
+                            ZayWidgetDOM::SetValue(CurHeader + ".checksum", "'" + NewCheckSum + "'");
+                            if(NewCheckSum != OldCheckSum)
+                                Success = true;
+                        }
+                        else Platform::File::Close(OneFile);
+                        // 파일사이즈가 0이거나 동일한 파일은 스킵
+                        if(!Success)
+                        {
                             ZayWidgetDOM::SetValue(Header + ".focus", String::FromInteger(Focus + 1));
                             mWorkingData.Clear();
-                            return true;
                         }
-                        Platform::File::Read(OneFile, mWorkingData.AtDumpingAdded(FileSize), FileSize);
-                        Platform::File::Close(OneFile);
-                        // 체크섬
-                        const String NewCRC64 = SandWichUtil::ToCRC64(&mWorkingData[0], FileSize);
-                        ZayWidgetDOM::SetValue(CurHeader + ".checksum",
-                            String::Format("'size/%d/crc64/%s'", FileSize, (chars) NewCRC64));
                     }
                 }
                 // 분할송신
@@ -412,6 +429,16 @@ void SandWichClient::SendDownloadFile(chars memo, chars path)
     Send(Json);
 }
 
+void SandWichClient::SendPythonExecute(chars runid, chars path)
+{
+    Context Json;
+    Json.At("type").Set("PythonExecute");
+    Json.At("token").Set(mToken);
+    Json.At("runid").Set(runid);
+    Json.At("path").Set(path);
+    Send(Json);
+}
+
 void SandWichClient::OnLogined(const Context& json)
 {
     mAuthor = json("author").GetText();
@@ -477,13 +504,23 @@ void SandWichClient::OnAssetUpdated(const Context& json)
     {
         ZayWidgetDOM::SetValue(Header + ".asset", "'" + AssetName + "'");
         ZayWidgetDOM::SetJson(json("data")("show"), Header + ".show.");
+        sint32 DownloadCount = 0;
         for(sint32 i = 0, iend = json("data")("files").LengthOfIndexable(); i < iend; ++i)
         {
             const String ItemPath = json("data")("files")[i]("path").GetText();
             const String NewCheckSum = json("data")("files")[i]("checksum").GetText();
             const String OldCheckSum = GetCheckSum(AssetName, ItemPath);
             if(NewCheckSum != OldCheckSum)
+            {
                 SendDownloadFile(AssetName + "/data/" + ItemPath, ServerPath + '/' + ItemPath);
+                DownloadCount++;
+            }
+            ZayWidgetDOM::SetValue(Header + ".checksum." + ItemPath, "'" + NewCheckSum + "'");
+        }
+        if(0 < DownloadCount)
+        {
+            ZayWidgetDOM::SetValue(Header + ".download.focus", "0");
+            ZayWidgetDOM::SetValue(Header + ".download.count", String::FromInteger(DownloadCount));
         }
     }
     // 일반데이터
@@ -567,8 +604,36 @@ void SandWichClient::OnFileDownloaded(const Context& json)
     {
         Asset::Write(NewAsset, &CurData[0], CurData.Count());
         Asset::Close(NewAsset);
+        // 프로그레스 업데이트
+        if(!String::Compare(Memo, strpair("python_")))
+        {
+            const String PostInfo = Memo.Offset(strsize("python_"));
+            const sint32 SlashPos = PostInfo.Find(0, "/");
+            if(SlashPos != -1)
+            {
+                const sint32 PostIndex = Parser::GetInt(PostInfo.Left(SlashPos));
+                const String Header = String::Format("sandwich.asset.post.%d.python.download.focus", PostIndex);
+                const sint32 CurFocus = ZayWidgetDOM::GetValue(Header).ToInteger();
+                ZayWidgetDOM::SetValue(Header, String::FromInteger(CurFocus + 1));
+            }
+        }
     }
     mDownloadingData.Remove(Memo);
+}
+
+void SandWichClient::OnExecutedPython(const Context& json)
+{
+    const String RunID = json("runid").GetText();
+    const sint32 Port = json("port").GetInt();
+
+    if(!String::Compare(RunID, strpair("run_")))
+    {
+        const sint32 PostIdx = Parser::GetInt(RunID.Offset(strsize("run_")));
+        sint32s Args;
+        Args.AtAdding() = PostIdx;
+        Args.AtAdding() = Port;
+        Platform::BroadcastNotify("ConnectPython", Args, NT_Normal, nullptr, true);
+    }
 }
 
 void SandWichClient::OnErrored(const Context& json)

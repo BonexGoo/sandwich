@@ -12,6 +12,7 @@ public:
     void NewRipple(chars text);
     void NewUpload(chars lockid, chars route);
     void Select(chars type, sint32 index);
+    void PythonExecute(sint32 postindex);
 
 public:
     bool TickOnce();
@@ -34,6 +35,7 @@ private:
     void SendFocusRange(chars route);
     void SendUnfocusRange(chars route);
     void SendDownloadFile(chars memo, chars path);
+    void SendPythonExecute(chars runid, chars path);
 
 private:
     void OnLogined(const Context& json);
@@ -44,6 +46,7 @@ private:
     void OnRangeUpdated(const Context& json);
     void OnFileDownloading(const Context& json);
     void OnFileDownloaded(const Context& json);
+    void OnExecutedPython(const Context& json);
     void OnErrored(const Context& json);
 
 public: // 통신

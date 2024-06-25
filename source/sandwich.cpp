@@ -33,27 +33,20 @@ ZAY_VIEW_API OnCommand(CommandType type, id_share in, id_cloned_share* out)
     }
     else if(type == CT_Tick)
     {
-        const uint64 CurMsec = Platform::Utility::CurrentTimeMsec();
+        const uint64 NowMsec = Platform::Utility::CurrentTimeMsec();
 
-        // Update처리
-        if(m->mUpdateMsec != 0)
-        {
-            if(m->mUpdateMsec < CurMsec)
-                m->mUpdateMsec = 0;
-            m->invalidate(2);
-        }
-
-        // 틱실행
         if(m->mWidget && m->mWidget->TickOnce())
             m->invalidate();
         if(m->mClient && m->mClient->TickOnce())
             m->invalidate();
         if(m->mClient && m->mClient->TryWorkingOnce())
             m->invalidate();
-        for(sint32 i = 0, iend = m->mPythonWidgets.Count(); i < iend; ++i)
-            if(auto CurWidget = m->mPythonWidgets.AccessByOrder(i))
-            if(*CurWidget && (*CurWidget)->TickOnce())
+        for(sint32 i = 0, iend = m->mPythons.Count(); i < iend; ++i)
+            if(auto CurPython = m->mPythons.AccessByOrder(i))
+            if(CurPython->TickOnce())
                 m->invalidate();
+        if(NowMsec <= m->mWidgetUpdater)
+            m->invalidate(2);
     }
     else if(type == CT_Activate && !boolo(in).ConstValue())
         m->clearCapture();
@@ -63,11 +56,20 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
 {
     if(type == NT_Normal)
     {
-        if(!String::Compare(topic, "Update"))
+        if(!String::Compare(topic, "ZS_Update"))
         {
-            const uint64 Msec = (in)? Platform::Utility::CurrentTimeMsec() + sint32o(in).ConstValue() : 1;
-            if(m->mUpdateMsec < Msec)
-                m->mUpdateMsec = Msec;
+            const uint64 NewUpdateMsec = Platform::Utility::CurrentTimeMsec() + sint32o(in).ConstValue();
+            if(m->mWidgetUpdater < NewUpdateMsec)
+                m->mWidgetUpdater = NewUpdateMsec;
+        }
+        else if(!String::Compare(topic, "ZS_Log"))
+        {
+            const String Message(in);
+            m->mWidget->SendLog(Message);
+        }
+        else if(!String::Compare(topic, "ZS_ClearCapture"))
+        {
+            m->clearCapture();
         }
         else if(!String::Compare(topic, "InitSandWich"))
         {
@@ -83,11 +85,21 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
             m->RemoveSet();
             m->CreateSet();
         }
+        else if(!String::Compare(topic, "ConnectPython"))
+        {
+            sint32s Args(in);
+            const sint32 PostIdx = Args[0];
+            const sint32 Port = Args[1];
+            m->mPythons[PostIdx].PythonConnect(gServerHost, Port);
+        }
     }
     else if(type == NT_SocketReceive)
     {
         if(m->mClient && m->mClient->TryRecvOnce())
             m->invalidate();
+        for(sint32 i = 0, iend = m->mPythons.Count(); i < iend; ++i)
+            if(auto CurPython = m->mPythons.AccessByOrder(i))
+                CurPython->TryPythonRecvOnce();
     }
     else if(type == NT_ZayWidget)
     {
@@ -205,8 +217,8 @@ ZAY_VIEW_API OnRender(ZayPanel& panel)
 
         // 프레임시간
         const uint64 CurRenderMsec = Platform::Utility::CurrentTimeMsec();
-        ZayWidgetDOM::SetValue("program.frame", String::FromFloat(1000.0 / (CurRenderMsec - m->mRenderMsec)));
-        m->mRenderMsec = CurRenderMsec;
+        ZayWidgetDOM::SetValue("program.frame", String::FromFloat(1000.0 / (CurRenderMsec - m->mRenderTester)));
+        m->mRenderTester = CurRenderMsec;
     }
 }
 
@@ -249,7 +261,7 @@ sandwichData::sandwichData()
     DateText = DateText.Right(4) + "/" + DateText.Left(2) + "/" + Day;
     ZayWidgetDOM::SetValue("program.build", "'" + DateText + "_" + TimeText.Left(2) + "H'");
 
-    mRenderMsec = Platform::Utility::CurrentTimeMsec();
+    mRenderTester = Platform::Utility::CurrentTimeMsec();
     ZayWidgetDOM::SetValue("program.frame", "0");
     ZayWidgetDOM::SetValue("program.debug", "0");
 
@@ -577,10 +589,10 @@ void sandwichData::RemoveSet()
     delete mClient;
     mWidget = nullptr;
     mClient = nullptr;
-    for(sint32 i = 0, iend = mPythonWidgets.Count(); i < iend; ++i)
-        if(auto OldWidget = mPythonWidgets.AccessByOrder(i))
-            delete *OldWidget;
-    mPythonWidgets.Reset();
+    for(sint32 i = 0, iend = mPythons.Count(); i < iend; ++i)
+        if(auto OldPython = mPythons.AccessByOrder(i))
+            OldPython->Destroy();
+    mPythons.Reset();
 }
 
 void sandwichData::InitBoard()
@@ -609,22 +621,24 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
 {
     widget.Init(name, nullptr,
         [](chars name)->const Image* {return &((const Image&) R(name));})
-        // 특정시간동안 지속적인 화면업데이트(60fps)
+
+        // 특정시간동안 지속적인 화면업데이트
         .AddGlue("update", ZAY_DECLARE_GLUE(params, this)
         {
             if(params.ParamCount() == 1)
             {
-                const uint64 UpdateMsec = Platform::Utility::CurrentTimeMsec() + params.Param(0).ToFloat() * 1000;
-                if(mUpdateMsec < UpdateMsec)
-                    mUpdateMsec = UpdateMsec;
+                const sint32o Msec(sint32(params.Param(0).ToFloat() * 1000));
+                Platform::BroadcastNotify("ZS_Update", Msec, NT_Normal, nullptr, true);
             }
         })
+
         // 재접속
         .AddGlue("reconnect", ZAY_DECLARE_GLUE(params, this)
         {
             Platform::BroadcastNotify("Reconnect", nullptr);
             clearCapture();
         })
+
         // 로그인
         .AddGlue("login", ZAY_DECLARE_GLUE(params, this)
         {
@@ -638,6 +652,7 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 clearCapture();
             }
         })
+
         // 로그아웃
         .AddGlue("logout", ZAY_DECLARE_GLUE(params, this)
         {
@@ -645,6 +660,7 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 mClient->Logout();
             clearCapture();
         })
+
         // 요소선택(포스트 또는 문장)
         .AddGlue("select", ZAY_DECLARE_GLUE(params, this)
         {
@@ -657,6 +673,7 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 clearCapture();
             }
         })
+
         // 포스트형식 전환
         .AddGlue("turn_post_type", ZAY_DECLARE_GLUE(params, this)
         {
@@ -665,6 +682,7 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 ZayWidgetDOM::SetValue("sandwich.select.posttype", "'python'");
             else ZayWidgetDOM::SetValue("sandwich.select.posttype", "'text'");
         })
+
         // 문장 위치초기화
         .AddGlue("set_sentence_pos", ZAY_DECLARE_GLUE(params, this)
         {
@@ -677,6 +695,7 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 ZayWidgetDOM::SetValue(UnitID + ".y", String::FromInteger(PosY));
             }
         })
+
         // 파일 업로드
         .AddGlue("upload_files", ZAY_DECLARE_GLUE(params, this)
         {
@@ -704,12 +723,26 @@ void sandwichData::InitWidget(ZayWidget& widget, chars name)
                 }
             }
         })
+
+        // 파이썬 실행
+        .AddGlue("run_python", ZAY_DECLARE_GLUE(params, this)
+        {
+            if(params.ParamCount() == 1)
+            {
+                const sint32 PostIndex = params.Param(0).ToInteger();
+                if(mClient)
+                    mClient->PythonExecute(PostIndex);
+                clearCapture();
+            }
+        })
+
         // 디버그형식 전환
         .AddGlue("turn_debug", ZAY_DECLARE_GLUE(params, this)
         {
             const sint32 OldDebug = ZayWidgetDOM::GetValue("program.debug").ToInteger();
             ZayWidgetDOM::SetValue("program.debug", String::FromInteger(1 - OldDebug));
         })
+
         // user_content
         .AddComponent(ZayExtend::ComponentType::ContentWithParameter, "user_content", ZAY_DECLARE_COMPONENT(panel, params, this)
         {
@@ -808,33 +841,34 @@ bool sandwichData::RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, 
 
 bool sandwichData::RenderUC_Python(ZayPanel& panel, sint32 postidx)
 {
-    if(!mPythonWidgets.Access(postidx))
-        mPythonWidgets[postidx] = nullptr;
-    if(!mPythonWidgets[postidx])
-    {
-        const String ShowJson = String::FromAsset(String::Format("python_%d/data/widget/zayshow.json", postidx));
-        const Context Show(ST_Json, SO_OnlyReference, ShowJson);
-        const String Title = Show("title").GetText();
-        if(0 < Title.Length())
-        {
-            auto& NewWidget = mPythonWidgets[postidx];
-            NewWidget = new ZayWidget();
-            InitWidget(*NewWidget, String::Format("python_%d", postidx));
-            NewWidget->Reload(String::Format("python_%d/data/widget/%s.zay", postidx, (chars) Title));
-        }
-    }
-
-    auto& CurWidget = mPythonWidgets[postidx];
+    auto CurWidget = mPythons[postidx].ValidWidget(postidx);
     if(!CurWidget || !CurWidget->Render(panel))
     {
         ZAY_RGB(panel, 64, 128, 255)
             panel.fill();
 
+        // 앱사이즈
         ZAY_RGB(panel, 255, 255, 0)
         ZAY_FONT(panel, 1.5, "arial")
             panel.text(String::Format("[W%d x H%d x %d%%]",
                 (sint32) panel.w(), (sint32) panel.h(), sint32(panel.zoom().scale * 100 + 0.5)),
-                UIFA_CenterMiddle, UIFE_Right);
+                UIFA_CenterTop, UIFE_Right);
+
+        // 프로그레스
+        const String Header = String::Format("sandwich.asset.post.%d.python.download", postidx);
+        const sint32 CurFocus = ZayWidgetDOM::GetValue(Header + ".focus").ToInteger();
+        const sint32 CurCount = ZayWidgetDOM::GetValue(Header + ".count").ToInteger();
+        if(CurFocus < CurCount)
+        ZAY_XYRR(panel, panel.w() / 2, panel.h() / 2, 80, 10)
+        {
+            ZAY_RGB(panel, 128, 192, 255)
+                panel.fill();
+            ZAY_RGBA(panel, 0, 0, 0, 128)
+                panel.rect(3);
+            ZAY_XYWH(panel, 0, 0, panel.w() * CurFocus / CurCount, panel.h())
+            ZAY_RGB(panel, 0, 128, 255)
+                panel.fill();
+        }
     }
     return true;
 }

@@ -2,6 +2,7 @@
 #include <service/boss_zay.hpp>
 #include <service/boss_zaywidget.hpp>
 #include "sandwichclient.hpp"
+#include "sandwichpython.hpp"
 
 class sandwichData : public ZayObject
 {
@@ -45,9 +46,9 @@ public: // 윈도우
     sint32 mZoomPercent {100};
 
 public: // 위젯과 통신
-    uint64 mUpdateMsec {0};
-    uint64 mRenderMsec {0};
     ZayWidget* mWidget {nullptr};
     SandWichClient* mClient {nullptr};
-    Map<ZayWidget*> mPythonWidgets;
+    Map<SandWichPython> mPythons;
+    uint64 mRenderTester {0};
+    uint64 mWidgetUpdater {0};
 };

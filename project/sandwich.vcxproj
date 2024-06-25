@@ -34,6 +34,7 @@
     <ClInclude Include="..\source\sandwichclient.hpp" />
     <ClInclude Include="..\source\sandwich.hpp" />
     <ClInclude Include="..\source\resource.hpp" />
+    <ClInclude Include="..\source\sandwichpython.hpp" />
     <ClInclude Include="..\source\sandwichutil.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +42,7 @@
     <ClCompile Include="..\source\sandwich.cpp" />
     <ClCompile Include="..\source\main.cpp" />
     <ClCompile Include="..\source\resource.cpp" />
+    <ClCompile Include="..\source\sandwichpython.cpp" />
     <ClCompile Include="..\source\sandwichutil.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
