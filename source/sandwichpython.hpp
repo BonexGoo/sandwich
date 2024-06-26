@@ -6,10 +6,13 @@ class SandWichPython
 {
 public:
     bool TickOnce();
-    ZayWidget* ValidWidget(sint32 postidx);
     void PythonConnect(chars host, sint32 port);
     void TryPythonRecvOnce();
+    void KeyPress(sint32 keycode);
+    void KeyRelease(sint32 keycode);
     void Destroy();
+    bool RenderWidget(ZayPanel& panel, sint32 postidx);
+    void RenderLogs(ZayPanel& panel);
 
 private:
     void OnPython_log(const Strings& params);
@@ -17,7 +20,6 @@ private:
     void OnPython_get(const Strings& params);
     void OnPython_call(const Strings& params);
     void PythonSend(const String& comma_params);
-    String FindPythonKey(sint32 keycode);
 
 private:
     void Reconnect();
@@ -25,8 +27,11 @@ private:
     void PlaySound(chars filename);
     void StopSound();
     void CallGate(chars gatename);
+    String FindPythonKey(sint32 keycode);
+    ZayWidget* ValidWidget();
 
 private:
+    sint32 mPostIndex {-1};
     id_socket mPython {nullptr};
     bool mPythonConnected {false};
     String mPythonHost;

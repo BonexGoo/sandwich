@@ -93,13 +93,34 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
             m->mPythons[PostIdx].PythonConnect(gServerHost, Port);
         }
     }
+    else if(type == NT_KeyPress)
+    {
+        const sint32 KeyCode = sint32o(in).ConstValue();
+        const sint32 PostIdx = ZayWidgetDOM::GetValue("sandwich.select.post").ToInteger();
+        // 파이썬에 키전달
+        if(PostIdx != -1)
+        if(auto CurPython = m->mPythons.Access(PostIdx))
+            CurPython->KeyPress(KeyCode);
+    }
+    else if(type == NT_KeyRelease)
+    {
+        const sint32 KeyCode = sint32o(in).ConstValue();
+        const sint32 PostIdx = ZayWidgetDOM::GetValue("sandwich.select.post").ToInteger();
+        // 파이썬에 키전달
+        if(PostIdx != -1)
+        if(auto CurPython = m->mPythons.Access(PostIdx))
+            CurPython->KeyRelease(KeyCode);
+    }
     else if(type == NT_SocketReceive)
     {
-        if(m->mClient && m->mClient->TryRecvOnce())
-            m->invalidate();
-        for(sint32 i = 0, iend = m->mPythons.Count(); i < iend; ++i)
-            if(auto CurPython = m->mPythons.AccessByOrder(i))
-                CurPython->TryPythonRecvOnce();
+        if(!String::Compare(topic, "message"))
+        {
+            if(m->mClient && m->mClient->TryRecvOnce())
+                m->invalidate();
+            for(sint32 i = 0, iend = m->mPythons.Count(); i < iend; ++i)
+                if(auto CurPython = m->mPythons.AccessByOrder(i))
+                    CurPython->TryPythonRecvOnce();
+        }
     }
     else if(type == NT_ZayWidget)
     {
@@ -841,8 +862,9 @@ bool sandwichData::RenderUC_Sentence(ZayPanel& panel, chars unitid, chars text, 
 
 bool sandwichData::RenderUC_Python(ZayPanel& panel, sint32 postidx)
 {
-    auto CurWidget = mPythons[postidx].ValidWidget(postidx);
-    if(!CurWidget || !CurWidget->Render(panel))
+    if(mPythons[postidx].RenderWidget(panel, postidx))
+        mPythons[postidx].RenderLogs(panel);
+    else
     {
         ZAY_RGB(panel, 64, 128, 255)
             panel.fill();
