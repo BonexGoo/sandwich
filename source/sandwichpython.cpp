@@ -29,10 +29,11 @@ bool SandWichPython::TickOnce()
     return NeedUpdate;
 }
 
-void SandWichPython::PythonConnect(chars host, sint32 port)
+void SandWichPython::PythonConnect(chars host, sint32 port, sint32 postidx)
 {
     mPythonHost = host;
     mPythonPort = port;
+    mPostIndex = postidx;
     Reconnect();
 }
 
@@ -223,7 +224,7 @@ void SandWichPython::Reconnect()
 void SandWichPython::UpdateDom(chars key, chars value)
 {
     if(key[0] == 'd' && key[1] == '.')
-        ZayWidgetDOM::SetValue(&key[2], value);
+        ZayWidgetDOM::SetValue(String::Format("dom_%d.%s", mPostIndex, key + 2), value);
 }
 
 void SandWichPython::PlaySound(chars filename)
@@ -292,7 +293,8 @@ ZayWidget* SandWichPython::ValidWidget()
     {
         mWidget = new ZayWidget();
         mWidget->Init(String::Format("python_%d", mPostIndex), nullptr,
-            [](chars name)->const Image* {return &((const Image&) R(name));})
+            [](chars name)->const Image* {return &((const Image&) R(name));},
+            String::Format("dom_%d", mPostIndex))
 
             // 특정시간동안 지속적인 화면업데이트
             .AddGlue("update", ZAY_DECLARE_GLUE(params, this)

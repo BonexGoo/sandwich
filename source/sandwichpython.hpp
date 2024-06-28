@@ -6,7 +6,7 @@ class SandWichPython
 {
 public:
     bool TickOnce();
-    void PythonConnect(chars host, sint32 port);
+    void PythonConnect(chars host, sint32 port, sint32 postidx);
     void TryPythonRecvOnce();
     void KeyPress(sint32 keycode);
     void KeyRelease(sint32 keycode);
@@ -31,11 +31,11 @@ private:
     ZayWidget* ValidWidget();
 
 private:
-    sint32 mPostIndex {-1};
     id_socket mPython {nullptr};
     bool mPythonConnected {false};
     String mPythonHost;
     sint32 mPythonPort {0};
+    sint32 mPostIndex {-1};
     uint08s mPythonQueue;
     Strings mPythonTasks;
     ZayWidget* mWidget {nullptr};

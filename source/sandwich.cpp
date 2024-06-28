@@ -90,7 +90,7 @@ ZAY_VIEW_API OnNotify(NotifyType type, chars topic, id_share in, id_cloned_share
             sint32s Args(in);
             const sint32 PostIdx = Args[0];
             const sint32 Port = Args[1];
-            m->mPythons[PostIdx].PythonConnect(gServerHost, Port);
+            m->mPythons[PostIdx].PythonConnect(gServerHost, Port, PostIdx);
         }
     }
     else if(type == NT_KeyPress)
